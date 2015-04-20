@@ -1,3 +1,5 @@
+--<<Download texture https://mega.co.nz/#!8AZiFAbY!kMdEz0Fezz6cRzpVPrsNJTuUd4RFwHqDSI3cOV51U34 and unpack to nyanui/other>>
+
 require("libs.ScriptConfig")
 require("libs.Skillshot")
 require("libs.Utils")
