@@ -28,7 +28,7 @@ function Main(tick)
 		for z = 1,3 do
 			rec[z].visible = true
 		end
-		if not Animations.CanMove(me) and victim and GetDistance2D(me,victim) <= 2000 then
+		if not Animations.CanMove(me) and victim and victim.alive and GetDistance2D(me,victim) <= 2000 then
 			if tick > attack and SleepCheck("casting") then
 				if victim and not Animations.isAttacking(me) then
 					local Q = me:GetAbility(1)
