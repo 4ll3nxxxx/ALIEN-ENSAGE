@@ -1,6 +1,6 @@
 require("libs.Utils")
 
-local play = false local myhero = nil local dmg = {100,200,250,325} local delay = 0
+local play = false local myhero = nil local dmg = {100,200,250,325} local sleep1,sleep2 = 0,0
 
 function Tick(tick)
     if not PlayingGame() then return end
@@ -9,26 +9,50 @@ function Tick(tick)
     local Q = me:GetAbility(1) local R = me:GetAbility(4)
     local heros = entityList:GetEntities({type=LuaEntity.TYPE_HERO,visible=true,alive=true,team=me:GetEnemyTeam(),illusion=false})
     for i,v in ipairs(heros) do
-    	if me.alive and tick > delay then
+
 	    	local distance = GetDistance2D(me,v)
 			local buff = v:DoesHaveModifier("modifier_bounty_hunter_track") or me:DoesHaveModifier("modifier_bounty_hunter_wind_walk")
 			local invis = v:FindItem("item_invis_sword") or v:FindItem("item_shadow_amulet") local irune = v:FindItem("item_bottle")
-			if Q and Q:CanBeCasted() and (v.health > 0 and v.health < dmg[Q.level]) and GetDistance2D(v,me) <= Q.castRange then me:CastAbility(Q,v) end
-			if R and R:CanBeCasted() and not buff and distance <= R.castRange then
-				if irune and irune.storedRune == 3 then me:CastAbility(R,v) end
-				if invis and v:CanCast() then me:CastAbility(R,v) end
-				if v.name == "npc_dota_hero_riki" then me:CastAbility(R,v) end
-				if v.name == "npc_dota_hero_clinkz" then me:CastAbility(R,v) end
-				if v.name == "npc_dota_hero_nyx_assassin" then me:CastAbility(R,v) end
-				if v.name == "npc_dota_hero_templar_assassin" then me:CastAbility(R,v) end
-				if v.name == "npc_dota_hero_broodmother" then me:CastAbility(R,v) end
-				if v.name == "npc_dota_hero_weaver" then me:CastAbility(R,v) end
-				if v.name == "npc_dota_hero_treant" then me:CastAbility(R,v) end
-				if v.name == "npc_dota_hero_sand_king" then me:CastAbility(R,v) end
-				if v.name == "npc_dota_hero_invoker" then me:CastAbility(R,v) end
-				if v.health/v.maxHealth < 0.4 then me:CastAbility(R,v) end
+
+		if me.alive then
+			if tick > sleep1 then
+				if Q and Q:CanBeCasted() and (v.health > 0 and v.health < dmg[Q.level]) and GetDistance2D(v,me) <= Q.castRange then
+					me:CastAbility(Q,v)
+				end
 			end
-			delay = tick + 400
+			sleep1 = tick + 1000
+
+			if tick > sleep2 then
+				if R and R:CanBeCasted() and not buff and distance <= R.castRange then
+					if irune and irune.storedRune == 3 then
+						me:CastAbility(R,v)
+					elseif invis and v:CanCast() then
+						me:CastAbility(R,v)
+					elseif v.name == "npc_dota_hero_riki" then
+						me:CastAbility(R,v)
+					elseif v.name == "npc_dota_hero_clinkz" then
+						me:CastAbility(R,v)
+					elseif v.name == "npc_dota_hero_nyx_assassin" then
+						me:CastAbility(R,v)
+					elseif v.name == "npc_dota_hero_templar_assassin" then
+						me:CastAbility(R,v)
+					elseif v.name == "npc_dota_hero_broodmother" then
+						me:CastAbility(R,v)
+					elseif v.name == "npc_dota_hero_weaver" then
+						me:CastAbility(R,v)
+					elseif v.name == "npc_dota_hero_treant" then
+						me:CastAbility(R,v)
+					elseif v.name == "npc_dota_hero_sand_king" then
+						me:CastAbility(R,v)
+					elseif v.name == "npc_dota_hero_invoker" then
+						me:CastAbility(R,v)
+					elseif v.health/v.maxHealth < 0.4 then
+						me:CastAbility(R,v)
+					end
+				end
+			end
+			sleep2 = tick + 1000
+			
 		end
 	end
 end
