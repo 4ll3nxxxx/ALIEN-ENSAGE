@@ -108,9 +108,6 @@ function Load()
 			script:Disable() 
 		else
 			play = true
-			rec[1].visible = true
-			rec[2].visible = true
-			rec[3].visible = true
 			myhero = me.classId
 			script:RegisterEvent(EVENT_TICK,Tick)
 			script:UnregisterEvent(Load)
@@ -121,9 +118,9 @@ end
 function Close()
 	myhero = nil
 	victim = nil
-	rec[1].visible = false
-	rec[2].visible = false
-	rec[3].visible = false
+	for i = 1, #rec do
+		rec[i].visible = false
+	end
 	collectgarbage("collect")
 	if play then
 		script:UnregisterEvent(Tick)
