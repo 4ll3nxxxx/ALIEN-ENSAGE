@@ -1,4 +1,5 @@
 require("libs.ScriptConfig")
+require("libs.Skillshot")
 require("libs.Utils")
 
 local config = ScriptConfig.new()
