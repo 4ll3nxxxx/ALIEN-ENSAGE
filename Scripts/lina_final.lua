@@ -26,7 +26,7 @@ function Tick(tick)
 		for z = 1,3 do
 			rec[z].visible = true
 		end
-		if not Animations.CanMove(me) and victim and GetDistance2D(me,victim) <= 2000 then
+		if victim and victim.alive and GetDistance2D(me,victim) <= 2000 then
 			if tick > move then
 				if GetDistance2D(victim,me) <= 550 then
 					me:Attack(victim)
