@@ -36,41 +36,39 @@ function Tick(tick)
 				move = tick + 100
 			end
 			if tick > delay and SleepCheck("Zzz") then
-				if victim and not Animations.isAttacking(me) then
-					local Q = me:GetAbility(1)
-					local W = me:GetAbility(2)
-					local euls = me:FindItem("item_cyclone")
-					if euls then
-						if euls and euls:CanBeCasted() then
-							if GetDistance2D(victim,me) <= euls.castRange and W and W:CanBeCasted() then
-								me:CastAbility(euls,victim)
-								Sleep(me:GetTurnTime(victim)*1000, "Zzz")
-								delay = tick + 1700
-							end
-						end
-						if W and W:CanBeCasted() then
-							if euls and euls.cd > 1 then
-								xyz2(victim,me,W)
-								Sleep(W:FindCastPoint()*1000+me:GetTurnTime(victim)*1000, "Zzz")
-							end
-						end
-						if Q and Q:CanBeCasted() then
-							if W and W.cd > 1 then
-								xyz1(victim,me,Q)
-								Sleep(Q:FindCastPoint()*1000+me:GetTurnTime(victim)*1000, "Zzz")
-							end
+				local Q = me:GetAbility(1)
+				local W = me:GetAbility(2)
+				local euls = me:FindItem("item_cyclone")
+				if euls then
+					if euls and euls:CanBeCasted() then
+						if GetDistance2D(victim,me) <= euls.castRange and W and W:CanBeCasted() then
+							me:CastAbility(euls,victim)
+							Sleep(me:GetTurnTime(victim)*1000, "Zzz")
+							delay = tick + 1700
 						end
 					end
-					if not euls then
-						if W and W:CanBeCasted() then
+					if W and W:CanBeCasted() then
+						if euls and euls.cd > 1 then
 							xyz2(victim,me,W)
 							Sleep(W:FindCastPoint()*1000+me:GetTurnTime(victim)*1000, "Zzz")
 						end
-						if Q and Q:CanBeCasted() then
-							if W and W.cd > 1 then
-								xyz1(victim,me,Q)
-								Sleep(Q:FindCastPoint()*1000+me:GetTurnTime(victim)*1000, "Zzz")
-							end
+					end
+					if Q and Q:CanBeCasted() then
+						if W and W.cd > 1 then
+							xyz1(victim,me,Q)
+							Sleep(Q:FindCastPoint()*1000+me:GetTurnTime(victim)*1000, "Zzz")
+						end
+					end
+				end
+				if not euls then
+					if W and W:CanBeCasted() then
+						xyz2(victim,me,W)
+						Sleep(W:FindCastPoint()*1000+me:GetTurnTime(victim)*1000, "Zzz")
+					end
+					if Q and Q:CanBeCasted() then
+						if W and W.cd > 1 then
+							xyz1(victim,me,Q)
+							Sleep(Q:FindCastPoint()*1000+me:GetTurnTime(victim)*1000, "Zzz")
 						end
 					end
 				end
