@@ -1,4 +1,5 @@
 require("libs.ScriptConfig")
+require("libs.Skillshot")
 require("libs.Utils")
 
 local config = ScriptConfig.new()
@@ -35,8 +36,8 @@ function Tick(tick)
 				me:CastAbility(travel,foun)
 				Sleep(client.latency,"home")
 			end
-			home = tick + 560
 		end
+		home = tick + 560
 	end
 	if IsKeyDown(config.HotKey) and not client.chat then
 		local victim = FindTarget(enemy)
@@ -54,8 +55,8 @@ function Tick(tick)
 				else
 					me:Follow(victim)
 				end
-				move = tick + 600
 			end
+			move = tick + 250
 			if victim and not Animations.isAttacking(me) and SleepCheck("Zzz") then
 				if E.name == "kunkka_x_marks_the_spot" and E:CanBeCasted() and me:CanCast() then
 					me:CastAbility(E,victim)
