@@ -57,7 +57,7 @@ function Tick(tick)
 				end
 			end
 			move = tick + 250
-			if victim and not Animations.isAttacking(me) and SleepCheck("Zzz") then
+			if victim and SleepCheck("Zzz") then
 				if E.name == "kunkka_x_marks_the_spot" and E:CanBeCasted() and me:CanCast() then
 					me:CastAbility(E,victim)
 					lastpos = victim.position
