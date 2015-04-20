@@ -89,8 +89,8 @@ function Main(tick)
 				else
 					me:Follow(victim)
 				end
-				move = tick + 100
 			end
+			move = tick + 100
 		end
 	end
 end
