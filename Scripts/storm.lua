@@ -1,4 +1,4 @@
---<<This is keep Overload and auto use item storm script, i prefer you buy bloodstone X3>>
+--<<Download texture https://mega.co.nz/#!8AZiFAbY!kMdEz0Fezz6cRzpVPrsNJTuUd4RFwHqDSI3cOV51U34 and unpack to nyanui/other>>
 
 require("libs.ScriptConfig")
 require("libs.Utils")
