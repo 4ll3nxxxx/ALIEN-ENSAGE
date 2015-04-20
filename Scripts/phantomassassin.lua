@@ -1,5 +1,7 @@
 require("libs.ScriptConfig")
 require("libs.Utils")
+require("libs.Skillshot")
+require("libs.Animations")
 
 local config = ScriptConfig.new()
 config:SetParameter("combo", "32", config.TYPE_HOTKEY)
