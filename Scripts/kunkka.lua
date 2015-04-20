@@ -20,7 +20,7 @@ function Tick(tick)
 	local Q = me:GetAbility(1)
 	local E = me:GetAbility(3)
 	local R = me:GetAbility(4)
-	local victim = FindTarget(enemy)
+	local victim = FindTarget(me.team)
 	if me.team == LuaEntity.TEAM_RADIANT then
 		foun = Vector(-7272,-6757,270)
 	else
@@ -88,10 +88,10 @@ function Tick(tick)
 	end
 end
 
-function FindTarget(enemy)
-	local enemy = entityList:GetEntities({type=LuaEntity.TYPE_HERO,illusion=false,team=entityList:GetMyHero():GetEnemyTeam()})
+function FindTarget(teams)
+	local enemy = entityList:GetEntities(function (v) return v.type == LuaEntity.TYPE_HERO and v.team ~= teams and v.visible and v.alive and not v.illusion end)
 	if #enemy == 0 then
-		return entityList:GetEntities({type=LuaEntity.TYPE_HERO,illusion=false,team=entityList:GetMyHero():GetEnemyTeam()})[1]
+		return entityList:GetEntities(function (v) return v.type == LuaEntity.TYPE_HERO and v.team ~= teams end)[1]
 	elseif #enemy == 1 then
 		return enemy[1]	
 	else

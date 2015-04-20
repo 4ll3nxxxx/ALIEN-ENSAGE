@@ -18,7 +18,7 @@ function Tick(tick)
 	local me = entityList:GetMyHero()
 	local ID = me.classId if ID ~= myhero then return end
 	if IsKeyDown(config.HotKey) and not client.chat then
-		local victim = FindTarget(enemy)
+		local victim = FindTarget(me.team)
 		rec[1].w = 90*rate + 30*0*rate + 65*rate
 		rec[2].x = 30*rate + 90*rate + 30*0*rate + 65*rate - 95*rate
 		rec[3].x = 80*rate + 90*rate + 30*0*rate + 65*rate - 50*rate
@@ -77,10 +77,10 @@ function Tick(tick)
 	end
 end
 
-function FindTarget(enemy)
-	local enemy = entityList:GetEntities({type=LuaEntity.TYPE_HERO,illusion=false,team=entityList:GetMyHero():GetEnemyTeam()})
+function FindTarget(teams)
+	local enemy = entityList:GetEntities(function (v) return v.type == LuaEntity.TYPE_HERO and v.team ~= teams and v.visible and v.alive and not v.illusion end)
 	if #enemy == 0 then
-		return entityList:GetEntities({type=LuaEntity.TYPE_HERO,illusion=false,team=entityList:GetMyHero():GetEnemyTeam()})[1]
+		return entityList:GetEntities(function (v) return v.type == LuaEntity.TYPE_HERO and v.team ~= teams end)[1]
 	elseif #enemy == 1 then
 		return enemy[1]	
 	else

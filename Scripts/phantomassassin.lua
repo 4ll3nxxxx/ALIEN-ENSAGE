@@ -29,7 +29,7 @@ function Tick(tick)
 		end
 	end
 	if IsKeyDown(config.combo) and not client.chat then
-		local victim = FindTarget(enemy)
+		local victim = FindTarget(me.team)
 		local numb = 90*rate+30*0*rate+65*rate
 		rec[1].w = numb
 		rec[2].x = 30*rate + numb - 95*rate
@@ -108,10 +108,10 @@ function Tick(tick)
 	end
 end
 
-function FindTarget(enemy)
-	local enemy = entityList:GetEntities({type=LuaEntity.TYPE_HERO,alive=true,illusion=false,team=entityList:GetMyHero():GetEnemyTeam()})
+function FindTarget(teams)
+	local enemy = entityList:GetEntities(function (v) return v.type == LuaEntity.TYPE_HERO and v.team ~= teams and v.visible and v.alive and not v.illusion end)
 	if #enemy == 0 then
-		return entityList:GetEntities({type=LuaEntity.TYPE_HERO,alive=true,illusion=false,team=entityList:GetMyHero():GetEnemyTeam()})[1]
+		return entityList:GetEntities(function (v) return v.type == LuaEntity.TYPE_HERO and v.team ~= teams end)[1]
 	elseif #enemy == 1 then
 		return enemy[1]	
 	else
