@@ -52,15 +52,13 @@ function Main(tick)
 							Sleep(CP*1000+me:GetTurnTime(victim)*1000, "casting")
 						end
 					end
-					if not Overload then
-						if W and W:CanBeCasted() and not disable and distance <= W.castRange then
-							me:CastAbility(W,victim)
-							Sleep(me:GetTurnTime(victim)*1000, "casting")
-						end
-						if Q and Q:CanBeCasted() and distance <= 260 then
-							me:CastAbility(Q)
-							Sleep(me:GetTurnTime(victim)*1000, "casting")
-						end
+					if W and W:CanBeCasted() and not disable and distance <= W.castRange then
+						me:CastAbility(W,victim)
+						Sleep(me:GetTurnTime(victim)*1000, "casting")
+					end
+					if Q and Q:CanBeCasted() and distance <= 260 and not Overload then
+						me:CastAbility(Q)
+						Sleep(me:GetTurnTime(victim)*1000, "casting")
 					end
 					if Orchid and Orchid:CanBeCasted() and not disable then
 						me:CastAbility(Orchid, victim)
@@ -82,7 +80,7 @@ function Main(tick)
 				me:Attack(victim)
 				attack = tick + 100
 			end
-			if victim and tick > move then
+			if tick > move and victim then
 				if victim.visible then
 					local xyz = SkillShot.PredictedXYZ(victim,me:GetTurnTime(victim)*1000+client.latency+500)
 					me:Move(xyz)
