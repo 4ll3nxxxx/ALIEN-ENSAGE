@@ -1,5 +1,3 @@
---<<Download texture https://mega.co.nz/#!8AZiFAbY!kMdEz0Fezz6cRzpVPrsNJTuUd4RFwHqDSI3cOV51U34 and unpack to nyanui/other>>
-
 require("libs.ScriptConfig")
 require("libs.Utils")
 require("libs.Skillshot")
@@ -49,17 +47,13 @@ function Tick(tick)
 							delay = tick + 1700
 						end
 					end
-					if W and W:CanBeCasted() then
-						if euls and euls.cd > 1 then
-							xyz2(victim,me,W)
-							Sleep(W:FindCastPoint()*1000+me:GetTurnTime(victim)*1000, "Zzz")
-						end
+					if W and W:CanBeCasted() and euls.cd ~= 0 then
+						xyz2(victim,me,W)
+						Sleep(W:FindCastPoint()*1000+me:GetTurnTime(victim)*1000, "Zzz")
 					end
-					if Q and Q:CanBeCasted() then
-						if W and W.cd > 1 then
-							xyz1(victim,me,Q)
-							Sleep(Q:FindCastPoint()*1000+me:GetTurnTime(victim)*1000, "Zzz")
-						end
+					if Q and Q:CanBeCasted() and W.cd ~= 0 then
+						xyz1(victim,me,Q)
+						Sleep(Q:FindCastPoint()*1000+me:GetTurnTime(victim)*1000, "Zzz")
 					end
 				end
 				if not euls then
@@ -67,11 +61,9 @@ function Tick(tick)
 						xyz2(victim,me,W)
 						Sleep(W:FindCastPoint()*1000+me:GetTurnTime(victim)*1000, "Zzz")
 					end
-					if Q and Q:CanBeCasted() then
-						if W and W.cd > 1 then
-							xyz1(victim,me,Q)
-							Sleep(Q:FindCastPoint()*1000+me:GetTurnTime(victim)*1000, "Zzz")
-						end
+					if Q and Q:CanBeCasted() and W.cd ~= 0 then
+						xyz1(victim,me,Q)
+						Sleep(Q:FindCastPoint()*1000+me:GetTurnTime(victim)*1000, "Zzz")
 					end
 				end
 			end

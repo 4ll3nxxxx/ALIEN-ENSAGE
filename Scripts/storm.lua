@@ -64,7 +64,7 @@ function Main(tick)
 						me:CastAbility(Orchid, victim)
 						Sleep(me:GetTurnTime(victim)*1000, "casting")
 					end
-					if Sheep and Sheep:CanBeCasted() and not disable and Orchid and Orchid.cd > 4 then
+					if Sheep and Sheep:CanBeCasted() and not disable and Orchid.cd ~= 0 then
 						me:CastAbility(Sheep, victim)
 						Sleep(me:GetTurnTime(victim)*1000, "casting")
 					end
