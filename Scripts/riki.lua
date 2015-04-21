@@ -5,7 +5,6 @@ require("libs.Animations")
 
 local config = ScriptConfig.new()
 config:SetParameter("combo", "32", config.TYPE_HOTKEY)
-config:SetParameter("lasthit", "D", config.TYPE_HOTKEY)
 config:Load()
 
 local play = false local myhero = nil local victim = nil local sleep = {0,0}
