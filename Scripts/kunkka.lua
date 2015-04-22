@@ -114,6 +114,9 @@ function Close()
 	myhero = nil
 	victim = nil
 	start = false
+	for i = 1, #rec do
+		rec[i].visible = false
+	end
 	collectgarbage("collect")
 	if play then
 		script:UnregisterEvent(Tick)
