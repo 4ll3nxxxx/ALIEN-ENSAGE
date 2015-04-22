@@ -39,7 +39,7 @@ function Tick(tick)
 					local satanic = me:FindItem("item_satanic")
 					local BlackKingBar = me:FindItem("item_black_king_bar")
 					local distance = GetDistance2D(victim,me)
-					local disable = victim:DoesHaveModifier("modifier_riki_smoke_screen") or victim:IsHexed() or victim:IsStunned() or victim:IsLinkensProtected()
+					local disable = victim:IsSilenced() or victim:IsSilenced() or victim:IsHexed() or victim:IsStunned() or victim:IsLinkensProtected()
 					if Q and Q:CanBeCasted() then
 						local CP = Q:FindCastPoint()
 						local delay = ((550-Animations.getDuration(Q)*1000)+CP*1000+client.latency+me:GetTurnTime(victim)*1000)
