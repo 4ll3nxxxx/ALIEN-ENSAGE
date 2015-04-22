@@ -39,7 +39,8 @@ function Tick(tick)
 					local satanic = me:FindItem("item_satanic")
 					local BlackKingBar = me:FindItem("item_black_king_bar")
 					local distance = GetDistance2D(victim,me)
-					local disable = victim:IsSilenced() or victim:IsSilenced() or victim:IsHexed() or victim:IsStunned() or victim:IsLinkensProtected()
+					local disable = victim:IsHexed() or victim:IsStunned() or victim:IsLinkensProtected()
+					local silence = victim:IsSilenced()
 					if Q and Q:CanBeCasted() then
 						local CP = Q:FindCastPoint()
 						local delay = ((550-Animations.getDuration(Q)*1000)+CP*1000+client.latency+me:GetTurnTime(victim)*1000)
@@ -58,7 +59,7 @@ function Tick(tick)
 						me:CastAbility(diffusal,victim)
 						Sleep(me:GetTurnTime(victim)*1000, "Zzz")
 					end
-					if abyssal and abyssal:CanBeCasted() and distance <= abyssal.castRange and not disable then
+					if abyssal and abyssal:CanBeCasted() and distance <= abyssal.castRange and not disable and not silence then
 						me:CastAbility(abyssal,victim)
 						Sleep(me:GetTurnTime(victim)*1000, "Zzz")
 					end
