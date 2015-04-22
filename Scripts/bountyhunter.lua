@@ -1,6 +1,6 @@
 require("libs.Utils")
 
-local play = false local myhero = nil local dmg = {100,200,250,325} local sleep1,sleep2 = 0,0
+local play = false local myhero = nil local dmg = {100,200,250,325}
 
 function Tick(tick)
     if not PlayingGame() then return end
