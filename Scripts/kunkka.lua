@@ -113,7 +113,6 @@ end
 function Close()
 	myhero = nil
 	victim = nil
-	start = false
 	for i = 1, #rec do
 		rec[i].visible = false
 	end
