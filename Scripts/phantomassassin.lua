@@ -11,7 +11,7 @@ config:SetParameter("Hotkey", "32", config.TYPE_HOTKEY)
 config:SetParameter("lasthit", "D", config.TYPE_HOTKEY)
 config:Load()
 
-local play = false local myhero = nil local victim = nil local attack = 0 local move = 0 local start = false local resettime = nil local dmg = {60,100,140,180}
+local play = false local myhero = nil local victim = nil local start = false local resettime = nil local dmg = {60,100,140,180} local sleep = {0,0}
 local rate = client.screenSize.x/1600 local rec = {}
 rec[1] = drawMgr:CreateRect(70*rate,26*rate,270*rate,60*rate,0xFFFFFF30,drawMgr:GetTextureId("NyanUI/other/CM_status_1")) rec[1].visible = false
 rec[2] = drawMgr:CreateText(175*rate,52*rate,0xFFFFFF90,"Target :",drawMgr:CreateFont("manabarsFont","Arial",18*rate,700)) rec[2].visible = false
@@ -59,7 +59,7 @@ function Main(tick)
 			end
 		end
 		if not Animations.CanMove(me) and victim and victim.alive and GetDistance2D(me,victim) <= 2000 then
-			if tick > attack and SleepCheck("casting") then
+			if tick > sleep[1] and SleepCheck("casting") then
 				if victim.hero and not Animations.isAttacking(me) then
 					local Q = me:GetAbility(1) local W = me:GetAbility(2)
 					local medallion = me:FindItem("item_medallion_of_courage")
@@ -113,9 +113,9 @@ function Main(tick)
 					end
 				end
 				me:Attack(victim)
-				attack = tick + 100
+				sleep[1] = tick + 100
 			end
-		elseif tick > move then
+		elseif tick > sleep[2] then
 			if victim then
 				if victim.visible then
 					local xyz = SkillShot.PredictedXYZ(victim,me:GetTurnTime(victim)*1000+client.latency+500)
@@ -126,7 +126,7 @@ function Main(tick)
 			else
 				me:Move(client.mousePosition)
 			end
-			move = tick + 100
+			sleep[2] = tick + 100
 			start = false
 		end
 	elseif victim then
