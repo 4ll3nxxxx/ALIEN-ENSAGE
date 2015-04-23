@@ -167,9 +167,8 @@ function Close()
 	for i = 1, #rec do
 		rec[i].visible = false
 	end
-	collectgarbage("collect")
 	if play then
-		script:UnregisterEvent(Tick)
+		script:UnregisterEvent(Main)
 		script:RegisterEvent(EVENT_TICK,Load)
 		play = false
 	end
