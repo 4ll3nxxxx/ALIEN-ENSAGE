@@ -6,7 +6,7 @@ require("libs.Skillshot")
 require("libs.Animations")
 
 local config = ScriptConfig.new()
-config:SetParameter("combo", "32", config.TYPE_HOTKEY)
+config:SetParameter("Hotkey", "32", config.TYPE_HOTKEY)
 config:Load()
 
 local play = false local myhero = nil local victim = nil local start = false local resettime = nil local sleep = {0,0}
@@ -59,7 +59,7 @@ function Main(tick)
 					local distance = GetDistance2D(victim,me)
 					local disable = victim:IsHexed() or victim:IsStunned() or victim:IsLinkensProtected()
 					local silence = victim:IsSilenced()
-					if Q and Q:CanBeCasted() then
+					if Q and Q:CanBeCasted() and me:CanCast() then
 						local CP = Q:FindCastPoint()
 						local delay = ((550-Animations.getDuration(Q)*1000)+CP*1000+client.latency+me:GetTurnTime(victim)*1000)
 						local speed = 1400
