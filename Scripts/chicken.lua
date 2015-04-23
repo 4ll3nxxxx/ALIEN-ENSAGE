@@ -31,14 +31,14 @@ function Tick(tick)
 	local me = entityList:GetMyHero() local mp = entityList:GetMyPlayer()
 	local chicken = entityList:FindEntities({classId=CDOTA_Unit_Courier,team=me.team,alive=true})[1]
 	if chicken then
-		if tick > delay and SleepCheck("Zzz") then
+		if tick > delay and SleepCheck("chicken") then
 			local bottle = me:FindItem("item_bottle")
-			local heros = entityList:GetEntities({type=LuaEntity.TYPE_HERO,visible=true,alive=true,team=me:GetEnemyTeam()})
-			for i,v in ipairs(heros) do
+			local enemy = entityList:GetEntities(function (v) return (v.type==LuaEntity.TYPE_HERO or v.classId==323 or v.classId==527) and v.team ~= me.team and v.alive and v.visible end)
+			for i,v in ipairs(enemy) do
 				if GetDistance2D(chicken,v) <= config.distance and chicken:GetAbility(1):CanBeCasted() then
 					chicken:CastAbility(chicken:GetAbility(1))
 					Boost(chicken)
-					Sleep(client.latency,"Zzz")
+					Sleep(client.latency,"chicken")
 					safety = false
 				else
 					safety = true
@@ -49,28 +49,29 @@ function Tick(tick)
 					giveitem = true
 					CheckStash(chicken)
 					chicken:Follow(me)
-					Sleep(client.latency,"Zzz")
+					Boost(chicken)
+					Sleep(client.latency,"chicken")
 				end
 				if GetDistance2D(chicken,me) <= 250 and bottle and bottle.charges == 0  then
 					giveitem = false
 					Deliver(chicken)
 					mp:GiveItem(chicken,bottle)
-					Sleep(client.latency,"Zzz")
+					Sleep(client.latency,"chicken")
 				end
 				local chickenbottle = chicken:FindItem("item_bottle")
 				if chickenbottle and chickenbottle.charges == 0 and chicken:GetAbility(1):CanBeCasted() then
 					chicken:CastAbility(chicken:GetAbility(1))
 					Boost(chicken)
-					Sleep(client.latency,"Zzz")
+					Sleep(client.latency,"chicken")
 				end
-				if chickenbottle and chickenbottle.charges == 3 and chicken:GetAbility(5):CanBeCasted() then
-					chicken:CastAbility(chicken:GetAbility(5))
+				if chickenbottle and chickenbottle.charges == 3 then
+					Deliver(chicken)
 					CheckStash(chicken)
 					Boost(chicken)
-					Sleep(client.latency,"Zzz")
+					Sleep(client.latency,"chicken")
 				end
 			end
-			delay = tick + 550
+			delay = tick + 320
 		end
 	end
 end
@@ -89,8 +90,8 @@ end
 
 function CheckStash(chicken)
 	for i = 7, 12 do
-		local item = entityList:GetMyHero():GetItem(i)
-		if item and chicken:GetAbility(4):CanBeCasted() then
+		local item = entityList:GetMyHero():HasItem(i)
+		if item and chicken and chicken:GetAbility(4):CanBeCasted() then
 			chicken:CastAbility(chicken:GetAbility(4))
 		end
 	end
