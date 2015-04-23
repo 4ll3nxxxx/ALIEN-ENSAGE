@@ -123,8 +123,6 @@ function Main(tick)
 				else
 					me:Follow(victim)
 				end
-			else
-				me:Move(client.mousePosition)
 			end
 			sleep[2] = tick + 100
 			start = false
