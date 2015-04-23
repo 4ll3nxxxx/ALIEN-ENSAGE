@@ -95,6 +95,7 @@ function Main(tick)
 		start = false
 	end 
 end
+
 function xyz1(victim,me,Q)
 	local CP = Q:FindCastPoint()
 	local delay = ((800-Animations.getDuration(Q)*1000)+CP*1000+client.latency+me:GetTurnTime(victim)*1000)
