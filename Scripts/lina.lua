@@ -44,7 +44,7 @@ function Main(tick)
 				end
 			end
 		end
-		if not Animations.CanMove(me) and victim and GetDistance2D(me,victim) <= 2000 then
+		if not Animations.CanMove(me) and victim and GetDistance2D(me,victim) <= 600 then
 			if tick > sleep[1] and tick > sleep[2] and SleepCheck("casting") then
 				if victim.hero and not Animations.isAttacking(me) then
 					local Q = me:GetAbility(1)
@@ -148,9 +148,9 @@ function Close()
 	victim = nil
 	start = false
 	resettime = nil
-	for i = 1, #rec do
-		rec[i].visible = false
-	end
+	rec[1].visible = false
+	rec[2].visible = false
+	rec[3].visible = false
 	collectgarbage("collect")
 	if play then
 		script:UnregisterEvent(Tick)

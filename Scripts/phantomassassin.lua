@@ -162,9 +162,9 @@ function Close()
 	victim = nil
 	start = false
 	resettime = nil
-	for i = 1, #rec do
-		rec[i].visible = false
-	end
+	rec[1].visible = false
+	rec[2].visible = false
+	rec[3].visible = false
 	if play then
 		script:UnregisterEvent(Main)
 		script:RegisterEvent(EVENT_TICK,Load)
