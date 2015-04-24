@@ -8,6 +8,7 @@ require("libs.Skillshot")
 
 local config = ScriptConfig.new()
 config:SetParameter("Hotkey", "32", config.TYPE_HOTKEY)
+config:SetParameter("AUTOBLINK", true)
 config:Load()
 
 local play = false local myhero = nil local victim = nil local start = false local resettime = nil local sleep = 0
@@ -62,7 +63,7 @@ function Main(tick)
 					local rearm = me:DoesHaveModifier("modifier_tinker_rearm")
 					local slowed = victim:DoesHaveModifier("modifier_item_ethereal_blade_ethereal")
 					if not rearm then
-						if blink and blink:CanBeCasted() and me:CanCast() and distance > attackRange and distance <= 1199 then
+						if blink and blink:CanBeCasted() and me:CanCast() and distance > attackRange and distance <= 1199 and config.AUTOBLINK then
 							local CP = blink:FindCastPoint()
 							local delay = ((500-Animations.getDuration(R)*1000)+CP*1000+client.latency+me:GetTurnTime(victim)*1000)
 							local speed = blink:GetSpecialData("blink_range")
