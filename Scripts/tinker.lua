@@ -75,7 +75,7 @@ function Main(tick)
 					local soulring = me:FindItem("item_soul_ring")
 					local distance = GetDistance2D(victim,me)
 					local Danger = me:DoesHaveModifier("modifier_tinker_rearm") or me:IsChanneling() or victim:DoesHaveModifier("modifier_nyx_assassin_spiked_carapace") or victim:DoesHaveModifier("modifier_item_blade_mail_reflect")
-					local slow = victim:DoesHaveModifier("modifier_item_ethereal_blade_ethereal") 
+					local slow = victim:DoesHaveModifier("modifier_item_ethereal_blade_slow") or victim:DoesHaveModifier("modifier_item_ethereal_blade_ethereal") 
 					if not Danger then
 						if blink and blink:CanBeCasted() and me:CanCast() and distance > attackRange and config.AUTOBLINK then
 							local CP = blink:FindCastPoint()
@@ -83,8 +83,7 @@ function Main(tick)
 							local speed = blink:GetSpecialData("blink_range")
 							local xyz = SkillShot.SkillShotXYZ(me,victim,delay,speed)
 							if xyz then
-								me:CastAbility(blink,xyz)
-								Sleep(CP*1000+me:GetTurnTime(victim)*1000, "123")
+								table.insert(castQueue,{math.ceil(blink:FindCastPoint()*1000),blink,xyz})
 							end
 						end
 						if Q and Q:CanBeCasted() and me:CanCast() then
@@ -111,7 +110,7 @@ function Main(tick)
 						end
 						if (not sheep or sheep.cd > 0) and ((sheep and R.level < 3) or Q.cd > 0 or (dagon and dagon.cd > 0) or (ethereal and ethereal.cd > 0)) and R:CanBeCasted() then
 							table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R})
-							Sleep(1500, "123")
+							Sleep(1000, "123")
 						end
 					end
 					if not Danger and not slowed then
