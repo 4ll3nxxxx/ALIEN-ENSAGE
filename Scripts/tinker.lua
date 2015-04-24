@@ -11,7 +11,7 @@ config:SetParameter("Hotkey", "32", config.TYPE_HOTKEY)
 config:SetParameter("AUTOBLINK", true)
 config:Load()
 
-local play = false local myhero = nil local victim = nil local start = false local resettime = nil local sleep = {0,0}
+local play = false local myhero = nil local victim = nil local start = false local resettime = nil local sleep = {0,0} local castQueue = {}
 local rate = client.screenSize.x/1600 local rec = {}
 rec[1] = drawMgr:CreateRect(70*rate,26*rate,270*rate,60*rate,0xFFFFFF30,drawMgr:GetTextureId("NyanUI/other/CM_status_1")) rec[1].visible = false
 rec[2] = drawMgr:CreateText(175*rate,52*rate,0xFFFFFF90,"Target :",drawMgr:CreateFont("manabarsFont","Arial",18*rate,700)) rec[2].visible = false
@@ -47,6 +47,20 @@ function Main(tick)
 				end
 			end
 		end
+
+		for i=1,#castQueue,1 do
+			local v = castQueue[1]
+			table.remove(castQueue,1)
+			local ability = v[2]
+			if type(ability) == "string" then
+				ability = me:FindItem(ability)
+			end
+			if ability and me:SafeCastAbility(ability,v[3],false) then
+				sleeptick = tick + v[1]
+				return
+			end
+		end
+
 		if not Animations.CanMove(me) and victim and GetDistance2D(me,victim) <= 2000 then
 			if not Animations.isAttacking(me) and victim.alive and victim.visible then
 				if tick > sleep[1] and SleepCheck("123") then
@@ -70,56 +84,34 @@ function Main(tick)
 							local xyz = SkillShot.SkillShotXYZ(me,victim,delay,speed)
 							if xyz then
 								me:CastAbility(blink,xyz)
-								Sleep(CP*1000+me:GetTurnTime(victim)*1000, "casting")
+								Sleep(CP*1000+me:GetTurnTime(victim)*1000, "123")
 							end
 						end
-						if Q and Q:CanBeCasted() and me:CanCast() and distance <= Q.castRange then
-							me:CastAbility(Q,victim)
-							Sleep(Q:FindCastPoint()*1000+me:GetTurnTime(victim)*1000, "123")
+						if Q and Q:CanBeCasted() and me:CanCast() then
+							table.insert(castQueue,{(GetDistance2D(me,victim)/550)*1000,Q,victim})
 						end
-						if W and W:CanBeCasted() and me:CanCast() and distance <= W.castRange then
-							me:CastAbility(W)
-							Sleep(W:FindCastPoint()*1000+me:GetTurnTime(victim)*1000, "123")
+
+						if W and W:CanBeCasted() and me:CanCast() then
+							table.insert(castQueue,{(GetDistance2D(me,victim)/2500)*1000,W})
 						end
+
 						if ethereal and ethereal:CanBeCasted() and me:CanCast() then
-							me:CastAbility(ethereal, victim)
-							Sleep(ethereal:FindCastPoint()*1000+me:GetTurnTime(victim)*1000, "123")
+							table.insert(castQueue,{(GetDistance2D(me,victim)/1200)*1000,ethereal,victim})
 						end
-						if sheep and sheep:CanBeCasted() and me:CanCast() and distance <= sheep.castRange then
-							me:CastAbility(sheep, victim)
-							Sleep(sheep:FindCastPoint()*1000+me:GetTurnTime(victim)*1000, "123")
+
+						if dagon and dagon:CanBeCasted() and me:CanCast() then
+							table.insert(castQueue,{100,dagon,victim})
+						end	
+
+						if sheep and sheep:CanBeCasted() and me:CanCast() then
+							table.insert(castQueue,{(GetDistance2D(me,victim)/800)*1000,sheep,victim})
 						end
-						if dagon and dagon:CanBeCasted() and me:CanCast() and distance <= dagon.castRange then
-							me:CastAbility(dagon, victim)
-							Sleep(dagon:FindCastPoint()*1000+me:GetTurnTime(victim)*1000, "123")
-						end
-						if soulring and soulring:CanBeCasted() and me:CanCast() then
+						if me.mana < me.maxMana*0.5 and soulring and soulring:CanBeCasted() then
 							me:CastAbility(soulring)
-							Sleep(client.latency, "123")
 						end
-						if dagon and not ethereal and not sheep and R and R:CanBeCasted() and me:CanCast() then
-							if dagon.cd ~= 0 and W.cd ~= 0 then
-								me:CastAbility(R)
-								Sleep(1100+client.latency, "123")
-							end
-						end
-						if dagon and ethereal and not sheep and R and R:CanBeCasted() and me:CanCast() then
-							if dagon.cd ~= 0 and ethereal.cd ~= 0 and W.cd ~= 0 then
-								me:CastAbility(R)
-								Sleep(1100+client.latency, "123")
-							end
-						end
-						if dagon and not ethereal and sheep and R and R:CanBeCasted() and me:CanCast() then
-							if dagon.cd ~= 0 and sheep.cd ~= 0 and W.cd ~= 0 then
-								me:CastAbility(R)
-								Sleep(1100+client.latency, "123")
-							end
-						end
-						if dagon and ethereal and sheep and R and R:CanBeCasted() and me:CanCast() then
-							if dagon.cd ~= 0 and W.cd ~= 0 and ethereal.cd ~= 0 and sheep.cd ~= 0 and W.cd ~= 0 then
-								me:CastAbility(R)
-								Sleep(1100+client.latency, "123")
-							end
+						if (not sheep or sheep.cd > 0) and ((sheep and R.level < 3) or Q.cd > 0 or (dagon and dagon.cd > 0) or (ethereal and ethereal.cd > 0)) and R:CanBeCasted() then
+							table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R})
+							Sleep(1500, "123")
 						end
 					end
 					if not Danger and not slowed then
