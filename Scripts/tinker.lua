@@ -85,12 +85,6 @@ function Main(tick)
 							me:CastAbility(ethereal, victim)
 							Sleep(ethereal:FindCastPoint()*1000+me:GetTurnTime(victim)*1000, "123")
 						end
-						if dagon and not ethereal and not sheep and R and R:CanBeCasted() and me:CanCast() then
-							if dagon.cd ~= 0 and W.cd ~= 0 then
-								me:CastAbility(R)
-								Sleep(1100+client.latency, "123")
-							end
-						end
 						if sheep and sheep:CanBeCasted() and me:CanCast() and distance <= sheep.castRange then
 							me:CastAbility(sheep, victim)
 							Sleep(sheep:FindCastPoint()*1000+me:GetTurnTime(victim)*1000, "123")
@@ -102,6 +96,12 @@ function Main(tick)
 						if soulring and soulring:CanBeCasted() and me:CanCast() then
 							me:CastAbility(soulring)
 							Sleep(client.latency, "123")
+						end
+						if dagon and not ethereal and not sheep and R and R:CanBeCasted() and me:CanCast() then
+							if dagon.cd ~= 0 and W.cd ~= 0 then
+								me:CastAbility(R)
+								Sleep(1100+client.latency, "123")
+							end
 						end
 						if dagon and ethereal and not sheep and R and R:CanBeCasted() and me:CanCast() then
 							if dagon.cd ~= 0 and ethereal.cd ~= 0 and W.cd ~= 0 then
