@@ -11,7 +11,7 @@ config:SetParameter("Hotkey", "32", config.TYPE_HOTKEY)
 config:SetParameter("AUTOBLINK", true)
 config:Load()
 
-local play = false local myhero = nil local victim = nil local start = false local resettime = nil local sleep = 0
+local play = false local myhero = nil local victim = nil local start = false local resettime = nil local sleep = {0,0}
 local rate = client.screenSize.x/1600 local rec = {}
 rec[1] = drawMgr:CreateRect(70*rate,26*rate,270*rate,60*rate,0xFFFFFF30,drawMgr:GetTextureId("NyanUI/other/CM_status_1")) rec[1].visible = false
 rec[2] = drawMgr:CreateText(175*rate,52*rate,0xFFFFFF90,"Target :",drawMgr:CreateFont("manabarsFont","Arial",18*rate,700)) rec[2].visible = false
@@ -48,7 +48,7 @@ function Main(tick)
 			end
 		end
 		if not Animations.CanMove(me) and victim and GetDistance2D(me,victim) <= 2000 then
-			if tick > sleep and SleepCheck("123") then
+			if tick > sleep[1] and SleepCheck("123") then
 				if victim.hero and not Animations.isAttacking(me) then
 					local Q = me:GetAbility(1)
 					local W = me:GetAbility(2)
@@ -73,10 +73,6 @@ function Main(tick)
 								Sleep(CP*1000+me:GetTurnTime(victim)*1000, "casting")
 							end
 						end
-						if sheep and sheep:CanBeCasted() and me:CanCast() and distance <= sheep.castRange then
-							me:CastAbility(sheep, victim)
-							Sleep(sheep:FindCastPoint()*1000+me:GetTurnTime(victim)*1000, "123")
-						end
 						if Q and Q:CanBeCasted() and me:CanCast() and distance <= Q.castRange then
 							me:CastAbility(Q,victim)
 							Sleep(Q:FindCastPoint()*1000+me:GetTurnTime(victim)*1000, "123")
@@ -85,9 +81,19 @@ function Main(tick)
 							me:CastAbility(W)
 							Sleep(W:FindCastPoint()*1000+me:GetTurnTime(victim)*1000, "123")
 						end
-						if ethereal and ethereal:CanBeCasted() and me:CanCast() and distance <= ethereal.castRange then
+						if ethereal and ethereal:CanBeCasted() and me:CanCast() then
 							me:CastAbility(ethereal, victim)
 							Sleep(ethereal:FindCastPoint()*1000+me:GetTurnTime(victim)*1000, "123")
+						end
+						if dagon and not ethereal and not sheep and R and R:CanBeCasted() and me:CanCast() then
+							if dagon.cd ~= 0 and W.cd ~= 0 then
+								me:CastAbility(R)
+								Sleep(1100+client.latency, "123")
+							end
+						end
+						if sheep and sheep:CanBeCasted() and me:CanCast() and distance <= sheep.castRange then
+							me:CastAbility(sheep, victim)
+							Sleep(sheep:FindCastPoint()*1000+me:GetTurnTime(victim)*1000, "123")
 						end
 						if dagon and dagon:CanBeCasted() and me:CanCast() and distance <= dagon.castRange then
 							me:CastAbility(dagon, victim)
@@ -96,12 +102,6 @@ function Main(tick)
 						if soulring and soulring:CanBeCasted() and me:CanCast() then
 							me:CastAbility(soulring)
 							Sleep(client.latency, "123")
-						end
-						if dagon and not ethereal and not sheep and R and R:CanBeCasted() and me:CanCast() then
-							if dagon.cd ~= 0 and W.cd ~= 0 then
-								me:CastAbility(R)
-								Sleep(1100+client.latency, "123")
-							end
 						end
 						if dagon and ethereal and not sheep and R and R:CanBeCasted() and me:CanCast() then
 							if dagon.cd ~= 0 and ethereal.cd ~= 0 and W.cd ~= 0 then
@@ -124,10 +124,22 @@ function Main(tick)
 					end
 					if not rearm and not slowed then
 						me:Attack(victim)
-						sleep = tick + 100
+						sleep[1] = tick + 100
 					end
 				end
 			end
+		elseif tick > sleep[2] then
+			local rearm = me:DoesHaveModifier("modifier_tinker_rearm")
+			if victim and not rearm then
+				if victim.visible then
+					local xyz = SkillShot.PredictedXYZ(victim,me:GetTurnTime(victim)*1000+client.latency+500)
+					me:Move(xyz)
+				else
+					me:Follow(victim)
+				end
+			end
+			sleep[2] = tick + 100
+			start = false
 		end
 	elseif victim then
 			if not resettime then
