@@ -104,7 +104,7 @@ function Main(tick)
 							table.insert(castQueue,{100,dagon,victim})
 						end	
 
-						if sheep and sheep:CanBeCasted() and me:CanCast() then
+						if sheep and sheep:CanBeCasted() and me:CanCast() and not linkens then
 							table.insert(castQueue,{(GetDistance2D(me,victim)/800)*1000,sheep,victim})
 						end
 						if me.mana < me.maxMana*0.5 and soulring and soulring:CanBeCasted() then
@@ -130,7 +130,7 @@ function Main(tick)
 								end
 							end
 							if dagon and ethereal and sheep and R and R:CanBeCasted() and me:CanCast() then
-								if dagon.cd ~= 0 and W.cd ~= 0 and ethereal.cd ~= 0 and sheep.cd ~= 0 and W.cd ~= 0 then
+								if dagon.cd ~= 0 and ethereal.cd ~= 0 and sheep.cd ~= 0 and W.cd ~= 0 then
 									table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R})
 									Sleep(1100+client.latency, "123")
 								end
