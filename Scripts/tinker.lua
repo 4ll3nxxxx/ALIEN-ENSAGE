@@ -60,8 +60,8 @@ function Main(tick)
 					local sphere = me:FindItem("item_sphere")
 					local soulring = me:FindItem("item_soul_ring")
 					local distance = GetDistance2D(victim,me)
-					local rearm = me:DoesHaveModifier("modifier_tinker_rearm") or me:IsChanneling()
-					local slowed = victim:DoesHaveModifier("modifier_item_ethereal_blade_ethereal")
+					local rearm = me:DoesHaveModifier("modifier_tinker_rearm") or me:IsChanneling() or victim:DoesHaveModifier("modifier_nyx_assassin_spiked_carapace")
+					local slow = victim:DoesHaveModifier("modifier_item_ethereal_blade_ethereal") 
 					if not rearm then
 						if blink and blink:CanBeCasted() and me:CanCast() and distance > attackRange and config.AUTOBLINK then
 							local CP = blink:FindCastPoint()
