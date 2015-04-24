@@ -93,7 +93,7 @@ function Main(tick)
 			victim = nil		
 		end
 		start = false
-	end 
+	end
 end
 
 function xyz1(victim,me,Q)

@@ -48,7 +48,7 @@ function Main(tick)
 		end
 		if not Animations.CanMove(me) and victim and GetDistance2D(me,victim) <= 2000 then
 			if tick > sleep[1] and SleepCheck("casting") then
-				if victim.hero and not Animations.isAttacking(me) then
+				if not Animations.isAttacking(me) then
 					local Q = me:GetAbility(1)
 					local R = me:GetAbility(4) 
 					local W = me:GetAbility(2)
