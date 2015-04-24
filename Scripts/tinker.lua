@@ -8,10 +8,11 @@ require("libs.Skillshot")
 
 local config = ScriptConfig.new()
 config:SetParameter("Hotkey", "32", config.TYPE_HOTKEY)
-config:SetParameter("AUTOBLINK", true)
+config:SetParameter("blink", true)
+config:SetParameter("rearm", true)
 config:Load()
 
-local play = false local myhero = nil local victim = nil local start = false local resettime = nil local sleep = {0,0} local castQueue = {}
+local play = false local myhero = nil local victim = nil local start = false local resettime = nil local sleep = {0,0,0} local castQueue = {}
 local rate = client.screenSize.x/1600 local rec = {}
 rec[1] = drawMgr:CreateRect(70*rate,26*rate,270*rate,60*rate,0xFFFFFF30,drawMgr:GetTextureId("NyanUI/other/CM_status_1")) rec[1].visible = false
 rec[2] = drawMgr:CreateText(175*rate,52*rate,0xFFFFFF90,"Target :",drawMgr:CreateFont("manabarsFont","Arial",18*rate,700)) rec[2].visible = false
@@ -56,14 +57,14 @@ function Main(tick)
 				ability = me:FindItem(ability)
 			end
 			if ability and me:SafeCastAbility(ability,v[3],false) then
-				sleeptick = tick + v[1]
+				sleep[1] = tick + v[1]
 				return
 			end
 		end
 
 		if not Animations.CanMove(me) and victim and GetDistance2D(me,victim) <= 2000 then
 			if not Animations.isAttacking(me) and victim.alive and victim.visible then
-				if tick > sleep[1] and SleepCheck("123") then
+				if tick > sleep[2] and SleepCheck("123") then
 					local Q = me:GetAbility(1)
 					local W = me:GetAbility(2)
 					local R = me:GetAbility(4)
@@ -74,10 +75,11 @@ function Main(tick)
 					local sphere = me:FindItem("item_sphere")
 					local soulring = me:FindItem("item_soul_ring")
 					local distance = GetDistance2D(victim,me)
+					local linkens = victim:IsLinkensProtected()
 					local Danger = me:DoesHaveModifier("modifier_tinker_rearm") or me:IsChanneling() or victim:DoesHaveModifier("modifier_nyx_assassin_spiked_carapace") or victim:DoesHaveModifier("modifier_item_blade_mail_reflect")
 					local slow = victim:DoesHaveModifier("modifier_item_ethereal_blade_slow") or victim:DoesHaveModifier("modifier_item_ethereal_blade_ethereal") 
 					if not Danger then
-						if blink and blink:CanBeCasted() and me:CanCast() and distance > attackRange and config.AUTOBLINK then
+						if blink and blink:CanBeCasted() and me:CanCast() and distance > attackRange and config.blink then
 							local CP = blink:FindCastPoint()
 							local delay = ((500-Animations.getDuration(R)*1000)+CP*1000+client.latency+me:GetTurnTime(victim)*1000)
 							local speed = blink:GetSpecialData("blink_range")
@@ -98,7 +100,7 @@ function Main(tick)
 							table.insert(castQueue,{(GetDistance2D(me,victim)/1200)*1000,ethereal,victim})
 						end
 
-						if dagon and dagon:CanBeCasted() and me:CanCast() then
+						if dagon and dagon:CanBeCasted() and me:CanCast() and not linkens then
 							table.insert(castQueue,{100,dagon,victim})
 						end	
 
@@ -108,18 +110,20 @@ function Main(tick)
 						if me.mana < me.maxMana*0.5 and soulring and soulring:CanBeCasted() then
 							me:CastAbility(soulring)
 						end
-						if (not sheep or sheep.cd > 0) and ((sheep and R.level < 3) or Q.cd > 0 or (dagon and dagon.cd > 0) or (ethereal and ethereal.cd > 0)) and R:CanBeCasted() then
-							table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R})
-							Sleep(1000, "123")
+						if config.rearm then
+							if (not sheep or sheep.cd > 0) and ((sheep and R.level < 3) or Q.cd > 0 or (dagon and dagon.cd > 0) or (ethereal and ethereal.cd > 0)) and R:CanBeCasted() then
+								table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R})
+								Sleep(2700, "123")
+							end
 						end
 					end
 					if not Danger and not slowed then
 						me:Attack(victim)
-						sleep[1] = tick + 100
+						sleep[2] = tick + 100
 					end
 				end
 			end
-		elseif tick > sleep[2] then
+		elseif tick > sleep[3] then
 			local rearm = me:DoesHaveModifier("modifier_tinker_rearm") or me:IsChanneling()
 			if victim and not rearm then
 				if victim.visible then
@@ -129,7 +133,7 @@ function Main(tick)
 					me:Follow(victim)
 				end
 			end
-			sleep[2] = tick + 100
+			sleep[3] = tick + 100
 			start = false
 		end
 	elseif victim then
