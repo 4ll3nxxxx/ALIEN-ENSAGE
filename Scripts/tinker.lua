@@ -109,6 +109,12 @@ function Main(tick)
 								Sleep(1100+client.latency, "123")
 							end
 						end
+						if dagon and not ethereal and sheep and R and R:CanBeCasted() and me:CanCast() then
+							if dagon.cd ~= 0 and sheep.cd ~= 0 and W.cd ~= 0 then
+								me:CastAbility(R)
+								Sleep(1100+client.latency, "123")
+							end
+						end
 						if dagon and ethereal and sheep and R and R:CanBeCasted() and me:CanCast() then
 							if dagon.cd ~= 0 and W.cd ~= 0 and ethereal.cd ~= 0 and sheep.cd ~= 0 and W.cd ~= 0 then
 								me:CastAbility(R)
