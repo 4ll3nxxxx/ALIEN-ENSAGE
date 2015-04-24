@@ -60,9 +60,9 @@ function Main(tick)
 					local sphere = me:FindItem("item_sphere")
 					local soulring = me:FindItem("item_soul_ring")
 					local distance = GetDistance2D(victim,me)
-					local rearm = me:DoesHaveModifier("modifier_tinker_rearm") or me:IsChanneling() or victim:DoesHaveModifier("modifier_nyx_assassin_spiked_carapace")
+					local Danger = me:DoesHaveModifier("modifier_tinker_rearm") or me:IsChanneling() or victim:DoesHaveModifier("modifier_nyx_assassin_spiked_carapace") or victim:DoesHaveModifier("modifier_item_blade_mail_reflect")
 					local slow = victim:DoesHaveModifier("modifier_item_ethereal_blade_ethereal") 
-					if not rearm then
+					if not Danger then
 						if blink and blink:CanBeCasted() and me:CanCast() and distance > attackRange and config.AUTOBLINK then
 							local CP = blink:FindCastPoint()
 							local delay = ((500-Animations.getDuration(R)*1000)+CP*1000+client.latency+me:GetTurnTime(victim)*1000)
@@ -122,7 +122,7 @@ function Main(tick)
 							end
 						end
 					end
-					if not rearm and not slowed then
+					if not Danger and not slowed then
 						me:Attack(victim)
 						sleep[1] = tick + 100
 					end
