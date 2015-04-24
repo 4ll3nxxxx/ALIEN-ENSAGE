@@ -60,10 +60,10 @@ function Main(tick)
 					local sphere = me:FindItem("item_sphere")
 					local soulring = me:FindItem("item_soul_ring")
 					local distance = GetDistance2D(victim,me)
-					local rearm = me:DoesHaveModifier("modifier_tinker_rearm")
+					local rearm = me:DoesHaveModifier("modifier_tinker_rearm") or me:IsChanneling()
 					local slowed = victim:DoesHaveModifier("modifier_item_ethereal_blade_ethereal")
 					if not rearm then
-						if blink and blink:CanBeCasted() and me:CanCast() and distance > attackRange and distance <= 1199 and config.AUTOBLINK then
+						if blink and blink:CanBeCasted() and me:CanCast() and distance > attackRange and config.AUTOBLINK then
 							local CP = blink:FindCastPoint()
 							local delay = ((500-Animations.getDuration(R)*1000)+CP*1000+client.latency+me:GetTurnTime(victim)*1000)
 							local speed = blink:GetSpecialData("blink_range")
@@ -129,7 +129,7 @@ function Main(tick)
 				end
 			end
 		elseif tick > sleep[2] then
-			local rearm = me:DoesHaveModifier("modifier_tinker_rearm")
+			local rearm = me:DoesHaveModifier("modifier_tinker_rearm") or me:IsChanneling()
 			if victim and not rearm then
 				if victim.visible then
 					local xyz = SkillShot.PredictedXYZ(victim,me:GetTurnTime(victim)*1000+client.latency+500)
