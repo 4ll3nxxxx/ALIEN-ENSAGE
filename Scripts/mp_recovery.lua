@@ -5,9 +5,9 @@ require("libs.Utils")
 require("libs.ScriptConfig")
 
 local config = ScriptConfig.new()
-config:SetParameter("Hotkey", "B", config.TYPE_HOTKEY)
-config:SetParameter("DropBlink", "J", config.TYPE_HOTKEY)
-config:SetParameter("DropTranquils", "N", config.TYPE_HOTKEY)
+config:SetParameter("Hotkey", "9", config.TYPE_HOTKEY)
+config:SetParameter("DropBlink", "115", config.TYPE_HOTKEY)
+config:SetParameter("DropTranquils", "116", config.TYPE_HOTKEY)
 config:Load()
 
 local play = false local active = false local activated = false local disableAutoAttack = false local treads_laststate
@@ -28,10 +28,10 @@ function Key(msg,code)
 		end
 	end	
 	if msg == KEY_UP then
-		if code == toggleKey then
+		if code == config.Hotkey then
 			PickUpItems(me,mp)
 		end
-		if code == dropblink then
+		if code == config.DropBlink then
 			PickUpItems(me,mp)
 		end
 		if code == config.DropTranquils then
