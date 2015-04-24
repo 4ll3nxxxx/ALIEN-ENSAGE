@@ -111,9 +111,29 @@ function Main(tick)
 							me:CastAbility(soulring)
 						end
 						if config.rearm then
-							if (not sheep or sheep.cd > 0) and ((sheep and R.level < 3) or Q.cd > 0 or (dagon and dagon.cd > 0) or (ethereal and ethereal.cd > 0)) and R:CanBeCasted() then
-								table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R})
-								Sleep(2700, "123")
+							if dagon and not ethereal and not sheep and R and R:CanBeCasted() and me:CanCast() then
+								if dagon.cd ~= 0 and W.cd ~= 0 then
+									table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R})
+									Sleep(1100+client.latency, "123")
+								end
+							end
+							if dagon and ethereal and not sheep and R and R:CanBeCasted() and me:CanCast() then
+								if dagon.cd ~= 0 and ethereal.cd ~= 0 and W.cd ~= 0 then
+									table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R})
+									Sleep(1100+client.latency, "123")
+								end
+							end
+							if dagon and not ethereal and sheep and R and R:CanBeCasted() and me:CanCast() then
+								if dagon.cd ~= 0 and sheep.cd ~= 0 and W.cd ~= 0 then
+									table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R})
+									Sleep(1100+client.latency, "123")
+								end
+							end
+							if dagon and ethereal and sheep and R and R:CanBeCasted() and me:CanCast() then
+								if dagon.cd ~= 0 and W.cd ~= 0 and ethereal.cd ~= 0 and sheep.cd ~= 0 and W.cd ~= 0 then
+									table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R})
+									Sleep(1100+client.latency, "123")
+								end
 							end
 						end
 					end
