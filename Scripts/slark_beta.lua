@@ -58,21 +58,50 @@ function Main(tick)
 				end
 			end
 		end
-		if not Animations.CanMove(me) and victim and victim.alive and GetDistance2D(me,victim) <= 2000 then
+		if not Animations.CanMove(me) and victim and GetDistance2D(me,victim) <= 2000 then
 			if tick > sleep[1] then
-				if not Animations.isAttacking(me) then
+				if not Animations.isAttacking(me) and victim.alive and victim.visible then
+					local disable = victim:IsSilenced() or victim:IsHexed() or victim:IsStunned() or victim:IsLinkensProtected()
+					local abyssal = me:FindItem("item_abyssal_blade")
+					local butterfly = me:FindItem("item_butterfly")
+					local mom = me:FindItem("item_mask_of_madness")
+					local satanic = me:FindItem("item_satanic")
+					local BlackKingBar = me:FindItem("item_black_king_bar")
 					local Q = me:GetAbility(1)
 					local W = me:GetAbility(2) 
-					local disable = victim:IsSilenced() or victim:IsHexed() or victim:IsStunned() or victim:IsLinkensProtected()
-					if Q and Q:CanBeCasted() and GetDistance2D(me,victim) <= 325 then
+					local distance = GetDistance2D(victim,me)	
+					if Q and Q:CanBeCasted() and distance <= 325 and me:CanCast() then
 						table.insert(castQueue,{100,Q})
 					end
-					if W and W:CanBeCasted() and GetDistance2D(me,victim) <= 500 then
-						table.insert(castQueue,{100,W})
+					if W and W:CanBeCasted() and me:CanCast() and distance <= 490  then
+						table.insert(castQueue,{1000+math.ceil(W:FindCastPoint()*1000),W})
+					end
+					if abyssal and abyssal:CanBeCasted() and distance <= abyssal.castRange and not disable then
+						table.insert(castQueue,{math.ceil(abyssal:FindCastPoint()*1000),abyssal,victim})
+					end
+					if butterfly and butterfly:CanBeCasted() and me:CanCast() then
+						table.insert(castQueue,{100,butterfly})
+					end
+					if mom and mom:CanBeCasted() and distance <= me.attackRange then
+						table.insert(castQueue,{100,mom})
+					end
+					if satanic and satanic:CanBeCasted() and me.health/me.maxHealth <= 0.4 and distance <= me.attackRange then
+						table.insert(castQueue,{100,satanic})
+					end
+					if BlackKingBar and BlackKingBar:CanBeCasted() and me:CanCast() then
+						local heroes = entityList:GetEntities(function (v) return v.type==LuaEntity.TYPE_HERO and v.alive and v.visible and v.team~=me.team and me:GetDistance2D(v) <= 1200 end)
+						if #heroes == 3 then
+							table.insert(castQueue,{100,BlackKingBar})
+						elseif #heroes == 4 then
+							table.insert(castQueue,{100,BlackKingBar})
+						elseif #heroes == 5 then
+							table.insert(castQueue,{100,BlackKingBar})
+							return
+						end
 					end
 				end
 				if GetDistance2D(victim,me) > me.attackRange+100 then
-					local xyz = SkillShot.PredictedXYZ(victim,me:GetTurnTime(victim)*100+client.latency+300)
+					local xyz = SkillShot.PredictedXYZ(victim,me:GetTurnTime(victim)*100+client.latency+400)
 					me:Move(xyz)
 				else
 					me:Attack(victim)
@@ -80,22 +109,22 @@ function Main(tick)
 				sleep[1] = tick + 100
 			end
 		elseif tick > sleep[2] then
-			if victim then
-				if victim.visible then
-					me:Follow(victim)
-				end
+			local mPos = client.mousePosition
+			if (not victim or GetDistance2D(me,mPos) > 300) or (victim and GetDistance2D(me,victim) < GetDistance2D(victim,mPos)) then
+				me:Move(mPos)
 			end
 			sleep[2] = tick + 100
 			start = false
 		end
-	elseif victim then
-			if not resettime then
+	elseif victim and victim.alive then
+		if not resettime then
 			resettime = client.gameTime
 		elseif (client.gameTime - resettime) >= 6 then
-			victim = nil		
+			victim = nil
+			resettime = nil					
 		end
 		start = false
-	end 
+	end
 end
 
 function Load()
