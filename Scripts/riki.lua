@@ -9,8 +9,8 @@ local config = ScriptConfig.new()
 config:SetParameter("Hotkey", "32", config.TYPE_HOTKEY)
 config:Load()
 
-local play = false local myhero = nil local victim = nil local start = false local resettime = nil local sleep = {0,0}
-local rate = client.screenSize.x/1600 local rec = {}
+local play = false local myhero = nil local victim = nil local start = false local resettime = nil local sleep = {0,0,0}
+local rate = client.screenSize.x/1600 local rec = {} local castQueue = {}
 rec[1] = drawMgr:CreateRect(70*rate,26*rate,270*rate,60*rate,0xFFFFFF30,drawMgr:GetTextureId("NyanUI/other/CM_status_1")) rec[1].visible = false
 rec[2] = drawMgr:CreateText(175*rate,52*rate,0xFFFFFF90,"Target :",drawMgr:CreateFont("manabarsFont","Arial",18*rate,700)) rec[2].visible = false
 rec[3] = drawMgr:CreateRect(220*rate,54*rate,16*rate,16*rate,0xFFFFFF30) rec[3].visible = false
@@ -26,6 +26,22 @@ function Main(tick)
 		end
 	else
 		rec[3].textureId = drawMgr:GetTextureId("NyanUI/spellicons/doom_bringer_empty1")
+	end
+
+	for i=1,#castQueue,1 do
+		local v = castQueue[1]
+		table.remove(castQueue,1)
+		local ability = v[2]
+		if type(ability) == "string" then
+			ability = me:FindItem(ability)
+		end
+		if ability and ((me:SafeCastAbility(ability,v[3],false)) or (v[4] and ability:CanBeCasted())) then
+			if v[4] and ability:CanBeCasted() then
+				me:CastAbility(ability,v[3],false)
+			end
+			sleep[3] = tick + v[1] + client.latency
+			return
+		end
 	end
 
 	local attackRange = me.attackRange	
@@ -46,7 +62,7 @@ function Main(tick)
 			end
 		end
 		if not Animations.CanMove(me) and victim and GetDistance2D(me,victim) <= 2000 then
-			if tick > sleep[1] and SleepCheck("casting") then
+			if tick > sleep[1] then
 				if not Animations.isAttacking(me) then
 					local Q = me:GetAbility(1)
 					local R = me:GetAbility(4)
@@ -61,49 +77,39 @@ function Main(tick)
 					local silence = victim:IsSilenced()
 					if Q and Q:CanBeCasted() and me:CanCast() then
 						local CP = Q:FindCastPoint()
-						local delay = ((550-Animations.getDuration(Q)*1000)+CP*1000+client.latency+me:GetTurnTime(victim)*1000)
+						local delay = ((300-Animations.getDuration(Q)*1000)+CP*1000+client.latency+me:GetTurnTime(victim)*1000)
 						local speed = 1400
 						local xyz = SkillShot.SkillShotXYZ(me,victim,delay,speed)
 						if xyz and distance <= 550 then 
-							me:CastAbility(Q,xyz)
-							Sleep(CP*1000+me:GetTurnTime(victim)*1000, "Zzz")
+							table.insert(castQueue,{math.ceil(Q:FindCastPoint()*1000),Q,xyz})
 						end
 					end
 					if R and R:CanBeCasted() and me:CanCast() and distance > me.attackRange+350 and not R.abilityPhase then
-						me:CastAbility(R,victim)
-						Sleep(me:GetTurnTime(victim)*1000, "Zzz")
+						table.insert(castQueue,{math.ceil(R:FindCastPoint()*1000),R,victim})
 					end
 					if diffusal and diffusal:CanBeCasted() and distance <= diffusal.castRange and not disable then
-						me:CastAbility(diffusal,victim)
-						Sleep(me:GetTurnTime(victim)*1000, "Zzz")
+						table.insert(castQueue,{math.ceil(diffusal:FindCastPoint()*1000),diffusal,victim})
 					end
 					if abyssal and abyssal:CanBeCasted() and distance <= abyssal.castRange and not disable and not silence then
-						me:CastAbility(abyssal,victim)
-						Sleep(me:GetTurnTime(victim)*1000, "Zzz")
+						table.insert(castQueue,{math.ceil(abyssal:FindCastPoint()*1000),abyssal,victim})
 					end
 					if butterfly and butterfly:CanBeCasted() then
-						me:CastAbility(butterfly)
-						Sleep(me:GetTurnTime(victim)*1000, "Zzz")
+						table.insert(castQueue,{100,butterfly})
 					end
 					if mom and mom:CanBeCasted() and distance <= me.attackRange then
-						me:CastAbility(mom)
-						Sleep(me:GetTurnTime(victim)*1000, "Zzz")
+						table.insert(castQueue,{100,mom})
 					end
 					if satanic and satanic:CanBeCasted() and me.health/me.maxHealth <= 0.4 and distance <= me.attackRange then
-						me:CastAbility(satanic)
-						Sleep(me:GetTurnTime(victim)*1000, "Zzz")
+						table.insert(castQueue,{100,satanic})
 					end
 					if BlackKingBar and BlackKingBar:CanBeCasted() then
 						local heroes = entityList:GetEntities(function (v) return v.type==LuaEntity.TYPE_HERO and v.alive and v.visible and v.team~=me.team and me:GetDistance2D(v) <= 1200 end)
 						if #heroes == 3 then
-							me:CastAbility(BlackKingBar)
-							Sleep(client.latency,"Zzz")
+							table.insert(castQueue,{100,BlackKingBar})
 						elseif #heroes == 4 then
-							me:CastAbility(BlackKingBar)
-							Sleep(client.latency,"Zzz")
+							table.insert(castQueue,{100,BlackKingBar})
 						elseif #heroes == 5 then
-							me:CastAbility(BlackKingBar)
-							Sleep(client.latency,"Zzz")
+							table.insert(castQueue,{100,BlackKingBar})
 							return
 						end
 					end
@@ -158,9 +164,9 @@ function Close()
 	victim = nil
 	start = false
 	resettime = nil
-	for i = 1, #rec do
-		rec[i].visible = false
-	end
+	rec[1].visible = false
+	rec[2].visible = false
+	rec[3].visible = false
 	if play then
 		script:UnregisterEvent(Main)
 		script:RegisterEvent(EVENT_TICK,Load)
