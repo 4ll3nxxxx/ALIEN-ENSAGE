@@ -67,7 +67,7 @@ function Main(tick)
 						if euls and euls:CanBeCasted() then
 							if GetDistance2D(victim,me) <= 600 and W and W:CanBeCasted() then
 								table.insert(castQueue,{math.ceil(euls:FindCastPoint()*1000),euls,victim,true})
-								sleep[1] = tick + 1700
+								sleep[1] = tick + 1650
 							end
 						end
 						if W and W:CanBeCasted() and euls.cd ~= 0 then
