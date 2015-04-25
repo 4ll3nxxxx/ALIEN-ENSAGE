@@ -59,7 +59,7 @@ function Main(tick)
 				if v[4] and ability:CanBeCasted() then
 					me:CastAbility(ability,v[3],false)
 				end
-				sleeptick = tick + v[1] + client.latency
+				sleep[1] = tick + v[1] + client.latency
 				return
 			end
 		end
@@ -73,7 +73,6 @@ function Main(tick)
 					local ethereal = me:FindItem("item_ethereal_blade")
 					local dagon = me:FindDagon()
 					local shiva = me:FindItem("item_shivas_guard")
-					local sphere = me:FindItem("item_sphere")
 					local soulring = me:FindItem("item_soul_ring")
 					local distance = GetDistance2D(victim,me)
 					local linkens = victim:IsLinkensProtected()
@@ -94,7 +93,7 @@ function Main(tick)
 							table.insert(castQueue,{100,W})
 						end
 						if Q and Q:CanBeCasted() and me:CanCast() then 
-							table.insert(castQueue,{math.ceil(Q:FindCastPoint()*1000),Q,victim})
+							table.insert(castQueue,{math.ceil(Q:FindCastPoint()*1000),Q,victim,true})
 						end
 						if me.mana < me.maxMana*0.5 and soulring and soulring:CanBeCasted() then
 							table.insert(castQueue,{100,soulring})
