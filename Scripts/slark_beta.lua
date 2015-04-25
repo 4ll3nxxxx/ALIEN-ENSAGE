@@ -3,7 +3,6 @@
 require("libs.ScriptConfig")
 require("libs.Utils")
 require("libs.TargetFind")
-require("libs.Animations")
 require("libs.Skillshot")
 
 local config = ScriptConfig.new()
@@ -59,29 +58,26 @@ function Main(tick)
 				end
 			end
 		end
-		if not Animations.CanMove(me) and victim and GetDistance2D(me,victim) <= 2000 then
-			if tick > sleep[1] then
-				if not Animations.isAttacking(me) then
-					local Q = me:GetAbility(1)
-					local W = me:GetAbility(2) 
-					local distance = GetDistance2D(victim,me)
-					local disable = victim:IsSilenced() or victim:IsHexed() or victim:IsStunned() or victim:IsLinkensProtected()
-					if Q and Q:CanBeCasted() and distance <= 325 then
-						table.insert(castQueue,{100,Q})
-					end
-					if W and W:CanBeCasted() and distance <= 500 then
-						table.insert(castQueue,{100,W})
-					end
+		if tick > sleep[1] then
+			if victim and GetDistance2D(me,victim) <= 2000 then
+				local Q = me:GetAbility(1)
+				local W = me:GetAbility(2) 
+				local disable = victim:IsSilenced() or victim:IsHexed() or victim:IsStunned() or victim:IsLinkensProtected()
+				if Q and Q:CanBeCasted() and GetDistance2D(me,victim) <= 325 then
+					table.insert(castQueue,{100,Q})
 				end
-				if GetDistance2D(victim,me) > me.attackRange+100 then
-					local xyz = SkillShot.PredictedXYZ(victim,me:GetTurnTime(victim)*100+client.latency+300)
-					me:Move(xyz)
-				else
-					me:Attack(victim)
+				if W and W:CanBeCasted() and GetDistance2D(me,victim) <= 500 then
+					table.insert(castQueue,{100,W})
 				end
-				sleep[1] = tick + 100
-				start = false
 			end
+			if GetDistance2D(victim,me) > me.attackRange+100 then
+				local xyz = SkillShot.PredictedXYZ(victim,me:GetTurnTime(victim)*100+client.latency+300)
+				me:Move(xyz)
+			else
+				me:Attack(victim)
+			end
+			sleep[1] = tick + 100
+			start = false
 		end
 	elseif victim then
 			if not resettime then
