@@ -11,7 +11,7 @@ config:SetParameter("Hotkey", "32", config.TYPE_HOTKEY)
 config:SetParameter("lasthit", "D", config.TYPE_HOTKEY)
 config:Load()
 
-local play = false local myhero = nil local victim = nil local start = false local resettime = nil local dmg = {60,100,140,180} local sleep = {0,0}
+local play = false local myhero = nil local victim = nil local start = false local resettime = nil local dmg = {60,100,140,180} local sleep = {0,0,0}
 local rate = client.screenSize.x/1600 local rec = {} local castQueue = {}
 rec[1] = drawMgr:CreateRect(70*rate,26*rate,270*rate,60*rate,0xFFFFFF30,drawMgr:GetTextureId("NyanUI/other/CM_status_1")) rec[1].visible = false
 rec[2] = drawMgr:CreateText(175*rate,52*rate,0xFFFFFF90,"Target :",drawMgr:CreateFont("manabarsFont","Arial",18*rate,700)) rec[2].visible = false
@@ -65,11 +65,8 @@ function Main(tick)
 			if type(ability) == "string" then
 				ability = me:FindItem(ability)
 			end
-			if ability and ((me:SafeCastAbility(ability,v[3],false)) or (v[4] and ability:CanBeCasted())) then
-				if v[4] and ability:CanBeCasted() then
-					me:CastAbility(ability,v[3],false)
-				end
-				sleep[1] = tick + v[1] + client.latency
+			if ability and me:SafeCastAbility(ability,v[3],false) then
+				sleep[3] = tick + v[1]
 				return
 			end
 		end
