@@ -66,9 +66,7 @@ function Main(tick)
 		if not Animations.CanMove(me) and victim and GetDistance2D(me,victim) <= 2000 then
 			if not Animations.isAttacking(me) and victim.alive and victim.visible then
 				if tick > sleep[2] and SleepCheck("123") then
-					local Q = me:GetAbility(1)
-					local W = me:GetAbility(2)
-					local R = me:GetAbility(4)
+					local rearm = me:DoesHaveModifier("modifier_tinker_rearm")
 					local blink = me:FindItem("item_blink")
 					local sheep = me:FindItem("item_sheepstick")
 					local ethereal = me:FindItem("item_ethereal_blade")
@@ -78,7 +76,9 @@ function Main(tick)
 					local soulring = me:FindItem("item_soul_ring")
 					local distance = GetDistance2D(victim,me)
 					local linkens = victim:IsLinkensProtected()
-					local rearm = me:DoesHaveModifier("modifier_tinker_rearm")
+					local Q = me:GetAbility(1)
+					local W = me:GetAbility(2)
+					local R = me:GetAbility(4)
 					if not rearm then
 						if blink and blink:CanBeCasted() and me:CanCast() and distance > attackRange and config.blink then
 							local CP = blink:FindCastPoint()
