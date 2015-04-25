@@ -80,15 +80,8 @@ function Main(tick)
 					me:Attack(victim)
 				end
 				sleep[1] = tick + 100
+				start = false
 			end
-		elseif tick > sleep[2] then
-			if victim then
-				if victim.visible then
-					me:Follow(victim)
-				end
-			end
-			sleep[2] = tick + 100
-			start = false
 		end
 	elseif victim then
 			if not resettime then
