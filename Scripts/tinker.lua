@@ -7,13 +7,13 @@ require("libs.Animations")
 require("libs.Skillshot")
 
 local config = ScriptConfig.new()
-config:SetParameter("Hotkey", "32", config.TYPE_HOTKEY)
+config:SetParameter("hotkey", "32", config.TYPE_HOTKEY)
 config:SetParameter("blink", true)
 config:SetParameter("rearm", true)
 config:Load()
 
-local play = false local myhero = nil local victim = nil local start = false local resettime = nil local sleep = {0,0,0} local castQueue = {}
-local rate = client.screenSize.x/1600 local rec = {}
+local play = false local myhero = nil local victim = nil local start = false local resettime = nil local sleep = {0,0,0}
+local rate = client.screenSize.x/1600 local rec = {} local castQueue = {}
 rec[1] = drawMgr:CreateRect(70*rate,26*rate,270*rate,60*rate,0xFFFFFF30,drawMgr:GetTextureId("NyanUI/other/CM_status_1")) rec[1].visible = false
 rec[2] = drawMgr:CreateText(175*rate,52*rate,0xFFFFFF90,"Target :",drawMgr:CreateFont("manabarsFont","Arial",18*rate,700)) rec[2].visible = false
 rec[3] = drawMgr:CreateRect(220*rate,54*rate,16*rate,16*rate,0xFFFFFF30) rec[3].visible = false
@@ -33,7 +33,7 @@ function Main(tick)
 
 	local attackRange = me.attackRange	
 
-	if IsKeyDown(config.Hotkey) and not client.chat then	
+	if IsKeyDown(config.hotkey) and not client.chat then	
 		if Animations.CanMove(me) or not start or (victim and GetDistance2D(victim,me) > attackRange+50) then
 			start = true
 			local lowestHP = targetFind:GetLowestEHP(3000, phys)

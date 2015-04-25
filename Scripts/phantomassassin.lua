@@ -12,7 +12,7 @@ config:SetParameter("lasthit", "D", config.TYPE_HOTKEY)
 config:Load()
 
 local play = false local myhero = nil local victim = nil local start = false local resettime = nil local dmg = {60,100,140,180} local sleep = {0,0}
-local rate = client.screenSize.x/1600 local rec = {}
+local rate = client.screenSize.x/1600 local rec = {} local castQueue = {}
 rec[1] = drawMgr:CreateRect(70*rate,26*rate,270*rate,60*rate,0xFFFFFF30,drawMgr:GetTextureId("NyanUI/other/CM_status_1")) rec[1].visible = false
 rec[2] = drawMgr:CreateText(175*rate,52*rate,0xFFFFFF90,"Target :",drawMgr:CreateFont("manabarsFont","Arial",18*rate,700)) rec[2].visible = false
 rec[3] = drawMgr:CreateRect(220*rate,54*rate,16*rate,16*rate,0xFFFFFF30) rec[3].visible = false
@@ -58,8 +58,23 @@ function Main(tick)
 				end
 			end
 		end
+		for i=1,#castQueue,1 do
+			local v = castQueue[1]
+			table.remove(castQueue,1)
+			local ability = v[2]
+			if type(ability) == "string" then
+				ability = me:FindItem(ability)
+			end
+			if ability and ((me:SafeCastAbility(ability,v[3],false)) or (v[4] and ability:CanBeCasted())) then
+				if v[4] and ability:CanBeCasted() then
+					me:CastAbility(ability,v[3],false)
+				end
+				sleep[1] = tick + v[1] + client.latency
+				return
+			end
+		end
 		if not Animations.CanMove(me) and victim and victim.alive and GetDistance2D(me,victim) <= 2000 then
-			if tick > sleep[1] and SleepCheck("casting") then
+			if tick > sleep[1] then
 				if not Animations.isAttacking(me) then
 					local Q = me:GetAbility(1) local W = me:GetAbility(2)
 					local medallion = me:FindItem("item_medallion_of_courage")
@@ -68,46 +83,37 @@ function Main(tick)
 					local mom = me:FindItem("item_mask_of_madness")
 					local satanic = me:FindItem("item_satanic")
 					local BlackKingBar = me:FindItem("item_black_king_bar")
+					local distance = GetDistance2D(victim,me)
 					local disable = victim:IsSilenced() or victim:IsHexed() or victim:IsStunned() or victim:IsLinkensProtected()
 					if Q and Q:CanBeCasted() and GetDistance2D(victim,me) <= Q.castRange then
-						me:CastAbility(Q,victim)
-						Sleep(me:GetTurnTime(victim)*1000, "casting")
+						table.insert(castQueue,{math.ceil(Q:FindCastPoint()*1000),Q,victim,true})
 					end
-					if W and W:CanBeCasted() and GetDistance2D(victim,me) <= W.castRange then
-						me:CastAbility(W,victim)
-						Sleep(me:GetTurnTime(victim)*1000, "casting")
+					if W and W:CanBeCasted() and me:CanCast() then
+						table.insert(castQueue,{math.ceil(W:FindCastPoint()*1000),W,victim})
 					end
-					if medallion and medallion:CanBeCasted() and GetDistance2D(victim,me) <= me.attackRange then
-						me:CastAbility(medallion,victim)
-						Sleep(me:GetTurnTime(victim)*1000, "casting")
+					if medallion and medallion:CanBeCasted() and distance <= me.attackRange then
+						table.insert(castQueue,{math.ceil(medallion:FindCastPoint()*1000),medallion,victim})
 					end
-					if abyssal and abyssal:CanBeCasted() and GetDistance2D(victim,me) <= abyssal.castRange and not disable then
-						me:CastAbility(abyssal,victim)
-						Sleep(me:GetTurnTime(victim)*1000, "casting")
+					if abyssal and abyssal:CanBeCasted() and distance <= abyssal.castRange and not disable then
+						table.insert(castQueue,{math.ceil(abyssal:FindCastPoint()*1000),abyssal,victim})
 					end
-					if butterfly and butterfly:CanBeCasted() then
-						me:CastAbility(butterfly)
-						Sleep(me:GetTurnTime(victim)*1000, "casting")
+					if butterfly and butterfly:CanBeCasted() and me:CanCast() then
+						table.insert(castQueue,{100,butterfly})
 					end
-					if mom and mom:CanBeCasted() and GetDistance2D(victim,me) <= me.attackRange then
-						me:CastAbility(mom)
-						Sleep(me:GetTurnTime(victim)*1000, "casting")
+					if mom and mom:CanBeCasted() and distance <= me.attackRange then
+						table.insert(castQueue,{100,mom})
 					end
-					if satanic and satanic:CanBeCasted() and me.health/me.maxHealth <= 0.4 and GetDistance2D(victim,me) <= me.attackRange then
-						me:CastAbility(satanic)
-						Sleep(me:GetTurnTime(victim)*1000, "casting")
+					if satanic and satanic:CanBeCasted() and me.health/me.maxHealth <= 0.4 and distance <= me.attackRange then
+						table.insert(castQueue,{100,satanic})
 					end
-					if BlackKingBar and BlackKingBar:CanBeCasted() then
+					if BlackKingBar and BlackKingBar:CanBeCasted() and me:CanCast() then
 						local heroes = entityList:GetEntities(function (v) return v.type==LuaEntity.TYPE_HERO and v.alive and v.visible and v.team~=me.team and me:GetDistance2D(v) <= 1200 end)
 						if #heroes == 3 then
-							me:CastAbility(BlackKingBar)
-							Sleep(client.latency,"casting")
+							table.insert(castQueue,{100,BlackKingBar})
 						elseif #heroes == 4 then
-							me:CastAbility(BlackKingBar)
-							Sleep(client.latency,"casting")
+							table.insert(castQueue,{100,BlackKingBar})
 						elseif #heroes == 5 then
-							me:CastAbility(BlackKingBar)
-							Sleep(client.latency,"casting")
+							table.insert(castQueue,{100,BlackKingBar})
 							return
 						end
 					end
