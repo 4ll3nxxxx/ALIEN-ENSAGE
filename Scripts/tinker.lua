@@ -31,6 +31,22 @@ function Main(tick)
 		rec[3].textureId = drawMgr:GetTextureId("NyanUI/spellicons/doom_bringer_empty1")
 	end
 
+	for i=1,#castQueue,1 do
+		local v = castQueue[1]
+		table.remove(castQueue,1)
+		local ability = v[2]
+		if type(ability) == "string" then
+			ability = me:FindItem(ability)
+		end
+		if ability and ((me:SafeCastAbility(ability,v[3],false)) or (v[4] and ability:CanBeCasted())) then
+			if v[4] and ability:CanBeCasted() then
+				me:CastAbility(ability,v[3],false)
+			end
+			sleep[1] = tick + v[1] + client.latency
+			return
+		end
+	end
+
 	local attackRange = me.attackRange	
 
 	if IsKeyDown(config.hotkey) and not client.chat then	
@@ -46,21 +62,6 @@ function Main(tick)
 				if closest and (not victim or closest.handle ~= victim.handle) then 
 					victim = closest
 				end
-			end
-		end
-		for i=1,#castQueue,1 do
-			local v = castQueue[1]
-			table.remove(castQueue,1)
-			local ability = v[2]
-			if type(ability) == "string" then
-				ability = me:FindItem(ability)
-			end
-			if ability and ((me:SafeCastAbility(ability,v[3],false)) or (v[4] and ability:CanBeCasted())) then
-				if v[4] and ability:CanBeCasted() then
-					me:CastAbility(ability,v[3],false)
-				end
-				sleep[1] = tick + v[1] + client.latency
-				return
 			end
 		end
 		if not Animations.CanMove(me) and victim and GetDistance2D(me,victim) <= 2000 then

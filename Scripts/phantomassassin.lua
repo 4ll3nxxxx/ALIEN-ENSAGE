@@ -22,17 +22,6 @@ function Main(tick)
 	local me = entityList:GetMyHero()
 	local ID = me.classId if ID ~= myhero then return end
 
-	if IsKeyDown(config.lasthit) and not client.chat then
-		local Q = me:GetAbility(1)
-		local creeps = entityList:FindEntities({classId=CDOTA_BaseNPC_Creep_Lane,team=TEAM_ENEMY,alive=true,visible=true,team = me:GetEnemyTeam()})
-		for i,v in ipairs(creeps) do
-			if SleepCheck("lasthit") and Q and Q:CanBeCasted() and (v.health > 0 and v.health < dmg[Q.level]) and GetDistance2D(v,me) <= Q.castRange then
-				me:CastAbility(Q,v)
-				Sleep(150+client.latency, "lasthit")
-			end
-		end
-	end
-
 	local attackRange = me.attackRange	
 
 	if victim and victim.visible then
@@ -41,6 +30,29 @@ function Main(tick)
 		end
 	else
 		rec[3].textureId = drawMgr:GetTextureId("NyanUI/spellicons/doom_bringer_empty1")
+	end
+	
+	for i=1,#castQueue,1 do
+		local v = castQueue[1]
+		table.remove(castQueue,1)
+		local ability = v[2]
+		if type(ability) == "string" then
+			ability = me:FindItem(ability)
+		end
+		if ability and me:SafeCastAbility(ability,v[3],false) then
+			sleep[3] = tick + v[1]
+			return
+		end
+	end
+
+	if IsKeyDown(config.lasthit) and not client.chat then
+		local Q = me:GetAbility(1)
+		local creeps = entityList:FindEntities({classId=CDOTA_BaseNPC_Creep_Lane,team=TEAM_ENEMY,alive=true,visible=true,team = me:GetEnemyTeam()})
+		for i,v in ipairs(creeps) do
+			if Q and Q:CanBeCasted() and (v.health > 0 and v.health < dmg[Q.level]) and GetDistance2D(v,me) <= Q.castRange then
+				table.insert(castQueue,{math.ceil(Q:FindCastPoint()*1000),Q,v})
+			end
+		end
 	end
 
 	if IsKeyDown(config.Hotkey) and not client.chat then	
@@ -56,18 +68,6 @@ function Main(tick)
 				if closest and (not victim or closest.handle ~= victim.handle) then 
 					victim = closest
 				end
-			end
-		end
-		for i=1,#castQueue,1 do
-			local v = castQueue[1]
-			table.remove(castQueue,1)
-			local ability = v[2]
-			if type(ability) == "string" then
-				ability = me:FindItem(ability)
-			end
-			if ability and me:SafeCastAbility(ability,v[3],false) then
-				sleep[3] = tick + v[1]
-				return
 			end
 		end
 		if not Animations.CanMove(me) and victim and victim.alive and GetDistance2D(me,victim) <= 2000 then
