@@ -116,15 +116,14 @@ function Main(tick)
 			sleep[2] = tick + 100
 			start = false
 		end
-	elseif victim and victim.alive then
-		if not resettime then
+	elseif victim then
+			if not resettime then
 			resettime = client.gameTime
-		elseif (client.gameTime - resettime) >= 6 then
-			victim = nil
-			resettime = nil					
+		elseif (client.gameTime - resettime) >= 2 then
+			victim = nil		
 		end
 		start = false
-	end
+	end 
 end
 
 function Load()
