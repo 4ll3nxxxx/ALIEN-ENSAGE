@@ -75,7 +75,6 @@ function Main(tick)
 					local shiva = me:FindItem("item_shivas_guard")
 					local soulring = me:FindItem("item_soul_ring")
 					local distance = GetDistance2D(victim,me)
-					local linkens = victim:IsLinkensProtected()
 					local Q = me:GetAbility(1)
 					local W = me:GetAbility(2)
 					local R = me:GetAbility(4)
@@ -101,16 +100,14 @@ function Main(tick)
 						if shiva and shiva:CanBeCasted() and distance <= 600 then
 							table.insert(castQueue,{100,shiva})
 						end
-						if not linkens then
-							if sheep and sheep:CanBeCasted() and me:CanCast() then
-								table.insert(castQueue,{math.ceil(sheep:FindCastPoint()*1000),sheep,victim})
-							end
-							if dagon and dagon:CanBeCasted() and me:CanCast() then 
-								table.insert(castQueue,{math.ceil(dagon:FindCastPoint()*1000),dagon,victim})
-							end
-							if ethereal and ethereal:CanBeCasted() and me:CanCast() then
-								table.insert(castQueue,{math.ceil(ethereal:FindCastPoint()*1000),ethereal,victim,true})
-							end
+						if sheep and sheep:CanBeCasted() and me:CanCast() then
+							table.insert(castQueue,{math.ceil(sheep:FindCastPoint()*1000),sheep,victim})
+						end
+						if dagon and dagon:CanBeCasted() and me:CanCast() then 
+							table.insert(castQueue,{math.ceil(dagon:FindCastPoint()*1000),dagon,victim})
+						end
+						if ethereal and ethereal:CanBeCasted() and me:CanCast() then
+							table.insert(castQueue,{math.ceil(ethereal:FindCastPoint()*1000),ethereal,victim})
 						end
 						if config.rearm then
 							if dagon and not ethereal and not sheep and R and R:CanBeCasted() and me:CanCast() then
