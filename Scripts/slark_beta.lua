@@ -58,31 +58,40 @@ function Main(tick)
 				end
 			end
 		end
-		if tick > sleep[1] then
-			if victim and GetDistance2D(me,victim) <= 2000 then
-				local Q = me:GetAbility(1)
-				local W = me:GetAbility(2) 
-				local disable = victim:IsSilenced() or victim:IsHexed() or victim:IsStunned() or victim:IsLinkensProtected()
-				if Q and Q:CanBeCasted() and GetDistance2D(me,victim) <= 325 then
-					table.insert(castQueue,{100,Q})
+		if not Animations.CanMove(me) and victim and victim.alive and GetDistance2D(me,victim) <= 2000 then
+			if tick > sleep[1] then
+				if not Animations.isAttacking(me) then
+					local Q = me:GetAbility(1)
+					local W = me:GetAbility(2) 
+					local disable = victim:IsSilenced() or victim:IsHexed() or victim:IsStunned() or victim:IsLinkensProtected()
+					if Q and Q:CanBeCasted() and GetDistance2D(me,victim) <= 325 then
+						table.insert(castQueue,{100,Q})
+					end
+					if W and W:CanBeCasted() and GetDistance2D(me,victim) <= 500 then
+						table.insert(castQueue,{100,W})
+					end
 				end
-				if W and W:CanBeCasted() and GetDistance2D(me,victim) <= 500 then
-					table.insert(castQueue,{100,W})
+				if GetDistance2D(victim,me) > me.attackRange+100 then
+					local xyz = SkillShot.PredictedXYZ(victim,me:GetTurnTime(victim)*100+client.latency+300)
+					me:Move(xyz)
+				else
+					me:Attack(victim)
+				end
+				sleep[1] = tick + 100
+			end
+		elseif tick > sleep[2] then
+			if victim then
+				if victim.visible then
+					me:Follow(victim)
 				end
 			end
-			if GetDistance2D(victim,me) > me.attackRange+100 then
-				local xyz = SkillShot.PredictedXYZ(victim,me:GetTurnTime(victim)*100+client.latency+300)
-				me:Move(xyz)
-			else
-				me:Attack(victim)
-			end
-			sleep[1] = tick + 100
+			sleep[2] = tick + 100
 			start = false
 		end
 	elseif victim then
 			if not resettime then
 			resettime = client.gameTime
-		elseif (client.gameTime - resettime) >= 2 then
+		elseif (client.gameTime - resettime) >= 6 then
 			victim = nil		
 		end
 		start = false
