@@ -101,15 +101,15 @@ function Main(tick)
 						if shiva and shiva:CanBeCasted() and distance <= 600 then
 							table.insert(castQueue,{100,shiva})
 						end
-						if ethereal and ethereal:CanBeCasted() and me:CanCast() then
-							table.insert(castQueue,{math.ceil(ethereal:FindCastPoint()*1000),ethereal,victim})
-						end
 						if not linkens then
 							if sheep and sheep:CanBeCasted() and me:CanCast() then
 								table.insert(castQueue,{math.ceil(sheep:FindCastPoint()*1000),sheep,victim})
 							end
 							if dagon and dagon:CanBeCasted() and me:CanCast() then 
 								table.insert(castQueue,{math.ceil(dagon:FindCastPoint()*1000),dagon,victim})
+							end
+							if ethereal and ethereal:CanBeCasted() and me:CanCast() then
+								table.insert(castQueue,{math.ceil(ethereal:FindCastPoint()*1000),ethereal,victim,true})
 							end
 						end
 						if config.rearm then
