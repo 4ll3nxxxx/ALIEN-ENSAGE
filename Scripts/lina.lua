@@ -86,7 +86,7 @@ function Main(tick)
 						end
 					end
 				end
-				local blow = me:DoesHaveModifier("modifier_eul_cyclone")
+				local blow = victim:DoesHaveModifier("modifier_eul_cyclone")
 				if not blow then
 					me:Attack(victim)
 					sleep[4] = tick + 100
