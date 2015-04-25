@@ -8,8 +8,8 @@ local config = ScriptConfig.new()
 config:SetParameter("Hotkey", "32", config.TYPE_HOTKEY)
 config:Load()
 
-local play = false local myhero = nil local victim = nil local start = false local resettime = nil local sleep = {0,0}
-local rate = client.screenSize.x/1600 local rec = {}
+local play = false local myhero = nil local victim = nil local start = false local resettime = nil local sleep = {0,0,0,0}
+local rate = client.screenSize.x/1600 local rec = {} local castQueue = {}
 rec[1] = drawMgr:CreateRect(70*rate,26*rate,270*rate,60*rate,0xFFFFFF30,drawMgr:GetTextureId("NyanUI/other/CM_status_1")) rec[1].visible = false
 rec[2] = drawMgr:CreateText(175*rate,52*rate,0xFFFFFF90,"Target :",drawMgr:CreateFont("manabarsFont","Arial",18*rate,700)) rec[2].visible = false
 rec[3] = drawMgr:CreateRect(220*rate,54*rate,16*rate,16*rate,0xFFFFFF30) rec[3].visible = false
@@ -25,6 +25,19 @@ function Main(tick)
 		end
 	else
 		rec[3].textureId = drawMgr:GetTextureId("NyanUI/spellicons/doom_bringer_empty1")
+	end
+
+	for i=1,#castQueue,1 do
+		local v = castQueue[1]
+		table.remove(castQueue,1)
+		local ability = v[2]
+		if type(ability) == "string" then
+			ability = me:FindItem(ability)
+		end
+		if ability and me:SafeCastAbility(ability,v[3],false) then
+			sleep[3] = tick + v[1]
+			return
+		end
 	end
 
 	local attackRange = me.attackRange	
@@ -45,74 +58,79 @@ function Main(tick)
 			end
 		end
 		if not Animations.CanMove(me) and victim and GetDistance2D(me,victim) <= 2000 then
-			if tick > sleep[1] and SleepCheck("casting") then
-				local Q = me:GetAbility(1)
-				local W = me:GetAbility(2)
-				local euls = me:FindItem("item_cyclone")
-				if euls then
-					if euls and euls:CanBeCasted() then
-						if GetDistance2D(victim,me) <= euls.castRange and W and W:CanBeCasted() then
-							me:CastAbility(euls,victim)
-							Sleep(me:GetTurnTime(victim)*1000, "casting")
-							sleep[1] = tick + 1700
+			if tick > sleep[1] and tick > sleep[4] then
+				if not Animations.isAttacking(me) then
+					local Q = me:GetAbility(1)
+					local W = me:GetAbility(2)
+					local euls = me:FindItem("item_cyclone")
+					if euls then
+						if euls and euls:CanBeCasted() then
+							if GetDistance2D(victim,me) <= 600 and W and W:CanBeCasted() then
+								table.insert(castQueue,{math.ceil(euls:FindCastPoint()*1000),euls,victim,true})
+								sleep[1] = tick + 1700
+							end
+						end
+						if W and W:CanBeCasted() and euls.cd ~= 0 then
+							xyz2(victim,me,W)
+						end
+						if Q and Q:CanBeCasted() and W.cd ~= 0 then
+							xyz1(victim,me,Q)
 						end
 					end
-					if W and W:CanBeCasted() and euls.cd ~= 0 then
-						xyz2(victim,me,W)
-						Sleep(W:FindCastPoint()*1000+me:GetTurnTime(victim)*1000, "casting")
-					end
-					if Q and Q:CanBeCasted() and W.cd ~= 0 then
-						xyz1(victim,me,Q)
-						Sleep(Q:FindCastPoint()*1000+me:GetTurnTime(victim)*1000, "casting")
+					if not euls then
+						if W and W:CanBeCasted() then
+							xyz2(victim,me,W)
+						end
+						if Q and Q:CanBeCasted() and W.cd ~= 0 then
+							xyz1(victim,me,Q)
+						end
 					end
 				end
-				if not euls then
-					if W and W:CanBeCasted() then
-						xyz2(victim,me,W)
-						Sleep(W:FindCastPoint()*1000+me:GetTurnTime(victim)*1000, "casting")
-					end
-					if Q and Q:CanBeCasted() and W.cd ~= 0 then
-						xyz1(victim,me,Q)
-						Sleep(Q:FindCastPoint()*1000+me:GetTurnTime(victim)*1000, "casting")
-					end
+				local blow = me:DoesHaveModifier("modifier_eul_cyclone")
+				if not blow then
+					me:Attack(victim)
+					sleep[4] = tick + 100
 				end
 			end
-			if tick > sleep[2] then
-				if GetDistance2D(victim,me) <= 600 then
-					me:Attack(victim)
+		elseif tick > sleep[2] then
+			if victim then
+				if victim.visible then
+					local xyz = SkillShot.PredictedXYZ(victim,me:GetTurnTime(victim)*1000+client.latency+500)
+					me:Move(xyz)
 				else
 					me:Follow(victim)
 				end
-				sleep[2] = tick + 100
 			end
+			sleep[2] = tick + 100
+			start = false
 		end
 	elseif victim then
 			if not resettime then
 			resettime = client.gameTime
-		elseif (client.gameTime - resettime) >= 6 then
+		elseif (client.gameTime - resettime) >= 2 then
 			victim = nil		
 		end
 		start = false
-	end
+	end 
 end
 
 function xyz1(victim,me,Q)
 	local CP = Q:FindCastPoint()
-	local delay = ((800-Animations.getDuration(Q)*1000)+CP*1000+client.latency+me:GetTurnTime(victim)*1000)
-	local speed = 2500
+	local delay = ((400-Animations.getDuration(Q)*1000)+CP*1000+client.latency+me:GetTurnTime(victim)*1000)
+	local speed = 2100
 	local xyz = SkillShot.SkillShotXYZ(me,victim,delay,speed)
 	if xyz and GetDistance2D(victim,me) <= Q.castRange then 
-		me:CastAbility(Q,xyz)
+		table.insert(castQueue,{math.ceil(Q:FindCastPoint()*1000),Q,xyz})
 	end
 end
 
 function xyz2(victim,me,W)
 	local CP = W:FindCastPoint()
-	local delay = ((625-Animations.getDuration(W)*1000)+CP*1000+client.latency+me:GetTurnTime(victim)*1000)
-	local speed = 1900
+	local delay = ((312.5-Animations.getDuration(W)*1000)+CP*1000+client.latency+me:GetTurnTime(victim)*1000)
+	local speed = 1700
 	local xyz = SkillShot.SkillShotXYZ(me,victim,delay,speed)
 	if xyz and GetDistance2D(victim,me) <= W.castRange then 
-		me:CastAbility(W,xyz)
+		table.insert(castQueue,{math.ceil(W:FindCastPoint()*1000),W,xyz})
 	end
 end
 
