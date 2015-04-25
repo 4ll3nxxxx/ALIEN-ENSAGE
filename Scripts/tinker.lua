@@ -67,6 +67,7 @@ function Main(tick)
 			if not Animations.isAttacking(me) and victim.alive and victim.visible then
 				if tick > sleep[2] and SleepCheck("123") then
 					local rearm = me:DoesHaveModifier("modifier_tinker_rearm")
+					local slow = victim:DoesHaveModifier("modifier_item_ethereal_blade_slow")
 					local blink = me:FindItem("item_blink")
 					local sheep = me:FindItem("item_sheepstick")
 					local ethereal = me:FindItem("item_ethereal_blade")
@@ -139,7 +140,7 @@ function Main(tick)
 							end
 						end
 					end
-					if not rearm then
+					if not rearm and not slow then
 						me:Attack(victim)
 						sleep[2] = tick + 100
 					end
