@@ -3,6 +3,7 @@
 require("libs.ScriptConfig")
 require("libs.Utils")
 require("libs.TargetFind")
+require("libs.Animations")
 require("libs.Skillshot")
 
 local config = ScriptConfig.new()
