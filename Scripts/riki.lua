@@ -2,6 +2,7 @@
 
 require("libs.ScriptConfig")
 require("libs.Utils")
+require("libs.TargetFind")
 require("libs.Skillshot")
 require("libs.Animations")
 
