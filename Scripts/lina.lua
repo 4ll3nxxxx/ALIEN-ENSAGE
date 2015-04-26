@@ -65,9 +65,9 @@ function Main(tick)
 					local euls = me:FindItem("item_cyclone")
 					if euls then
 						if euls and euls:CanBeCasted() then
-							if GetDistance2D(victim,me) <= 600 and W and W:CanBeCasted() then
+							if GetDistance2D(victim,me) <= 550 and W and W:CanBeCasted() then
 								table.insert(castQueue,{math.ceil(euls:FindCastPoint()*1000),euls,victim,true})
-								sleep[1] = tick + 1650
+								sleep[1] = tick + 1700
 							end
 						end
 						if W and W:CanBeCasted() and euls.cd ~= 0 then
@@ -86,8 +86,7 @@ function Main(tick)
 						end
 					end
 				end
-				local blow = victim:DoesHaveModifier("modifier_eul_cyclone")
-				if GetDistance2D(victim,me) > 600 and not blow then
+				if GetDistance2D(victim,me) > 580 then
 					me:Follow(victim)
 				else
 					me:Attack(victim)
@@ -114,7 +113,7 @@ end
 function xyz1(victim,me,Q)
 	local CP = Q:FindCastPoint()
 	local delay = ((400-Animations.getDuration(Q)*1000)+CP*1000+client.latency+me:GetTurnTime(victim)*1000)
-	local speed = 2100
+	local speed = 2500
 	local xyz = SkillShot.SkillShotXYZ(me,victim,delay,speed)
 	if xyz and GetDistance2D(victim,me) <= Q.castRange then 
 		table.insert(castQueue,{math.ceil(Q:FindCastPoint()*1000),Q,xyz})
@@ -124,7 +123,7 @@ end
 function xyz2(victim,me,W)
 	local CP = W:FindCastPoint()
 	local delay = ((312.5-Animations.getDuration(W)*1000)+CP*1000+client.latency+me:GetTurnTime(victim)*1000)
-	local speed = 1700
+	local speed = 1800
 	local xyz = SkillShot.SkillShotXYZ(me,victim,delay,speed)
 	if xyz and GetDistance2D(victim,me) <= W.castRange then 
 		table.insert(castQueue,{math.ceil(W:FindCastPoint()*1000),W,xyz})
