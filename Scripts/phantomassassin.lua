@@ -131,7 +131,7 @@ function Main(tick)
 			start = false
 		end
 	elseif victim then
-			if not resettime then
+		if not resettime then
 			resettime = client.gameTime
 		elseif (client.gameTime - resettime) >= 6 then
 			victim = nil		
