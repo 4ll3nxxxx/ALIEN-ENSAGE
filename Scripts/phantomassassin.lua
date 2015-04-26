@@ -88,7 +88,7 @@ function Main(tick)
 					if W and W:CanBeCasted() and me:CanCast() then
 						table.insert(castQueue,{math.ceil(W:FindCastPoint()*1000),W,victim})
 					end
-					if medallion and medallion:CanBeCasted() and distance <= me.attackRange then
+					if medallion and medallion:CanBeCasted() and distance <= attackRange+100 then
 						table.insert(castQueue,{math.ceil(medallion:FindCastPoint()*1000),medallion,victim})
 					end
 					if abyssal and abyssal:CanBeCasted() and distance <= abyssal.castRange and not disable then
@@ -97,10 +97,10 @@ function Main(tick)
 					if butterfly and butterfly:CanBeCasted() and me:CanCast() then
 						table.insert(castQueue,{100,butterfly})
 					end
-					if mom and mom:CanBeCasted() and distance <= me.attackRange then
+					if mom and mom:CanBeCasted() and distance <= attackRange+100 then
 						table.insert(castQueue,{100,mom})
 					end
-					if satanic and satanic:CanBeCasted() and me.health/me.maxHealth <= 0.4 and distance <= me.attackRange then
+					if satanic and satanic:CanBeCasted() and me.health/me.maxHealth <= 0.4 and distance <= attackRange+100 then
 						table.insert(castQueue,{100,satanic})
 					end
 					if BlackKingBar and BlackKingBar:CanBeCasted() and me:CanCast() then
