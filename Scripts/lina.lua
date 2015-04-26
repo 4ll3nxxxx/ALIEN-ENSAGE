@@ -87,19 +87,17 @@ function Main(tick)
 					end
 				end
 				local blow = victim:DoesHaveModifier("modifier_eul_cyclone")
-				if not blow then
-					me:Attack(victim)
-					sleep[4] = tick + 100
-				end
-			end
-		elseif tick > sleep[2] then
-			if victim then
-				if victim.visible then
-					local xyz = SkillShot.PredictedXYZ(victim,me:GetTurnTime(victim)*1000+client.latency+500)
+				if GetDistance2D(victim,me) > 600 and not blow then
+					local xyz = SkillShot.PredictedXYZ(victim,me:GetTurnTime(victim)*1000+300)
 					me:Move(xyz)
 				else
-					me:Follow(victim)
+					me:Attack(victim)
 				end
+				sleep[4] = tick + 100
+			end
+		elseif tick > sleep[2] then 
+			if not Animations.isAttacking(me) then
+				me:Move(client.mousePosition)
 			end
 			sleep[2] = tick + 100
 			start = false
@@ -107,7 +105,7 @@ function Main(tick)
 	elseif victim then
 			if not resettime then
 			resettime = client.gameTime
-		elseif (client.gameTime - resettime) >= 2 then
+		elseif (client.gameTime - resettime) >= 6 then
 			victim = nil		
 		end
 		start = false
