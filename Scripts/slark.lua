@@ -63,6 +63,7 @@ function Main(tick)
 			if tick > sleep[1] then
 				if not Animations.isAttacking(me) and victim.alive and victim.visible then
 					local disable = victim:IsSilenced() or victim:IsHexed() or victim:IsStunned() or victim:IsLinkensProtected()
+					local inShadow = me:DoesHaveModifier("modifier_item_invisibility_edge_windwalk")
 					local abyssal = me:FindItem("item_abyssal_blade")
 					local butterfly = me:FindItem("item_butterfly")
 					local mom = me:FindItem("item_mask_of_madness")
@@ -70,34 +71,36 @@ function Main(tick)
 					local BlackKingBar = me:FindItem("item_black_king_bar")
 					local Q = me:GetAbility(1)
 					local W = me:GetAbility(2) 
-					local distance = GetDistance2D(victim,me)	
-					if Q and Q:CanBeCasted() and distance <= 325 and me:CanCast() then
-						table.insert(castQueue,{100,Q})
-					end
-					if W and W:CanBeCasted() and me:CanCast() and distance <= 400 then
-						table.insert(castQueue,{1000+math.ceil(W:FindCastPoint()*1000),W})
-					end
-					if abyssal and abyssal:CanBeCasted() and distance <= abyssal.castRange and not disable then
-						table.insert(castQueue,{math.ceil(abyssal:FindCastPoint()*1000),abyssal,victim})
-					end
-					if butterfly and butterfly:CanBeCasted() and me:CanCast() then
-						table.insert(castQueue,{100,butterfly})
-					end
-					if mom and mom:CanBeCasted() and distance <= attackRange+100 then
-						table.insert(castQueue,{100,mom})
-					end
-					if satanic and satanic:CanBeCasted() and me.health/me.maxHealth <= 0.4 and distance <= attackRange+100 then
-						table.insert(castQueue,{100,satanic})
-					end
-					if BlackKingBar and BlackKingBar:CanBeCasted() and me:CanCast() then
-						local heroes = entityList:GetEntities(function (v) return v.type==LuaEntity.TYPE_HERO and v.alive and v.visible and v.team~=me.team and me:GetDistance2D(v) <= 1200 end)
-						if #heroes == 3 then
-							table.insert(castQueue,{100,BlackKingBar})
-						elseif #heroes == 4 then
-							table.insert(castQueue,{100,BlackKingBar})
-						elseif #heroes == 5 then
-							table.insert(castQueue,{100,BlackKingBar})
-							return
+					local distance = GetDistance2D(victim,me)
+					if not inShadow then
+						if Q and Q:CanBeCasted() and distance <= 325 and me:CanCast() then
+							table.insert(castQueue,{100,Q})
+						end
+						if W and W:CanBeCasted() and me:CanCast() and distance <= 400 then
+							table.insert(castQueue,{1000+math.ceil(W:FindCastPoint()*1000),W})
+						end
+						if abyssal and abyssal:CanBeCasted() and distance <= abyssal.castRange and not disable then
+							table.insert(castQueue,{math.ceil(abyssal:FindCastPoint()*1000),abyssal,victim})
+						end
+						if butterfly and butterfly:CanBeCasted() and me:CanCast() then
+							table.insert(castQueue,{100,butterfly})
+						end
+						if mom and mom:CanBeCasted() and distance <= attackRange+100 then
+							table.insert(castQueue,{100,mom})
+						end
+						if satanic and satanic:CanBeCasted() and me.health/me.maxHealth <= 0.4 and distance <= attackRange+100 then
+							table.insert(castQueue,{100,satanic})
+						end
+						if BlackKingBar and BlackKingBar:CanBeCasted() and me:CanCast() then
+							local heroes = entityList:GetEntities(function (v) return v.type==LuaEntity.TYPE_HERO and v.alive and v.visible and v.team~=me.team and me:GetDistance2D(v) <= 1200 end)
+							if #heroes == 3 then
+								table.insert(castQueue,{100,BlackKingBar})
+							elseif #heroes == 4 then
+								table.insert(castQueue,{100,BlackKingBar})
+							elseif #heroes == 5 then
+								table.insert(castQueue,{100,BlackKingBar})
+								return
+							end
 						end
 					end
 				end
