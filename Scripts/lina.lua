@@ -8,7 +8,7 @@ local config = ScriptConfig.new()
 config:SetParameter("Hotkey", "32", config.TYPE_HOTKEY)
 config:Load()
 
-local play = false local myhero = nil local victim = nil local start = false local resettime = nil local sleep = {0,0,0,0}
+local play = false local myhero = nil local victim = nil local start = false local resettime = nil local sleep = {0,0,0}
 local rate = client.screenSize.x/1600 local rec = {} local castQueue = {}
 rec[1] = drawMgr:CreateRect(70*rate,26*rate,270*rate,60*rate,0xFFFFFF30,drawMgr:GetTextureId("NyanUI/other/CM_status_1")) rec[1].visible = false
 rec[2] = drawMgr:CreateText(175*rate,52*rate,0xFFFFFF90,"Target :",drawMgr:CreateFont("manabarsFont","Arial",18*rate,700)) rec[2].visible = false
@@ -46,7 +46,7 @@ function Main(tick)
 		if Animations.CanMove(me) or not start or (victim and GetDistance2D(victim,me) > attackRange+50) then
 			start = true
 			local lowestHP = targetFind:GetLowestEHP(3000, phys)
-			if lowestHP and (not victim or victim.creep or GetDistance2D(me,victim) > 600 or not victim.alive or lowestHP.health < victim.health) and SleepCheck("victim") then			
+			if lowestHP and (not victim or GetDistance2D(me,victim) > 600 or not victim.alive or lowestHP.health < victim.health) and SleepCheck("victim") then			
 				victim = lowestHP
 				Sleep(250,"victim")
 			end
@@ -57,17 +57,26 @@ function Main(tick)
 				end
 			end
 		end
-		if not Animations.CanMove(me) and victim and GetDistance2D(me,victim) <= 2000 then
-			if tick > sleep[1] and tick > sleep[4] then
-				if not Animations.isAttacking(me) then
+		if not Animations.CanMove(me) then
+			if victim and GetDistance2D(me,victim) <= 2000 then
+				if tick > sleep[1] then
+					if GetDistance2D(victim,me) <= 590 then
+						me:Attack(victim)
+					else
+						me:Follow(victim)
+					end
+					sleep[1] = tick + 100
+				end
+				if tick > sleep[2] then
 					local Q = me:GetAbility(1)
 					local W = me:GetAbility(2)
 					local euls = me:FindItem("item_cyclone")
 					if euls then
 						if euls and euls:CanBeCasted() then
-							if GetDistance2D(victim,me) <= 550 and W and W:CanBeCasted() then
+							if GetDistance2D(victim,me) <= euls.castRange and W and W:CanBeCasted() then
+								me:CastAbility(euls,victim)
 								table.insert(castQueue,{math.ceil(euls:FindCastPoint()*1000),euls,victim,true})
-								sleep[1] = tick + 1700
+								sleep[2] = tick + 1700
 							end
 						end
 						if W and W:CanBeCasted() and euls.cd ~= 0 then
@@ -86,22 +95,11 @@ function Main(tick)
 						end
 					end
 				end
-				if GetDistance2D(victim,me) > 580 then
-					me:Follow(victim)
-				else
-					me:Attack(victim)
-				end
-				sleep[4] = tick + 100
 			end
-		elseif tick > sleep[2] then 
-			if not Animations.isAttacking(me) then
-				me:Move(client.mousePosition)
-			end
-			sleep[2] = tick + 100
 			start = false
 		end
 	elseif victim then
-			if not resettime then
+		if not resettime then
 			resettime = client.gameTime
 		elseif (client.gameTime - resettime) >= 6 then
 			victim = nil		
@@ -129,6 +127,7 @@ function xyz2(victim,me,W)
 		table.insert(castQueue,{math.ceil(W:FindCastPoint()*1000),W,xyz})
 	end
 end
+
 
 function Load()
 	if PlayingGame() then
