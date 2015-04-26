@@ -88,8 +88,7 @@ function Main(tick)
 				end
 				local blow = victim:DoesHaveModifier("modifier_eul_cyclone")
 				if GetDistance2D(victim,me) > 600 and not blow then
-					local xyz = SkillShot.PredictedXYZ(victim,me:GetTurnTime(victim)*1000+300)
-					me:Move(xyz)
+					me:Follow(victim)
 				else
 					me:Attack(victim)
 				end
