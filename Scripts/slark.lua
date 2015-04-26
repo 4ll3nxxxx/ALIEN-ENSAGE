@@ -70,7 +70,8 @@ function Main(tick)
 					local satanic = me:FindItem("item_satanic")
 					local BlackKingBar = me:FindItem("item_black_king_bar")
 					local Q = me:GetAbility(1)
-					local W = me:GetAbility(2) 
+					local W = me:GetAbility(2)
+					local R = me:GetAbility(4) 
 					local distance = GetDistance2D(victim,me)
 					if not inShadow then
 						if Q and Q:CanBeCasted() and distance <= 325 and me:CanCast() then
@@ -78,6 +79,9 @@ function Main(tick)
 						end
 						if W and W:CanBeCasted() and me:CanCast() and distance <= 400 then
 							table.insert(castQueue,{1000+math.ceil(W:FindCastPoint()*1000),W})
+						end
+						if me.health < me.maxHealth*0.25 and R and R:CanBeCasted() then
+							table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R})
 						end
 						if abyssal and abyssal:CanBeCasted() and distance <= abyssal.castRange and not disable then
 							table.insert(castQueue,{math.ceil(abyssal:FindCastPoint()*1000),abyssal,victim})
