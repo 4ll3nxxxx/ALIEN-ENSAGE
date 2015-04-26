@@ -47,7 +47,7 @@ function Main(tick)
 		if Animations.CanMove(me) or not start or (victim and GetDistance2D(victim,me) > attackRange+50) then
 			start = true
 			local lowestHP = targetFind:GetLowestEHP(3000, phys)
-			if lowestHP and (not victim or victim.creep or GetDistance2D(me,victim) > 600 or not victim.alive or lowestHP.health < victim.health) and SleepCheck("victim") then			
+			if lowestHP and (not victim or GetDistance2D(me,victim) > 600 or not victim.alive or lowestHP.health < victim.health) and SleepCheck("victim") then			
 				victim = lowestHP
 				Sleep(250,"victim")
 			end
@@ -73,7 +73,7 @@ function Main(tick)
 					if Q and Q:CanBeCasted() and distance <= 325 and me:CanCast() then
 						table.insert(castQueue,{100,Q})
 					end
-					if W and W:CanBeCasted() and me:CanCast() and distance <= 490  then
+					if W and W:CanBeCasted() and me:CanCast() and distance <= 400 then
 						table.insert(castQueue,{1000+math.ceil(W:FindCastPoint()*1000),W})
 					end
 					if abyssal and abyssal:CanBeCasted() and distance <= abyssal.castRange and not disable then
@@ -82,10 +82,10 @@ function Main(tick)
 					if butterfly and butterfly:CanBeCasted() and me:CanCast() then
 						table.insert(castQueue,{100,butterfly})
 					end
-					if mom and mom:CanBeCasted() and distance <= me.attackRange then
+					if mom and mom:CanBeCasted() and distance <= attackRange+100 then
 						table.insert(castQueue,{100,mom})
 					end
-					if satanic and satanic:CanBeCasted() and me.health/me.maxHealth <= 0.4 and distance <= me.attackRange then
+					if satanic and satanic:CanBeCasted() and me.health/me.maxHealth <= 0.4 and distance <= attackRange+100 then
 						table.insert(castQueue,{100,satanic})
 					end
 					if BlackKingBar and BlackKingBar:CanBeCasted() and me:CanCast() then
@@ -101,17 +101,16 @@ function Main(tick)
 					end
 				end
 				if GetDistance2D(victim,me) > me.attackRange+100 then
-					local xyz = SkillShot.PredictedXYZ(victim,me:GetTurnTime(victim)*100+client.latency+400)
+					local xyz = SkillShot.PredictedXYZ(victim,me:GetTurnTime(victim)*1000+300)
 					me:Move(xyz)
 				else
 					me:Attack(victim)
 				end
 				sleep[1] = tick + 100
 			end
-		elseif tick > sleep[2] then
-			local mPos = client.mousePosition
-			if (not victim or GetDistance2D(me,mPos) > 300) or (victim and GetDistance2D(me,victim) < GetDistance2D(victim,mPos)) then
-				me:Move(mPos)
+		elseif tick > sleep[2] then 
+			if not Animations.isAttacking(me) then
+				me:Move(client.mousePosition)
 			end
 			sleep[2] = tick + 100
 			start = false
@@ -119,7 +118,7 @@ function Main(tick)
 	elseif victim then
 			if not resettime then
 			resettime = client.gameTime
-		elseif (client.gameTime - resettime) >= 2 then
+		elseif (client.gameTime - resettime) >= 6 then
 			victim = nil		
 		end
 		start = false
