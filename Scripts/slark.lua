@@ -8,6 +8,7 @@ require("libs.Skillshot")
 
 local config = ScriptConfig.new()
 config:SetParameter("Hotkey", "32", config.TYPE_HOTKEY)
+config:SetParameter("distanceXYZ", 400)
 config:Load()
 
 local play = false local myhero = nil local victim = nil local start = false local resettime = nil local sleep = {0,0,0}
@@ -77,7 +78,7 @@ function Main(tick)
 						if Q and Q:CanBeCasted() and distance <= 325 and me:CanCast() then
 							table.insert(castQueue,{100,Q})
 						end
-						if W and W:CanBeCasted() and me:CanCast() and distance <= 400 then
+						if W and W:CanBeCasted() and me:CanCast() and distance <= config.distanceXYZ then
 							table.insert(castQueue,{1000+math.ceil(W:FindCastPoint()*1000),W})
 						end
 						if me.health < me.maxHealth*0.25 and R and R:CanBeCasted() then
