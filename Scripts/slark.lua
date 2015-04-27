@@ -63,9 +63,9 @@ function Main(tick)
 		if not Animations.CanMove(me) and victim and GetDistance2D(me,victim) <= 2000 then
 			if tick > sleep[1] then
 				if not Animations.isAttacking(me) and victim.alive and victim.visible then
-					local disable = victim:IsSilenced() or victim:IsHexed() or victim:IsStunned() or victim:IsLinkensProtected()
-					local shadowplay = me:DoesHaveModifier("modifier_item_invisibility_edge_windwalk")
 					local immune = victim:DoesHaveModifier("modifier_omniknight_repel") or victim:DoesHaveModifier("modifier_black_king_bar_immune")
+					local disable = victim:IsHexed() or victim:IsStunned() or victim:IsLinkensProtected()
+					local shadowplay = me:DoesHaveModifier("modifier_item_invisibility_edge_windwalk")
 					local abyssal = me:FindItem("item_abyssal_blade")
 					local butterfly = me:FindItem("item_butterfly")
 					local mom = me:FindItem("item_mask_of_madness")
