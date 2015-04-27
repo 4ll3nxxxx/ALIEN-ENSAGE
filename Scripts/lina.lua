@@ -111,7 +111,7 @@ end
 
 function xyz1(victim,me,Q)
 	local CP = Q:FindCastPoint()
-	local delay = ((400-Animations.getDuration(Q)*300)+CP*1000+client.latency+me:GetTurnTime(victim)*1000)
+	local delay = ((400-Animations.getDuration(Q)*1000)+CP*1000+client.latency+me:GetTurnTime(victim)*1000)
 	local speed = 2100
 	local xyz = SkillShot.SkillShotXYZ(me,victim,delay,speed)
 	if xyz and GetDistance2D(victim,me) <= Q.castRange then 
