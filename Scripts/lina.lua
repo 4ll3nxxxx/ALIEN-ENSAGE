@@ -35,7 +35,7 @@ function Main(tick)
 			ability = me:FindItem(ability)
 		end
 		if ability and me:SafeCastAbility(ability,v[3],false) then
-			sleep[3] = tick + v[1]
+			sleep[3] = tick + v[1] + client.latency
 			return
 		end
 	end
@@ -60,12 +60,13 @@ function Main(tick)
 		if not Animations.CanMove(me) then
 			if victim and GetDistance2D(me,victim) <= 2000 then
 				if tick > sleep[1] then
-					if GetDistance2D(victim,me) <= 590 then
+					local blow = victim:DoesHaveModifier("modifier_eul_cyclone")
+					if GetDistance2D(victim,me) <= 590 and not blow then
 						me:Attack(victim)
 					else
 						me:Follow(victim)
 					end
-					sleep[1] = tick + 100
+					sleep[1] = tick + 100 + client.latency
 				end
 				if tick > sleep[2] then
 					local Q = me:GetAbility(1)
@@ -76,7 +77,7 @@ function Main(tick)
 							if GetDistance2D(victim,me) <= euls.castRange and W and W:CanBeCasted() then
 								me:CastAbility(euls,victim)
 								table.insert(castQueue,{math.ceil(euls:FindCastPoint()*1000),euls,victim,true})
-								sleep[2] = tick + 1700
+								sleep[2] = tick + 1700 + client.latency
 							end
 						end
 						if W and W:CanBeCasted() and euls.cd ~= 0 then
@@ -110,11 +111,11 @@ end
 
 function xyz1(victim,me,Q)
 	local CP = Q:FindCastPoint()
-	local delay = ((400-Animations.getDuration(Q)*1000)+CP*1000+client.latency+me:GetTurnTime(victim)*1000)
-	local speed = 2500
+	local delay = ((400-Animations.getDuration(Q)*300)+CP*1000+client.latency+me:GetTurnTime(victim)*1000)
+	local speed = 2100
 	local xyz = SkillShot.SkillShotXYZ(me,victim,delay,speed)
 	if xyz and GetDistance2D(victim,me) <= Q.castRange then 
-		table.insert(castQueue,{math.ceil(Q:FindCastPoint()*1000),Q,xyz})
+		table.insert(castQueue,{math.ceil(Q:FindCastPoint()*1000+client.latency),Q,xyz})
 	end
 end
 
@@ -124,7 +125,7 @@ function xyz2(victim,me,W)
 	local speed = 1800
 	local xyz = SkillShot.SkillShotXYZ(me,victim,delay,speed)
 	if xyz and GetDistance2D(victim,me) <= W.castRange then 
-		table.insert(castQueue,{math.ceil(W:FindCastPoint()*1000),W,xyz})
+		table.insert(castQueue,{math.ceil(W:FindCastPoint()*1000+client.latency),W,xyz})
 	end
 end
 
