@@ -38,7 +38,7 @@ function Main(tick)
 			ability = me:FindItem(ability)
 		end
 		if ability and me:SafeCastAbility(ability,v[3],false) then
-			sleep[3] = tick + v[1]
+			sleep[3] = tick + v[1] + client.latency
 			return
 		end
 	end
@@ -64,7 +64,8 @@ function Main(tick)
 			if tick > sleep[1] then
 				if not Animations.isAttacking(me) and victim.alive and victim.visible then
 					local disable = victim:IsSilenced() or victim:IsHexed() or victim:IsStunned() or victim:IsLinkensProtected()
-					local inShadow = me:DoesHaveModifier("modifier_item_invisibility_edge_windwalk")
+					local shadowplay = me:DoesHaveModifier("modifier_item_invisibility_edge_windwalk")
+					local immune = victim:DoesHaveModifier("modifier_omniknight_repel") or victim:DoesHaveModifier("modifier_black_king_bar_immune")
 					local abyssal = me:FindItem("item_abyssal_blade")
 					local butterfly = me:FindItem("item_butterfly")
 					local mom = me:FindItem("item_mask_of_madness")
@@ -74,11 +75,11 @@ function Main(tick)
 					local W = me:GetAbility(2)
 					local R = me:GetAbility(4) 
 					local distance = GetDistance2D(victim,me)
-					if not inShadow then
-						if Q and Q:CanBeCasted() and distance <= 325 and me:CanCast() then
+					if not shadowplay then
+						if Q and Q:CanBeCasted() and me:CanCast() and not immune and distance <= 325 then
 							table.insert(castQueue,{100,Q})
 						end
-						if W and W:CanBeCasted() and me:CanCast() and distance <= config.distanceXYZ then
+						if W and W:CanBeCasted() and me:CanCast() and not immune and distance <= config.distanceXYZ then
 							table.insert(castQueue,{1000+math.ceil(W:FindCastPoint()*1000),W})
 						end
 						if me.health < me.maxHealth*0.25 and R and R:CanBeCasted() then
@@ -110,7 +111,7 @@ function Main(tick)
 					end
 				end
 				if GetDistance2D(victim,me) > attackRange+100 then
-					local xyz = SkillShot.PredictedXYZ(victim,me:GetTurnTime(victim)*1000+300)
+					local xyz = SkillShot.PredictedXYZ(victim,me:GetTurnTime(victim)*1000+300+ client.latency)
 					me:Move(xyz)
 				else
 					me:Attack(victim)
