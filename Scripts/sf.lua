@@ -84,7 +84,7 @@ function Main(tick)
 							me:Stop()
 							Sleep(1000 + client.latency,"stop1")
 						end
-						if W and W:CanBeCasted() and me:CanCast() and distance <= 575 and distance >= 325 and not immune then
+						if W and W:CanBeCasted() and me:CanCast() and distance <= 525 and distance >= 325 and not immune then
 							table.insert(castQueue,{math.ceil(W:FindCastPoint()*1000),W})
 						elseif distance <= 700 and distance >= 575 and distance <= 325 and distance >= 0 and SleepCheck("stop2") then
 							me:Stop()
@@ -92,7 +92,7 @@ function Main(tick)
 						end
 						if E and E:CanBeCasted() and me:CanCast() and distance <= 825 and distance >= 575 and not immune then
 							table.insert(castQueue,{math.ceil(E:FindCastPoint()*1000),E})
-						elseif distance <= 950 and distance >= 825 and distance <= 575 and distance >= 325 and SleepCheck("stop3") then
+						elseif distance <= 950 and distance >= 825 and distance <= 525 and distance >= 325 and SleepCheck("stop3") then
 							me:Stop()
 							Sleep(1000 + client.latency,"stop3")
 						end
