@@ -76,10 +76,8 @@ function Main(tick)
 					local satanic = me:FindItem("item_satanic")
 					local BlackKingBar = me:FindItem("item_black_king_bar")
 					local distance = GetDistance2D(victim,me)
-					local disable = victim:IsHexed() or victim:IsStunned() or victim:IsLinkensProtected()
-					local silence = victim:IsSilenced()
 					local berserkers = me:FindSpell("troll_warlord_berserkers_rage")
-					if not shadowplay then
+					if not shadowplay and victim.alive and victim.visible then
 						if berserkers and distance <= 300 and distance >= 250 and berserkers.level > 0 and not rage and SleepCheck("range0") then
 							me:ToggleSpell("troll_warlord_berserkers_rage")
 							Sleep(berserkers:FindCastPoint()*1000, "range0")
