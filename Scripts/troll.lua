@@ -86,7 +86,7 @@ function Main(tick)
 							me:ToggleSpell("troll_warlord_berserkers_rage")
 							Sleep(berserkers:FindCastPoint()*1000, "range1")
 						end
-						if W and W:CanBeCasted() and me:CanCast() and distance <= W.castRange-200 then
+						if W and W:CanBeCasted() and me:CanCast() and distance <= 900 then
 							table.insert(castQueue,{1000+math.ceil(W:FindCastPoint()*1000),W,victim.position})
 						end
 						if E and E:CanBeCasted() and me:CanCast() and distance <= 450 then
