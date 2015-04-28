@@ -89,7 +89,7 @@ function Main(tick)
 						if W and W:CanBeCasted() and me:CanCast() and distance <= W.castRange-200 then
 							table.insert(castQueue,{1000+math.ceil(W:FindCastPoint()*1000),W,victim.position})
 						end
-						if E and E:CanBeCasted() and me:CanCast() and distance <= E.castRange-200 then
+						if E and E:CanBeCasted() and me:CanCast() and distance <= attackRange+200 then
 							table.insert(castQueue,{1000+math.ceil(E:FindCastPoint()*1000),E})
 						end
 						if R and R:CanBeCasted() and me:CanCast() and distance <= attackRange+200 then
