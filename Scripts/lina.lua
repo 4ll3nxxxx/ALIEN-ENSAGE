@@ -115,7 +115,7 @@ function xyz1(victim,me,Q)
 	local speed = 2100
 	local xyz = SkillShot.SkillShotXYZ(me,victim,delay,speed)
 	if xyz and GetDistance2D(victim,me) <= Q.castRange then 
-		table.insert(castQueue,{math.ceil(Q:FindCastPoint()*1000+client.latency),Q,xyz})
+		table.insert(castQueue,{math.ceil(CP*1000+client.latency),Q,xyz})
 	end
 end
 
@@ -125,7 +125,7 @@ function xyz2(victim,me,W)
 	local speed = 1800
 	local xyz = SkillShot.SkillShotXYZ(me,victim,delay,speed)
 	if xyz and GetDistance2D(victim,me) <= W.castRange then 
-		table.insert(castQueue,{math.ceil(W:FindCastPoint()*1000+client.latency),W,xyz})
+		table.insert(castQueue,{math.ceil(CP*1000+client.latency),W,xyz})
 	end
 end
 
