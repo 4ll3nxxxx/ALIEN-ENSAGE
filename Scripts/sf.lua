@@ -77,8 +77,6 @@ function Main(tick)
 					local satanic = me:FindItem("item_satanic")
 					local BlackKingBar = me:FindItem("item_black_king_bar")
 					local distance = GetDistance2D(victim,me)
-					local disable = victim:IsHexed() or victim:IsStunned() or victim:IsLinkensProtected()
-					local silence = victim:IsSilenced()
 					if not shadowplay then
 						if Q and Q:CanBeCasted() and me:CanCast() and distance <= 325 and distance >= 0 and not immune then
 							table.insert(castQueue,{math.ceil(Q:FindCastPoint()*1000),Q})
@@ -104,7 +102,7 @@ function Main(tick)
 						if mom and mom:CanBeCasted() and distance <= attackRange+100 then
 							table.insert(castQueue,{100,mom})
 						end
-						if satanic and satanic:CanBeCasted() and me.health/me.maxHealth <= 0.4 then
+						if satanic and satanic:CanBeCasted() and me.health/me.maxHealth <= 0.4 and distance <= attackRange+100 then
 							table.insert(castQueue,{100,satanic})
 						end
 						if BlackKingBar and BlackKingBar:CanBeCasted() and me:CanCast() then
