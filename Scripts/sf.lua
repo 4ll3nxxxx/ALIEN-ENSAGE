@@ -72,7 +72,6 @@ function Main(tick)
 					local W = me:GetAbility(2)
 					local E = me:GetAbility(3)
 					local R = me:GetAbility(4)
-					local abyssal = me:FindItem("item_abyssal_blade")
 					local butterfly = me:FindItem("item_butterfly")
 					local mom = me:FindItem("item_mask_of_madness")
 					local satanic = me:FindItem("item_satanic")
@@ -89,18 +88,15 @@ function Main(tick)
 						end
 						if W and W:CanBeCasted() and me:CanCast() and distance <= 575 and distance >= 325 and not immune then
 							table.insert(castQueue,{math.ceil(W:FindCastPoint()*1000),W})
-						elseif distance <= 700 and distance >= 575 and SleepCheck("stop2") then
+						elseif distance <= 700 and distance >= 575 and distance <= 325 and distance >= 0 and SleepCheck("stop2") then
 							me:Stop()
 							Sleep(1000 + client.latency,"stop2")
 						end
 						if E and E:CanBeCasted() and me:CanCast() and distance <= 825 and distance >= 575 and not immune then
 							table.insert(castQueue,{math.ceil(E:FindCastPoint()*1000),E})
-						elseif distance <= 950 and distance >= 825 and SleepCheck("stop3") then
+						elseif distance <= 950 and distance >= 825 and distance <= 575 and distance >= 325 and SleepCheck("stop3") then
 							me:Stop()
 							Sleep(1000 + client.latency,"stop3")
-						end
-						if abyssal and abyssal:CanBeCasted() and distance <= abyssal.castRange and not disable and not silence then
-							table.insert(castQueue,{math.ceil(abyssal:FindCastPoint()*1000),abyssal,victim})
 						end
 						if butterfly and butterfly:CanBeCasted() then
 							table.insert(castQueue,{100,butterfly})
