@@ -66,7 +66,6 @@ function Main(tick)
 			if tick > sleep[1] then
 				if not Animations.isAttacking(me) then
 					local rage = me:DoesHaveModifier("modifier_troll_warlord_berserkers_rage")
-					local myrage = me:FindModifier("modifier_troll_warlord_berserkers_rage")
 					local berserkers = me:FindSpell("troll_warlord_berserkers_rage")
 					local shadowplay = me:DoesHaveModifier("modifier_item_invisibility_edge_windwalk")
 					local W = me:GetAbility(2)
