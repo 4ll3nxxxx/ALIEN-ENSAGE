@@ -65,7 +65,9 @@ function Main(tick)
 		end
 		if not Animations.CanMove(me) and victim and GetDistance2D(me,victim) <= 2000 then
 			if tick > sleep[1] then
-				if not Animations.isAttacking(me) then
+				if not Animations.isAttacking(me) and victim.alive and victim.visible then
+					local shadowplay = me:DoesHaveModifier("modifier_item_invisibility_edge_windwalk")
+					local immune = victim:DoesHaveModifier("modifier_omniknight_repel") or victim:DoesHaveModifier("modifier_black_king_bar_immune")
 					local Q = me:GetAbility(1)
 					local W = me:GetAbility(2)
 					local E = me:GetAbility(3)
@@ -78,20 +80,20 @@ function Main(tick)
 					local distance = GetDistance2D(victim,me)
 					local disable = victim:IsHexed() or victim:IsStunned() or victim:IsLinkensProtected()
 					local silence = victim:IsSilenced()
-					if me.alive then
-						if Q and Q:CanBeCasted() and me:CanCast() and distance <= 325 and distance >= 0 then
+					if not shadowplay then
+						if Q and Q:CanBeCasted() and me:CanCast() and distance <= 325 and distance >= 0 and not immune then
 							table.insert(castQueue,{math.ceil(Q:FindCastPoint()*1000),Q})
 						elseif distance <= 450 and distance >= 325 and SleepCheck("stop1") then
 							me:Stop()
 							Sleep(1000 + client.latency,"stop1")
 						end
-						if W and W:CanBeCasted() and me:CanCast() and distance <= 575 and distance >= 325 then
+						if W and W:CanBeCasted() and me:CanCast() and distance <= 575 and distance >= 325 and not immune then
 							table.insert(castQueue,{math.ceil(W:FindCastPoint()*1000),W})
 						elseif distance <= 700 and distance >= 575 and SleepCheck("stop2") then
 							me:Stop()
 							Sleep(1000 + client.latency,"stop2")
 						end
-						if E and E:CanBeCasted() and me:CanCast() and distance <= 825 and distance >= 575 then
+						if E and E:CanBeCasted() and me:CanCast() and distance <= 825 and distance >= 575 and not immune then
 							table.insert(castQueue,{math.ceil(E:FindCastPoint()*1000),E})
 						elseif distance <= 950 and distance >= 825 and SleepCheck("stop3") then
 							me:Stop()
