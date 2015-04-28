@@ -66,6 +66,7 @@ function Main(tick)
 			if tick > sleep[1] then
 				if not Animations.isAttacking(me) then
 					local rage = me:DoesHaveModifier("modifier_troll_warlord_berserkers_rage")
+					local myrage = me:FindModifier("modifier_troll_warlord_berserkers_rage")
 					local berserkers = me:FindSpell("troll_warlord_berserkers_rage")
 					local shadowplay = me:DoesHaveModifier("modifier_item_invisibility_edge_windwalk")
 					local W = me:GetAbility(2)
@@ -78,7 +79,7 @@ function Main(tick)
 					local distance = GetDistance2D(victim,me)
 					local berserkers = me:FindSpell("troll_warlord_berserkers_rage")
 					if not shadowplay and victim.alive and victim.visible then
-						if berserkers and distance <= 300 and distance >= 250 and berserkers.level > 0 and not rage and SleepCheck("range0") then
+						if berserkers and distance <= 300 and distance >= 0 and berserkers.level > 0 and not rage and SleepCheck("range0") then
 							me:ToggleSpell("troll_warlord_berserkers_rage")
 							Sleep(berserkers:FindCastPoint()*1000, "range0")
 						end
@@ -101,7 +102,7 @@ function Main(tick)
 						if mom and mom:CanBeCasted() and distance <= attackRange+200 then
 							table.insert(castQueue,{100,mom})
 						end
-						if satanic and satanic:CanBeCasted() and me.health/me.maxHealth <= 0.4 and distance <= attackRange+200 then
+						if satanic and satanic:CanBeCasted() and me.health/me.maxHealth <= 0.4 then
 							table.insert(castQueue,{100,satanic})
 						end
 						if BlackKingBar and BlackKingBar:CanBeCasted() then
