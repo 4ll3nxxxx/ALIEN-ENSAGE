@@ -90,9 +90,9 @@ function Main(tick)
 							table.insert(castQueue,{1000+math.ceil(W:FindCastPoint()*1000),W,victim.position})
 						end
 						if E and E:CanBeCasted() and me:CanCast() and distance <= 450 then
-							table.insert(castQueue,{1000+math.ceil(E:FindCastPoint()*1000),E})
+							table.insert(castQueue,{100,E})
 						end
-						if R and R:CanBeCasted() and me:CanCast() and distance <= attackRange+200 then
+						if R and R:CanBeCasted() and me:CanCast() and distance <= 500 then
 							table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R})
 						end
 						if butterfly and butterfly:CanBeCasted() then
