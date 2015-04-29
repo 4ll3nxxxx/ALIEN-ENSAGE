@@ -78,23 +78,23 @@ function Main(tick)
 					local BlackKingBar = me:FindItem("item_black_king_bar")
 					local distance = GetDistance2D(victim,me)
 					if not shadowplay then
-						if Q and Q:CanBeCasted() and me:CanCast() and distance <= 325 and distance >= 0 and not immune then
+						if Q and Q:CanBeCasted() and me:CanCast() and distance <= 325 and distance >= 0 then
 							table.insert(castQueue,{math.ceil(Q:FindCastPoint()*1000),Q})
 						elseif distance <= 450 and distance >= 325 and SleepCheck("stop1") then
 							me:Stop()
-							Sleep(1000 + client.latency,"stop1")
+							Sleep(1000+client.latency,"stop1")
 						end
-						if W and W:CanBeCasted() and me:CanCast() and distance <= 525 and distance >= 325 and not immune then
+						if W and W:CanBeCasted() and me:CanCast() and distance <= 575 and distance >= 325 then
 							table.insert(castQueue,{math.ceil(W:FindCastPoint()*1000),W})
-						elseif distance <= 700 and distance >= 575 and distance <= 325 and distance >= 0 and SleepCheck("stop2") then
+						elseif distance <= 700 and distance >= 575 and SleepCheck("stop2") then
 							me:Stop()
-							Sleep(1000 + client.latency,"stop2")
+							Sleep(1000+client.latency,"stop2")
 						end
-						if E and E:CanBeCasted() and me:CanCast() and distance <= 825 and distance >= 575 and not immune then
+						if E and E:CanBeCasted() and me:CanCast() and distance <= 825 and distance >= 575 then
 							table.insert(castQueue,{math.ceil(E:FindCastPoint()*1000),E})
-						elseif distance <= 950 and distance >= 825 and distance <= 525 and distance >= 325 and SleepCheck("stop3") then
+						elseif distance <= 950 and distance >= 825 and SleepCheck("stop3") then
 							me:Stop()
-							Sleep(1000 + client.latency,"stop3")
+							Sleep(1000+client.latency,"stop3")
 						end
 						if butterfly and butterfly:CanBeCasted() then
 							table.insert(castQueue,{100,butterfly})
@@ -119,7 +119,7 @@ function Main(tick)
 					end
 				end
 				if GetDistance2D(victim,me) > attackRange+100 then
-					local xyz = SkillShot.PredictedXYZ(victim,me:GetTurnTime(victim)*1000+300+ client.latency)
+					local xyz = SkillShot.PredictedXYZ(victim,me:GetTurnTime(victim)*1000+300+client.latency)
 					me:Move(xyz)
 				else
 					me:Attack(victim)
