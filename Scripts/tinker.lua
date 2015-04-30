@@ -114,25 +114,25 @@ function Main(tick)
 							if dagon and not ethereal and not sheep and R and R:CanBeCasted() and me:CanCast() then
 								if dagon.cd ~= 0 and W.cd ~= 0 then
 									table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R})
-									Sleep(1000,"123")
+									Sleep(1100+client.latency,"123")
 								end
 							end
 							if dagon and ethereal and not sheep and R and R:CanBeCasted() and me:CanCast() then
 								if dagon.cd ~= 0 and ethereal.cd ~= 0 and W.cd ~= 0 then
 									table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R})
-									Sleep(1000,"123")
+									Sleep(1100+client.latency,"123")
 								end
 							end
 							if dagon and not ethereal and sheep and R and R:CanBeCasted() and me:CanCast() then
 								if dagon.cd ~= 0 and sheep.cd ~= 0 and W.cd ~= 0 then
 									table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R})
-									Sleep(1000,"123")
+									Sleep(1100+client.latency,"123")
 								end
 							end
 							if dagon and ethereal and sheep and R and R:CanBeCasted() and me:CanCast() then
 								if dagon.cd ~= 0 and ethereal.cd ~= 0 and sheep.cd ~= 0 and W.cd ~= 0 then
 									table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R})
-									Sleep(1000,"123")
+									Sleep(1100+client.latency,"123")
 								end
 							end
 						end
