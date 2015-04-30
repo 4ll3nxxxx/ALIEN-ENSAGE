@@ -18,28 +18,28 @@ function Tick(tick)
 		if tick > sleep[1] and midas and midas:CanBeCasted() then
 			for _,v in ipairs(creeps) do
 				me:CastAbility(midas,v)
-				sleep[1] = tick + 250
+				sleep[1] = tick + 1000 + client.latency
 			end
 		end
 
 		if tick > sleep[2] and bloodstone and bloodstone:CanBeCasted() and me.health/me.maxHealth < 0.1 then
 			me:CastAbility(bloodstone,me.position)
-			sleep[2] = tick + 250
+			sleep[2] = tick + 1000 + client.latency
 		end
 
 		if tick > sleep[3] and bottle and bottle:CanBeCasted() and me:DoesHaveModifier("modifier_fountain_aura_buff") and not me:DoesHaveModifier("modifier_bottle_regeneration") and (me.health < me.maxHealth or me.mana < me.maxMana) then
 			me:CastAbility(bottle)
-			sleep[3] = tick + 250
+			sleep[3] = tick + 1000 + client.latency
 		end
 
 		if tick > sleep[4] and phaseboots and phaseboots:CanBeCasted() then
 			me:CastAbility(phaseboots)
-			sleep[4] = tick + 250
+			sleep[4] = tick + 1000 + client.latency
 		end
 
 		if tick > sleep[5] and stick and stick:CanBeCasted() and stick.charges > 0 and me.health/me.maxHealth < 0.3 then
 			me:CastAbility(stick)
-			sleep[5] = tick + 250
+			sleep[5] = tick + 1000 + client.latency
 		end
 
 	end
