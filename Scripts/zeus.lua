@@ -32,7 +32,7 @@ function Main(tick)
 		end
 	end
 
-	local target = targetFind:GetClosestToMouse(500)
+	local target = targetFind:GetClosestToMouse(100)
 	if not target or target:IsUnitState(LuaEntityNPC.STATE_MAGIC_IMMUNE) or targetHandle then
 		targetHandle = nil
 		return
@@ -40,7 +40,7 @@ function Main(tick)
 
 	if IsKeyDown(config.HotKey) and not client.chat then
 		if tick > sleep[1] then
-			if target and GetDistance2D(target,me) <= 2000 and not target:DoesHaveModifier("modifier_item_blade_mail_reflect")then
+			if target and GetDistance2D(target,me) <= 2000 and not target:DoesHaveModifier("modifier_item_blade_mail_reflect") then
 				local Q = me:GetAbility(1)
 				local W = me:GetAbility(2)
 				local R = me:GetAbility(4)
