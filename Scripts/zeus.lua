@@ -26,7 +26,7 @@ function Main(tick)
 			if v[4] and ability:CanBeCasted() then
 				me:CastAbility(ability,v[3],false)
 			end
-			sleep[1] = tick + v[1] + client.latency
+			sleep[2] = tick + v[1] + client.latency
 			return
 		end
 	end
