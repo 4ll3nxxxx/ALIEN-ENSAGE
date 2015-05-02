@@ -45,10 +45,8 @@ function Main(tick)
 				local refresher = me:FindItem("item_refresher")
 				local veil = me:FindItem("item_veil_of_discord")
 				local soulring = me:FindItem("item_soul_ring")
-				local damage1 = {225,350,475}
-				local damage2 = {440,540,640}
-				local damage3 = {880,1080,1280}
-				if config.RefresherCombo and refresher and refresher:CanBeCasted() and R.cd ~= 0 then
+
+				if config.RefresherCombo and target.alive and refresher and refresher:CanBeCasted() and R.cd ~= 0 then
 					table.insert(castQueue,{1000+math.ceil(refresher:FindCastPoint()*1000),refresher})
 				end
 				if distance <= 850 and Q and Q:CanBeCasted() and me:CanCast() then
@@ -69,14 +67,16 @@ function Main(tick)
 				if me.mana < me.maxMana*0.5 and soulring and soulring:CanBeCasted() then
 					table.insert(castQueue,{100,soulring})
 				end
-				if config.Ult and R and R:CanBeCasted() then
-					if not ultimate and not refresher and (target.health > 0 and target.health < damage1[R.level]) then 
+				if config.Ult and target and R and R:CanBeCasted() and target:CanDie() then
+					if R.level > 0 then
+						CastPoint = R:GetCastPoint(R.level)+client.latency/1000
+						Dmg = R:GetSpecialData("damage",R.level)
+						if me:AghanimState() then		
+							Dmg = R:GetSpecialData("damage_scepter",R.level)
+						end
+					end
+					if target.health < target:DamageTaken(Dmg, DAMAGE_MAGC, me) then
 						table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R})
-					elseif ultimate and not refresher and (target.health > 0 and target.health < damage2[R.level]) then
-						table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R})
-					elseif ultimate and refresher and (target.health > 0 and target.health < damage3[R.level]) then
-						table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R})
-						return
 					end
 				end
 				me:Attack(target)
