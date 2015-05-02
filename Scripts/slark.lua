@@ -110,7 +110,7 @@ function Main(tick)
 						end
 					end
 				end
-				if GetDistance2D(victim,me) > attackRange+100 then
+				if GetDistance2D(victim,me) > 400 then
 					local xyz = SkillShot.PredictedXYZ(victim,me:GetTurnTime(victim)*1000+300+ client.latency)
 					me:Move(xyz)
 				else
