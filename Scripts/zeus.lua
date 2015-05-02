@@ -32,15 +32,10 @@ function Main(tick)
 		end
 	end
 
-	local target = targetFind:GetClosestToMouse(100)
-	if not target or target:IsUnitState(LuaEntityNPC.STATE_MAGIC_IMMUNE) or targetHandle then
-		targetHandle = nil
-		return
-	end
-
 	if IsKeyDown(config.HotKey) and not client.chat then
+		target = targetFind:GetClosestToMouse(100)
 		if tick > sleep[1] then
-			if target and GetDistance2D(target,me) <= 2000 and not target:DoesHaveModifier("modifier_item_blade_mail_reflect") then
+			if target and GetDistance2D(target,me) <= 2000 and not target:DoesHaveModifier("modifier_item_blade_mail_reflect") and not target:IsMagicImmune() then
 				local Q = me:GetAbility(1)
 				local W = me:GetAbility(2)
 				local R = me:GetAbility(4)
@@ -52,6 +47,9 @@ function Main(tick)
 				local damage1 = {225,350,475}
 				local damage2 = {440,540,640}
 				local damage3 = {880,1080,1280}
+				if config.RefresherCombo and refresher and refresher:CanBeCasted() and R.cd ~= 0 then
+					table.insert(castQueue,{1000+math.ceil(refresher:FindCastPoint()*1000),refresher})
+				end
 				if distance <= 850 and Q and Q:CanBeCasted() and me:CanCast() then
 					table.insert(castQueue,{1000+math.ceil(Q:FindCastPoint()*1000),Q,target})
 				end
@@ -80,13 +78,9 @@ function Main(tick)
 						return
 					end
 				end
-
-				if config.RefresherCombo and refresher and refresher:CanBeCasted() and R.cd ~= 0 then
-					table.insert(castQueue,{1000+math.ceil(refresher:FindCastPoint()*1000),refresher})
-				end
+				me:Attack(target)
+				sleep[1] = tick + 100
 			end
-			me:Attack(target)
-			sleep[1] = tick + 100
 		end
 	end
 end
