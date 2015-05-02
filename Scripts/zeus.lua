@@ -68,12 +68,9 @@ function Main(tick)
 					table.insert(castQueue,{100,soulring})
 				end
 				if config.Ult and target and R and R:CanBeCasted() and target:CanDie() then
-					if R.level > 0 then
-						CastPoint = R:GetCastPoint(R.level)+client.latency/1000
-						Dmg = R:GetSpecialData("damage",R.level)
-						if me:AghanimState() then		
-							Dmg = R:GetSpecialData("damage_scepter",R.level)
-						end
+					Dmg = R:GetSpecialData("damage",R.level)
+					if me:AghanimState() then		
+						Dmg = R:GetSpecialData("damage_scepter",R.level)
 					end
 					if target.health < target:DamageTaken(Dmg, DAMAGE_MAGC, me) then
 						table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R})
