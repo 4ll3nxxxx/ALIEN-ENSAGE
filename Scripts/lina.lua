@@ -6,6 +6,7 @@ require("libs.Skillshot")
 
 local config = ScriptConfig.new()
 config:SetParameter("Hotkey", "32", config.TYPE_HOTKEY)
+config:SetParameter("Ult", true)
 config:Load()
 
 local play = false local myhero = nil local victim = nil local start = false local resettime = nil local sleep = {0,0,0}
@@ -71,7 +72,14 @@ function Main(tick)
 				if tick > sleep[2] then
 					local Q = me:GetAbility(1)
 					local W = me:GetAbility(2)
+					local R = me:GetAbility(4)
 					local euls = me:FindItem("item_cyclone")
+					if config.Ult and victim and R and R:CanBeCasted() and victim:CanDie() and not victim:DoesHaveModifier("modifier_item_blade_mail_reflect") and not victim:IsLinkensProtected() then
+						Dmg = R:GetSpecialData("damage",R.level)
+						if victim.health < victim:DamageTaken(Dmg, DAMAGE_MAGC, me) and victim.health > 400 then
+							table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R,victim})
+						end
+					end
 					if euls then
 						if euls and euls:CanBeCasted() then
 							if GetDistance2D(victim,me) <= euls.castRange and W and W:CanBeCasted() then
@@ -112,7 +120,7 @@ end
 function xyz1(victim,me,Q)
 	local CP = Q:FindCastPoint()
 	local delay = ((400-Animations.getDuration(Q)*1000)+CP*1000+client.latency+me:GetTurnTime(victim)*1000)
-	local speed = 2100
+	local speed = Q:GetSpecialData("dragon_slave_speed")
 	local xyz = SkillShot.SkillShotXYZ(me,victim,delay,speed)
 	if xyz and GetDistance2D(victim,me) <= Q.castRange then 
 		table.insert(castQueue,{math.ceil(CP*1000+client.latency),Q,xyz})
@@ -122,7 +130,7 @@ end
 function xyz2(victim,me,W)
 	local CP = W:FindCastPoint()
 	local delay = ((312.5-Animations.getDuration(W)*1000)+CP*1000+client.latency+me:GetTurnTime(victim)*1000)
-	local speed = 1800
+	local speed = W:GetSpecialData("light_strike_array_delay_time")
 	local xyz = SkillShot.SkillShotXYZ(me,victim,delay,speed)
 	if xyz and GetDistance2D(victim,me) <= W.castRange then 
 		table.insert(castQueue,{math.ceil(CP*1000+client.latency),W,xyz})
