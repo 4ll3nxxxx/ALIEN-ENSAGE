@@ -82,7 +82,7 @@ function Main(tick)
 					if not rearm then
 						if blink and blink:CanBeCasted() and me:CanCast() and distance > attackRange and config.blink then
 							local CP = blink:FindCastPoint()
-							local delay = ((500-Animations.getDuration(R)*1000)+CP*1000+client.latency+me:GetTurnTime(victim)*1000)
+							local delay = ((500-Animations.getDuration(blink)*1000)+CP*1000+client.latency+me:GetTurnTime(victim)*1000)
 							local speed = blink:GetSpecialData("blink_range")
 							local xyz = SkillShot.SkillShotXYZ(me,victim,delay,speed)
 							if xyz then
