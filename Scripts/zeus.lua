@@ -35,7 +35,7 @@ function Main(tick)
 	if IsKeyDown(config.HotKey) and not client.chat then
 		target = targetFind:GetClosestToMouse(100)
 		if tick > sleep[1] then
-			if target and GetDistance2D(target,me) <= 2000 and not target:DoesHaveModifier("modifier_item_blade_mail_reflect") and not target:IsMagicImmune() then
+			if target and GetDistance2D(target,me) <= 2000 and not target:DoesHaveModifier("modifier_item_blade_mail_reflect") and not target:IsMagicImmune() and target:CanDie() then
 				local Q = me:GetAbility(1)
 				local W = me:GetAbility(2)
 				local R = me:GetAbility(4)
@@ -69,7 +69,7 @@ function Main(tick)
 				if me.mana < me.maxMana*0.5 and soulring and soulring:CanBeCasted() then
 					table.insert(castQueue,{100,soulring})
 				end
-				if config.Ult and target and R and R:CanBeCasted() and target:CanDie() then
+				if config.Ult and target and R and R:CanBeCasted() then
 					Dmg = R:GetSpecialData("damage",R.level)
 					if me:AghanimState() then		
 						Dmg = R:GetSpecialData("damage_scepter",R.level)
