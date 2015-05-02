@@ -6,7 +6,6 @@ require("libs.Skillshot")
 
 local config = ScriptConfig.new()
 config:SetParameter("HotKey", "32", config.TYPE_HOTKEY)
-config:SetParameter("RefresherCombo", true)
 config:SetParameter("Ult", true)
 config:Load()
 
@@ -41,10 +40,17 @@ function Main(tick)
 				local W = me:GetAbility(2)
 				local R = me:GetAbility(4)
 				local distance = GetDistance2D(target,me)
-				local refresher = me:FindItem("item_refresher")
+				local dagon = me:FindDagon()
+				local ethereal = me:FindItem("item_ethereal_blade")
 				local veil = me:FindItem("item_veil_of_discord")
 				local soulring = me:FindItem("item_soul_ring")
-
+				if dagon and dagon:CanBeCasted() and me:CanCast() and target:DoesHaveModifier("modifier_item_veil_of_discord_debuff") then
+					table.insert(castQueue,{1000+math.ceil(dagon:FindCastPoint()*1000),dagon,target})
+					Sleep(me:GetTurnTime(target)*1000, "casting")
+				end
+				if ethereal and ethereal:CanBeCasted() and me:CanCast() then
+					table.insert(castQueue,{math.ceil(ethereal:FindCastPoint()*1000),ethereal,victim})
+				end
 				if config.RefresherCombo and target.alive and refresher and refresher:CanBeCasted() and R.cd ~= 0 then
 					table.insert(castQueue,{1000+math.ceil(refresher:FindCastPoint()*1000),refresher})
 				end
@@ -54,7 +60,7 @@ function Main(tick)
 				if W and W:CanBeCasted() and me:CanCast() then
 					local CP = W:FindCastPoint()
 					local delay = ((270-Animations.getDuration(W)*1000)+CP*1000+client.latency+me:GetTurnTime(target)*1000)
-					local speed = 1600
+					local speed = W:GetSpecialData("true_sight_radius")
 					local xyz = SkillShot.SkillShotXYZ(me,target,delay,speed)
 					if xyz and distance <= 700 then 
 						table.insert(castQueue,{math.ceil(CP*1000+client.latency),W,xyz})
