@@ -49,10 +49,7 @@ function Main(tick)
 					Sleep(me:GetTurnTime(target)*1000, "casting")
 				end
 				if ethereal and ethereal:CanBeCasted() and me:CanCast() then
-					table.insert(castQueue,{math.ceil(ethereal:FindCastPoint()*1000),ethereal,victim})
-				end
-				if config.RefresherCombo and target.alive and refresher and refresher:CanBeCasted() and R.cd ~= 0 then
-					table.insert(castQueue,{1000+math.ceil(refresher:FindCastPoint()*1000),refresher})
+					table.insert(castQueue,{math.ceil(ethereal:FindCastPoint()*1000),ethereal,target})
 				end
 				if distance <= 850 and Q and Q:CanBeCasted() and me:CanCast() then
 					table.insert(castQueue,{1000+math.ceil(Q:FindCastPoint()*1000),Q,target})
