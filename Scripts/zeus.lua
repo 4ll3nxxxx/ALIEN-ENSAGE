@@ -7,8 +7,6 @@ require("libs.Skillshot")
 local config = ScriptConfig.new()
 config:SetParameter("HotKey", "32", config.TYPE_HOTKEY)
 config:SetParameter("RefresherCombo", true)
-config:SetParameter("x", 1350)
-config:SetParameter("y", 50)
 config:Load()
 
 local play = false local targetHandle = nil local effect = {} local castQueue = {} local sleep = {0,0,0}
