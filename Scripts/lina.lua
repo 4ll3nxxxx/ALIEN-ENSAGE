@@ -74,7 +74,7 @@ function Main(tick)
 					local W = me:GetAbility(2)
 					local R = me:GetAbility(4)
 					local euls = me:FindItem("item_cyclone")
-					if config.Ult and victim and R and R:CanBeCasted() and victim:CanDie() and not victim:DoesHaveModifier("modifier_item_blade_mail_reflect") and not victim:IsLinkensProtected() then
+					if config.Ult and victim and R and R:CanBeCasted() and victim:CanDie() and not victim:DoesHaveModifier("modifier_item_blade_mail_reflect") and not victim:IsLinkensProtected() and not victim:DoesHaveModifier("modifier_item_lotus_orb_active") then
 						Dmg = R:GetSpecialData("damage",R.level)
 						if victim.health < victim:DamageTaken(Dmg, DAMAGE_MAGC, me) and victim.health > 400 then
 							table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R,victim})
