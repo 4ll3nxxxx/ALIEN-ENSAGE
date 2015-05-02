@@ -7,6 +7,7 @@ require("libs.Skillshot")
 local config = ScriptConfig.new()
 config:SetParameter("HotKey", "32", config.TYPE_HOTKEY)
 config:SetParameter("RefresherCombo", true)
+config:SetParameter("Ult", true)
 config:Load()
 
 local play = false local targetHandle = nil local effect = {} local castQueue = {} local sleep = {0,0,0}
@@ -37,35 +38,19 @@ function Main(tick)
 		return
 	end
 
-	local Q = me:GetAbility(1)
-	local W = me:GetAbility(2)
-	local R = me:GetAbility(4)
-	local distance = GetDistance2D(target,me)
-	local ultimate = me:FindItem("item_ultimate_scepter")
-	local refresher = me:FindItem("item_refresher")
-	local veil = me:FindItem("item_veil_of_discord")
-	local damage1 = {225,350,475}
-	local damage2 = {440,540,640}
-	local damage3 = {880,1080,1280}
-
-	if target and R and R:CanBeCasted() then
-		if not ultimate and not refresher and (target.health > 0 and target.health < damage1[R.level]) then 
-			table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R})
-		elseif ultimate and not refresher and (target.health > 0 and target.health < damage2[R.level]) then
-			table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R})
-		elseif ultimate and refresher and (target.health > 0 and target.health < damage3[R.level]) then
-			table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R})
-			return
-		end
-	end
-
-	if config.RefresherCombo and refresher and refresher:CanBeCasted() and R.cd ~= 0 then
-		table.insert(castQueue,{1000+math.ceil(refresher:FindCastPoint()*1000),refresher})
-	end
-
 	if IsKeyDown(config.HotKey) and not client.chat then
 		if tick > sleep[1] then
-			if target and distance <= 2000 and not target:DoesHaveModifier("modifier_item_blade_mail_reflect")then
+			if target and GetDistance2D(target,me) <= 2000 and not target:DoesHaveModifier("modifier_item_blade_mail_reflect")then
+				local Q = me:GetAbility(1)
+				local W = me:GetAbility(2)
+				local R = me:GetAbility(4)
+				local distance = GetDistance2D(target,me)
+				local ultimate = me:FindItem("item_ultimate_scepter")
+				local refresher = me:FindItem("item_refresher")
+				local veil = me:FindItem("item_veil_of_discord")
+				local damage1 = {225,350,475}
+				local damage2 = {440,540,640}
+				local damage3 = {880,1080,1280}
 				if distance <= 850 and Q and Q:CanBeCasted() and me:CanCast() then
 					table.insert(castQueue,{1000+math.ceil(Q:FindCastPoint()*1000),Q,target})
 				end
@@ -80,6 +65,20 @@ function Main(tick)
 				end
 				if veil and veil:CanBeCasted() and me:CanCast() then
 					table.insert(castQueue,{1000+math.ceil(veil:FindCastPoint()*1000),veil,target.position})        
+				end
+				if config.Ult and R and R:CanBeCasted() then
+					if not ultimate and not refresher and (target.health > 0 and target.health < damage1[R.level]) then 
+						table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R})
+					elseif ultimate and not refresher and (target.health > 0 and target.health < damage2[R.level]) then
+						table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R})
+					elseif ultimate and refresher and (target.health > 0 and target.health < damage3[R.level]) then
+						table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R})
+						return
+					end
+				end
+
+				if config.RefresherCombo and refresher and refresher:CanBeCasted() and R.cd ~= 0 then
+					table.insert(castQueue,{1000+math.ceil(refresher:FindCastPoint()*1000),refresher})
 				end
 			end
 			me:Attack(target)
