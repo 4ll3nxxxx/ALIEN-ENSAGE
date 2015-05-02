@@ -48,6 +48,7 @@ function Main(tick)
 				local ultimate = me:FindItem("item_ultimate_scepter")
 				local refresher = me:FindItem("item_refresher")
 				local veil = me:FindItem("item_veil_of_discord")
+				local soulring = me:FindItem("item_soul_ring")
 				local damage1 = {225,350,475}
 				local damage2 = {440,540,640}
 				local damage3 = {880,1080,1280}
@@ -65,6 +66,9 @@ function Main(tick)
 				end
 				if veil and veil:CanBeCasted() and me:CanCast() then
 					table.insert(castQueue,{1000+math.ceil(veil:FindCastPoint()*1000),veil,target.position})        
+				end
+				if me.mana < me.maxMana*0.5 and soulring and soulring:CanBeCasted() then
+					table.insert(castQueue,{100,soulring})
 				end
 				if config.Ult and R and R:CanBeCasted() then
 					if not ultimate and not refresher and (target.health > 0 and target.health < damage1[R.level]) then 
