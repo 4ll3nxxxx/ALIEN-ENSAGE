@@ -10,11 +10,12 @@ config:SetParameter("RefresherCombo", true)
 config:SetParameter("Ult", true)
 config:Load()
 
-local play = false local targetHandle = nil local effect = {} local castQueue = {} local sleep = {0,0,0}
+local play = false local target = nil local effect = {} local castQueue = {} local sleep = {0,0,0}
 
 function Main(tick)
     if not PlayingGame() then return end
-    local me = entityList:GetMyHero()
+	local me = entityList:GetMyHero()
+	local ID = me.classId if ID ~= myhero then return end
 
 	for i=1,#castQueue,1 do
 		local v = castQueue[1]
@@ -92,6 +93,8 @@ function Load()
 			script:Disable()
 		else
 			play = true
+			target = nil
+			myhero = me.classId
 			script:RegisterEvent(EVENT_FRAME, Main)
 			script:UnregisterEvent(Load)
 		end
@@ -99,8 +102,8 @@ function Load()
 end
 
 function Close()
-	active = false 
-	targetHandle = nil 
+	target = nil 
+	myhero = nil
 	collectgarbage("collect")
 	if play then
 		script:UnregisterEvent(Main)
