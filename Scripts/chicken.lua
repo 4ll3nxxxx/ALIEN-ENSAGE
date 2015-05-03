@@ -33,7 +33,7 @@ function Tick(tick)
 	if chicken then
 		if tick > delay and SleepCheck("chicken") then
 			local bottle = me:FindItem("item_bottle")
-			local enemy = entityList:GetEntities(function (v) return (v.type==LuaEntity.TYPE_HERO or v.classId==323 or v.classId==527) and v.team ~= me.team and v.alive and v.visible end)
+			local enemy = entityList:GetEntities(function (v) return (v.type==LuaEntity.TYPE_HERO or v.classId==CDOTA_BaseNPC_Tower or v.classId==CDOTA_Unit_SpiritBear) and v.team ~= me.team and v.alive and v.visible end)
 			for i,v in ipairs(enemy) do
 				if GetDistance2D(chicken,v) <= config.distance and chicken:GetAbility(1):CanBeCasted() then
 					chicken:CastAbility(chicken:GetAbility(1))
