@@ -250,7 +250,7 @@ function Tick( tick )
 						end
 					end
 				end
-			elseif v.classId == CDOTA_Unit_Hero_Necrolyte then
+			elseif v.name == "npc_dota_hero_necrolyte" then
 				if v:GetAbility(4) and v:GetAbility(4).level > 0 and v:GetAbility(4).abilityPhase then
 					if GetDistance2D(v,me) < 600 then
 						UseEulScepterTarget()
@@ -267,10 +267,9 @@ function Tick( tick )
 						OracleFalsePromise()
 					end
 				end
-			elseif v.classId == CDOTA_Unit_Hero_Terrorblade then
+			elseif v.name == "npc_dota_hero_terrorblade" then
 				if v:GetAbility(4) and v:GetAbility(4).level > 0 and v:GetAbility(4).abilityPhase then
 					if GetDistance2D(v,me) < 325 then
-						PuckW(false)
 						UseEulScepterTarget()
 						UseSheepStickTarget()
 						UseOrchidtarget() SkySilence()
