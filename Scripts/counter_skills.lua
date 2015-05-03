@@ -150,6 +150,7 @@ function Tick( tick )
 							UseShadowBlade()
 							PLDoppleganger()
 							Nyx()
+							UseLotusOrb()
 						end
 						if not timep then
 							timep = client.gameTime
@@ -160,6 +161,7 @@ function Tick( tick )
 							UseOrchidtarget() SkySilence()
 							UseShadowBlade()
 							PLDoppleganger()
+							UseLotusOrb()
 							timep = nil
 						end
 					end	
@@ -237,6 +239,7 @@ function Tick( tick )
 							PuckW(false)
 							UseSheepStickTarget()
 							UseOrchidtarget() SkySilence()
+							UseLotusOrb()
 						end
 						turntime = (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0))
 						if turntime == 0 then
@@ -248,6 +251,7 @@ function Tick( tick )
 							Lifestealerrage()
 							PLDoppleganger()
 							OracleFalsePromise()
+							UseLotusOrb()
 						end
 					end
 				end
@@ -306,6 +310,7 @@ function Tick( tick )
 						turntime = (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0))
 						if turntime == 0 then
 							OracleFateEdict()
+							UseLotusOrb()
 						end
 					end
 				end
@@ -315,6 +320,7 @@ function Tick( tick )
 						turntime = (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0))
 						if turntime == 0 then
 							OracleFateEdict()
+							UseLotusOrb()
 						end
 					end
 				end
@@ -406,6 +412,7 @@ function Tick( tick )
 								Nyx()
 								Puck()
 								Lifestealerrage()
+								UseLotusOrb()
 								wait = 0								
 							end
 						end
@@ -458,6 +465,7 @@ function Tick( tick )
 								UseBladeMail()
 								Puck()
 								Nyx()
+								UseLotusOrb()
 								wait = 0
 							end
 						end
@@ -876,6 +884,7 @@ function Tick( tick )
 					OracleFalsePromise()
 					UseSheepStickTarget()			
 					Nyx()
+					UseLotusOrb()
 				end
 				UseShadowBlade()
 				UseManta()
@@ -904,6 +913,7 @@ function Tick( tick )
 				Useblackking()
 				PLDoppleganger()
 				OracleFateEdict()
+				UseLotusOrb()
 				if v:GetAbility(4) and v:GetAbility(4).name == "lion_finger_of_death" then
 					target = v
 					TusksnowballTarget()
@@ -1061,6 +1071,7 @@ function Tick( tick )
 							SlarkPounce()	
 							PLDoppleganger()
 							OracleFateEdict()
+							UseLotusOrb()
 							return
 						end
 					end
@@ -1074,6 +1085,7 @@ function Tick( tick )
 							SlarkDarkPact()
 							SlarkPounce()	
 							PLDoppleganger()
+							UseLotusOrb()
 							return
 						end
 					end
@@ -1137,6 +1149,7 @@ function Tick( tick )
 							UseEulScepterSelf()
 							Juggernautfury()
 							PLDoppleganger()
+							UseLotusOrb()
 							return 
 						elseif v:GetAbility(s).name == "tidehunter_ravage" and GetDistance2D(v,me) < 1050 then
 							if GetDistance2D(v,me) < 400 then
@@ -1153,6 +1166,7 @@ function Tick( tick )
 								UseOrchidtarget() SkySilence()
 								UseEulScepterSelf()
 								Puck()
+								UseLotusOrb()
 							end
 							PLDoppleganger()
 							return 
@@ -1368,6 +1382,7 @@ function Tick( tick )
 								UseShadowBlade()
 								Useshadowamulet()
 								PLDoppleganger()
+								UseLotusOrb()
 							end
 						end
 					elseif v:GetAbility(t).name == "queenofpain_scream_of_pain" then
@@ -1382,6 +1397,7 @@ function Tick( tick )
 								UseShadowBlade()
 								Useshadowamulet()
 								PLDoppleganger()
+								UseLotusOrb()
 							end
 						end
 					elseif v:GetAbility(t).name == "sandking_epicenter" then
@@ -1491,6 +1507,7 @@ function Tick( tick )
 									SlarkPounce()
 									PLDoppleganger()
 									OracleFateEdict()
+									UseLotusOrb()
 								end
 							end
 						end
@@ -1521,7 +1538,8 @@ function Tick( tick )
 									Juggernautfury()
 									Nyx()
 									Useshadowamulet()	
-									PLDoppleganger()									
+									PLDoppleganger()
+									UseLotusOrb()								
 								end
 							end
 						end
@@ -1620,6 +1638,7 @@ function Tick( tick )
 									Embersleighttargetcal()
 									EmberGuard()
 									PLDoppleganger()
+									UseLotusOrb()
 								end
 							end
 						end
@@ -1759,6 +1778,7 @@ function Tick( tick )
 									Embersleighttargetcal()
 									EmberGuard()
 									PLDoppleganger()
+									UseLotusOrb()
 								end
 							end
 						end
@@ -2988,10 +3008,15 @@ function UseManta()
 end
 
 function UseShadowBlade()
-	local shadowblade = me:FindItem("item_invis_sword")
+	local shadowblade = me:FindItem("item_invis_sword") or me:FindItem("item_silver_edge")
+	local glimmer = me:FindItem("item_glimmer_cape")
 	if activated == 0 then
-		if shadowblade and shadowblade.cd == 0 then
-			me:CastAbility(shadowblade)
+		if (shadowblade and shadowblade.cd == 0) or (glimmer and glimmer:CanBeCasted())  then
+			if glimmer then
+				me:CastAbility(glimmer,me)
+			else
+				me:CastAbility(shadowblade)
+			end
 			activated = 1
 			sleepTick = GetTick() + 500
 			return
@@ -3025,6 +3050,18 @@ function Useshadowamulettarget()--target
 				sleepTick= GetTick() +500
 				return
 			end
+		end
+	end
+end
+
+function UseLotusOrb()
+	local lorb = me:FindItem("item_lotus_orb")
+	if activated == 0 then
+		if lorb and lorb:CanBeCasted() then
+			me:CastAbility(lorb,me)
+			activated = 1
+			sleepTick = GetTick() + 100
+			return
 		end
 	end
 end
