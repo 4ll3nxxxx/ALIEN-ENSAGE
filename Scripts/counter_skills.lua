@@ -252,7 +252,7 @@ function Tick( tick )
 				end
 			elseif v.classId == CDOTA_Unit_Hero_Necrolyte then
 				if v:GetAbility(4) and v:GetAbility(4).level > 0 and v:GetAbility(4).abilityPhase then
-					if distance < 600 then
+					if GetDistance2D(v,me) < 600 then
 						UseEulScepterTarget()
 						UseSheepStickTarget()
 						UseOrchidtarget() SkySilence()
@@ -269,7 +269,7 @@ function Tick( tick )
 				end
 			elseif v.classId == CDOTA_Unit_Hero_Terrorblade then
 				if v:GetAbility(4) and v:GetAbility(4).level > 0 and v:GetAbility(4).abilityPhase then
-					if distance < 325 then
+					if GetDistance2D(v,me) < 325 then
 						PuckW(false)
 						UseEulScepterTarget()
 						UseSheepStickTarget()
