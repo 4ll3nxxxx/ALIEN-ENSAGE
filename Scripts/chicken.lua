@@ -83,8 +83,10 @@ function Deliver(chicken)
 end
 
 function Boost(chicken)
-	if chicken and chicken:GetAbility(6):CanBeCasted() then
-		chicken:CastAbility(chicken:GetAbility(6))
+	if chicken:GetProperty("CDOTA_Unit_Courier","m_bFlyingCourier") then
+		if chicken and chicken:GetAbility(6):CanBeCasted() then
+			chicken:CastAbility(chicken:GetAbility(6))
+		end
 	end
 end
 
