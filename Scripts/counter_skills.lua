@@ -1426,7 +1426,6 @@ function Tick( tick )
 								UseShadowBlade()
 								Useshadowamulet()
 								PLDoppleganger()
-								UseLotusOrb()
 							end
 						end
 					elseif v:GetAbility(t).name == "sandking_epicenter" then
