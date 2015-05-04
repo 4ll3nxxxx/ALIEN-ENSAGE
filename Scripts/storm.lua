@@ -78,7 +78,7 @@ function Main(tick)
 					local balling = me:DoesHaveModifier("modifier_storm_spirit_ball_lightning")
 					if R and R:CanBeCasted() and me:CanCast() and distance > attackRange+50 and not balling and not R.abilityPhase then
 						local CP = R:FindCastPoint()
-						local delay = ((270-Animations.getDuration(W)*1000)+CP*1000+client.latency+me:GetTurnTime(target)*1000)
+						local delay = ((270-Animations.getDuration(W)*1000)+CP*1000+client.latency+me:GetTurnTime(victim)*1000)
 						local speed = R:GetSpecialData("ball_lightning_move_speed", R.level)
 						local xyz = SkillShot.SkillShotXYZ(me,victim,delay,speed)
 						if xyz then 
@@ -111,7 +111,7 @@ function Main(tick)
 			if victim then
 				if victim.visible then
 					local xyz = SkillShot.PredictedXYZ(victim,me:GetTurnTime(victim)*1000+client.latency+500)
-					me:Move(xyz)
+					me:Move(victim.position)
 				else
 					me:Follow(victim)
 				end
