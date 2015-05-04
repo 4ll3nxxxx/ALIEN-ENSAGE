@@ -37,7 +37,7 @@ function Tick(tick)
 			for i,v in ipairs(enemy) do
 				if GetDistance2D(chicken,v) <= config.distance and chicken:GetAbility(1):CanBeCasted() then
 					chicken:CastAbility(chicken:GetAbility(1))
-					Boost(chicken)
+					boost(chicken)
 					Sleep(client.latency,"chicken")
 					safety = false
 				else

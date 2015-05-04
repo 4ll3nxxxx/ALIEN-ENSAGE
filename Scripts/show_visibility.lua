@@ -5,7 +5,7 @@ local play = false local eff = {}
 function Tick(tick)
     if not PlayingGame() then return end
     local me = entityList:GetMyHero()
-    local entities = entityList:GetEntities(function (v) return (v.type==LuaEntity.TYPE_HERO or v.classId==403 or v.classId==385 or v.classId==386 or v.classId==388 or v.classId==463 or v.classId==527 or v.classId==401) and v.team==me.team end)
+    local entities = entityList:GetEntities(function (v) return (v.type==LuaEntity.TYPE_HERO or v.classId==CDOTA_Unit_Courier or v.classId==CDOTA_NPC_Observer_Ward or v.classId==CDOTA_NPC_Observer_Ward_TrueSight or v.classId==CDOTA_NPC_TechiesMines or v.classId==CDOTA_Unit_Hero_Meepo or v.classId==CDOTA_Unit_SpiritBear or v.classId==CDOTA_Unit_Broodmother_Spiderling) and v.team==me.team end)
     for _,v in ipairs(entities) do
         if v.visibleToEnemy and v.alive then
             if not eff[v.handle] then                            
