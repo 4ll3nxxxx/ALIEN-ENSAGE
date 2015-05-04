@@ -111,7 +111,7 @@ function Main(tick)
 			if victim then
 				if victim.visible then
 					local xyz = SkillShot.PredictedXYZ(victim,me:GetTurnTime(victim)*1000+client.latency+500)
-					me:Move(victim.position)
+					me:Move(xyz)
 				else
 					me:Follow(victim)
 				end
