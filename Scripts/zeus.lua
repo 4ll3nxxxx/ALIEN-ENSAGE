@@ -56,7 +56,7 @@ function Main(tick)
 				end
 				if W and W:CanBeCasted() and me:CanCast() then
 					local CP = W:FindCastPoint()
-					local delay = ((270-Animations.getDuration(W)*1000)+CP*1000+client.latency+me:GetTurnTime(target)*1000)
+					local delay = CP*1000+client.latency+me:GetTurnTime(target)*1000
 					local speed = W:GetSpecialData("true_sight_radius")
 					local xyz = SkillShot.SkillShotXYZ(me,target,delay,speed)
 					if xyz and distance <= 700 then 
@@ -78,7 +78,11 @@ function Main(tick)
 						table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R})
 					end
 				end
-				me:Attack(target)
+				if target.visible and not target:DoesHaveModifier("modifier_item_ethereal_blade_slow") then
+					me:Attack(target)
+				else
+					me:Follow(target)
+				end
 				sleep[1] = tick + 100
 			end
 		end
