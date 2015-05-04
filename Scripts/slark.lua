@@ -65,7 +65,7 @@ function Main(tick)
 				if not Animations.isAttacking(me) and victim.alive and victim.visible then
 					local immune = victim:DoesHaveModifier("modifier_omniknight_repel") or victim:DoesHaveModifier("modifier_black_king_bar_immune")
 					local disable = victim:IsHexed() or victim:IsStunned() or victim:IsLinkensProtected()
-					local shadowplay = me:DoesHaveModifier("modifier_item_invisibility_edge_windwalk")
+					local shadowplay = me:IsInvisible()
 					local abyssal = me:FindItem("item_abyssal_blade")
 					local butterfly = me:FindItem("item_butterfly")
 					local mom = me:FindItem("item_mask_of_madness")
@@ -110,7 +110,7 @@ function Main(tick)
 						end
 					end
 				end
-				if GetDistance2D(victim,me) > 400 then
+				if GetDistance2D(victim,me) > me.attackRange+50 then
 					local xyz = SkillShot.PredictedXYZ(victim,me:GetTurnTime(victim)*1000+300+ client.latency)
 					me:Move(xyz)
 				else
