@@ -78,8 +78,8 @@ function Main(tick)
 					local silence = victim:IsSilenced()
 					if Q and Q:CanBeCasted() and me:CanCast() then
 						local CP = Q:FindCastPoint()
-						local delay = ((300-Animations.getDuration(Q)*1000)+CP*1000+client.latency+me:GetTurnTime(victim)*1000)
-						local speed = 1400
+						local delay = CP*1000+client.latency+me:GetTurnTime(victim)*1000
+						local speed = Q:GetSpecialData("radius",Q.level)
 						local xyz = SkillShot.SkillShotXYZ(me,victim,delay,speed)
 						if xyz and distance <= 550 then 
 							table.insert(castQueue,{math.ceil(Q:FindCastPoint()*1000),Q,xyz})
