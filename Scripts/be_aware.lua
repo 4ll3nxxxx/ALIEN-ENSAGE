@@ -1,7 +1,7 @@
 require("libs.Utils")
 require("libs.SideMessage")
 
-local play = false local sleep = {0,0,0,0,0,0,0,0}
+local play = false local sleep = {0,0,0,0,0,0,0,0,0}
 
 function Tick(tick)
 	if not PlayingGame() then return end
@@ -36,9 +36,13 @@ function Tick(tick)
 			GenerateSideMessage("oracle","oracle_false_promise")
 			sleep[7] = tick + 15000
 		end
-		if tick > sleep[8] and v:FindModifier("modifier_item_invisibility_edge_windwalk")
-			then ItemSideMessage(v.name:gsub("npc_dota_hero_",""),"invis_sword")
+		if tick > sleep[8] and v:FindModifier("modifier_item_invisibility_edge_windwalk") then
+			ItemSideMessage(v.name:gsub("npc_dota_hero_",""),"invis_sword")
 			sleep[8] = tick + 15000
+		end
+		if tick > sleep[9] and v:FindModifier("modifier_item_silver_edge_windwalk") then
+			ItemSideMessage(v.name:gsub("npc_dota_hero_",""),"silver_edge")
+			sleep[9] = tick + 15000
 		end
 	end
 end
