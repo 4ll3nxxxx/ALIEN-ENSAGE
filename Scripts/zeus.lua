@@ -78,7 +78,7 @@ function Main(tick)
 						table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R})
 					end
 				end
-				if target.visible and not target:DoesHaveModifier("modifier_item_ethereal_blade_slow") then
+				if not target:DoesHaveModifier("modifier_item_ethereal_blade_slow") then
 					me:Attack(target)
 				else
 					me:Follow(target)
