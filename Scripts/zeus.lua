@@ -44,6 +44,7 @@ function Main(tick)
 				local ethereal = me:FindItem("item_ethereal_blade")
 				local veil = me:FindItem("item_veil_of_discord")
 				local soulring = me:FindItem("item_soul_ring")
+				local slow = target:DoesHaveModifier("modifier_item_ethereal_blade_slow")
 				if dagon and dagon:CanBeCasted() and me:CanCast() and target:DoesHaveModifier("modifier_item_veil_of_discord_debuff") then
 					table.insert(castQueue,{1000+math.ceil(dagon:FindCastPoint()*1000),dagon,target})
 					Sleep(me:GetTurnTime(target)*1000, "casting")
@@ -78,9 +79,9 @@ function Main(tick)
 						table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R})
 					end
 				end
-				if not target:DoesHaveModifier("modifier_item_ethereal_blade_slow") then
+				if not slow then
 					me:Attack(target)
-				else
+				elseif slow then
 					me:Follow(target)
 				end
 				sleep[1] = tick + 100
