@@ -48,14 +48,14 @@ function Main(tick)
 	local attackRange = me.attackRange	
 
 	if IsKeyDown(config.Hotkey) and not client.chat then	
-		if Animations.CanMove(me) or not start or (victim and GetDistance2D(victim,me) > 480+50) then
+		if Animations.CanMove(me) or not start or (victim and GetDistance2D(victim,me) > attackRange+50) then
 			start = true
 			local lowestHP = targetFind:GetLowestEHP(3000, phys)
 			if lowestHP and (not victim or victim.creep or GetDistance2D(me,victim) > 600 or not victim.alive or lowestHP.health < victim.health) and SleepCheck("victim") then			
 				victim = lowestHP
 				Sleep(250,"victim")
 			end
-			if victim and GetDistance2D(victim,me) > 480+200 and victim.visible then
+			if victim and GetDistance2D(victim,me) > attackRange+200 and victim.visible then
 				local closest = targetFind:GetClosestToMouse(me,2000)
 				if closest and (not victim or closest.handle ~= victim.handle) then 
 					victim = closest
@@ -76,9 +76,9 @@ function Main(tick)
 					local distance = GetDistance2D(victim,me)
 					local disable = victim:IsSilenced() or victim:IsHexed() or victim:IsStunned() or victim:IsLinkensProtected()
 					local balling = me:DoesHaveModifier("modifier_storm_spirit_ball_lightning")
-					if R and R:CanBeCasted() and me:CanCast() and distance > 480 and not balling and not R.abilityPhase then
+					if R and R:CanBeCasted() and me:CanCast() and distance > attackRange+50 and not balling and not R.abilityPhase then
 						local CP = R:FindCastPoint()
-						local delay = CP*1000+client.latency+me:GetTurnTime(victim)*1000
+						local delay = ((270-Animations.getDuration(W)*1000)+CP*1000+client.latency+me:GetTurnTime(target)*1000)
 						local speed = R:GetSpecialData("ball_lightning_move_speed", R.level)
 						local xyz = SkillShot.SkillShotXYZ(me,victim,delay,speed)
 						if xyz then 
