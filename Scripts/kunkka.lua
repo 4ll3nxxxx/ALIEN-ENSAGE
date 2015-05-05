@@ -9,7 +9,7 @@ config:SetParameter("HomeKey", "D", config.TYPE_HOTKEY)
 config:Load()
 
 local play = false local myhero = nil local target = nil local sleep = {0,0}
-local rate = client.screenSize.x/1600 local rec = {}
+local rate = client.screenSize.x/1600 local rec = {} local castQueue = {}
 rec[1] = drawMgr:CreateRect(70*rate,26*rate,270*rate,60*rate,0xFFFFFF30,drawMgr:GetTextureId("NyanUI/other/CM_status_1")) rec[1].visible = false
 rec[2] = drawMgr:CreateText(175*rate,52*rate,0xFFFFFF90,"Target :",drawMgr:CreateFont("manabarsFont","Arial",18*rate,700)) rec[2].visible = false
 rec[3] = drawMgr:CreateRect(220*rate,54*rate,16*rate,16*rate,0xFFFFFF30) rec[3].visible = false
@@ -18,6 +18,22 @@ function Main(tick)
 	if not PlayingGame() then return end
 	local me = entityList:GetMyHero()
 	local ID = me.classId if ID ~= myhero then return end
+
+	for i=1,#castQueue,1 do
+		local v = castQueue[1]
+		table.remove(castQueue,1)
+		local ability = v[2]
+		if type(ability) == "string" then
+			ability = me:FindItem(ability)
+		end
+		if ability and ((me:SafeCastAbility(ability,v[3],false)) or (v[4] and ability:CanBeCasted())) then
+			if v[4] and ability:CanBeCasted() then
+				me:CastAbility(ability,v[3],false)
+			end
+			sleep[1] = tick + v[1] + client.latency
+			return
+		end
+	end
 	
 	local torrent = me:GetAbility(1)
 	local xmarks = me:GetAbility(3)
@@ -33,10 +49,10 @@ function Main(tick)
 		if tick > sleep[1] and me.alive then
 			local travel = me:FindItem("item_tpscroll") or me:FindItem("item_travel_boots") or me:FindItem("item_travel_boots_2")
 			if xmarks and xmarks:CanBeCasted() and travel and travel:CanBeCasted() then
-				me:CastAbility(xmarks,me)
+				table.insert(castQueue,{1000+math.ceil(xmarks:FindCastPoint()*1000),xmarks,me})
 			end
 			if travel and travel:CanBeCasted() then
-				me:CastAbility(travel,foun)
+				table.insert(castQueue,{1000+math.ceil(travel:FindCastPoint()*1000),travel,foun})
 				sleep[1] = tick + 1000
 			end
 		end
@@ -53,28 +69,28 @@ function Main(tick)
 	end
 	
 	if target and target.alive and GetDistance2D(me,target) <= 2000 then
-		if xmarks.name == "kunkka_x_marks_the_spot" and torrent and torrent:CanBeCasted() and xmarks.level > 0 and xmarks.abilityPhase then
-			me:CastAbility(torrent,target.position)
+		if  xmarks.name == "kunkka_x_marks_the_spot" and torrent and torrent:CanBeCasted() and xmarks.level > 0 and xmarks.abilityPhase then
+			table.insert(castQueue,{1000+math.ceil(torrent:FindCastPoint()*1000),torrent,target.position})
 		end
 		if xmarks.name == "kunkka_return" and me:CanCast() and math.floor(torrent.cd*10) == 110 + math.floor((client.latency/1100)) then
-			me:CastAbility(xmarks)
+			table.insert(castQueue,{1000+math.ceil(xmarks:FindCastPoint()*1000),xmarks})
 		end
 	end
 
 	if IsKeyDown(config.HotKey) and not client.chat then
 		if target and target.alive and GetDistance2D(me,target) <= 2000 then
 			if xmarks.name == "kunkka_x_marks_the_spot" and xmarks:CanBeCasted() and me:CanCast() then
-				me:CastAbility(xmarks,target)
+				table.insert(castQueue,{1000+math.ceil(xmarks:FindCastPoint()*1000),xmarks,target})
 				lastpos = target.position
 			end
 			if ghostship and ghostship:CanBeCasted() and me:CanCast() and xmarks.level > 0 and xmarks.abilityPhase then
-				me:CastAbility(ghostship,lastpos)
+				table.insert(castQueue,{1000+math.ceil(ghostship:FindCastPoint()*1000),ghostship,lastpos})
 			end
 			if torrent and torrent:CanBeCasted() and me:CanCast() and ghostship.level > 0 and ghostship.abilityPhase then
-				me:CastAbility(torrent,lastpos)
+				table.insert(castQueue,{1000+math.ceil(torrent:FindCastPoint()*1000),torrent,lastpos})
 			end
 			if xmarks.name == "kunkka_return" and me:CanCast() and math.floor(torrent.cd*10) == 110 + math.floor((client.latency/1100)) then
-				me:CastAbility(xmarks)
+				table.insert(castQueue,{1000+math.ceil(xmarks:FindCastPoint()*1000),xmarks})
 			end
 		end
 	end
