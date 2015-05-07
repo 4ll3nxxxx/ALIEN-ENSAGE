@@ -3,7 +3,7 @@ require("libs.Utils")
 require("libs.TargetFind")
 require("libs.stackpos")
 
-config = ScriptConfig.new()
+local config = ScriptConfig.new()
 config:SetParameter("activate", "32", config.TYPE_HOTKEY)
 config:SetParameter("starkkey", "L", config.TYPE_HOTKEY)
 config:SetParameter("bearkey", "E", config.TYPE_HOTKEY)
@@ -12,11 +12,12 @@ config:Load()
 local play = false local activated = false local startstack = false local creepHandle = nil local target = nil local creepTable = {} local ordered = {} local mode = 3 local control = 0
 
 function Key(msg,code)
-	if code == config.activate and not client.chat then
+	if client.chat or client.console or not PlayingGame() then return end
+	if code == config.activate then
 		activated = (msg == KEY_DOWN)
-	elseif code == config.bearkey and not client.chat then
+	elseif code == config.bearkey then
 		bearkey = (msg == KEY_DOWN)
-	elseif msg == KEY_UP and code == config.starkkey and not client.chat then
+	elseif msg == KEY_UP and code == config.starkkey then
 		local mp = entityList:GetMyPlayer()
 		local creeps = mp.selection[1]
 		if not creepTable[creeps.handle] or creepTable[creeps.handle] == 0 then
