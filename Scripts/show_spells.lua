@@ -626,11 +626,11 @@ function MinesF(team)
 		end
 		Sleep(350,"ShowMins")
 	end
-end		
+end
 
 function TrapF(team)
 	if SleepCheck("ShowTrap") then
-		local traps = entityList:GetEntities({classId=294})
+		local traps = entityList:GetEntities({classId=CDOTA_BaseNPC_Additive})
 		for i,v in ipairs(traps) do
 			if v.team ~= team then
 				if not effect.TS[v.handle] then
@@ -722,7 +722,7 @@ end
 
 function FindBlast(cast,team)
 	for i, v in ipairs(cast) do
-		if v.team ~= team and v.dayVision == 550 and (v.unitState == 29376896 or v.unitState == 29376768) then
+		if v.team ~= team and v.dayVision == 550 then
 			return v
 		end
 	end
@@ -731,7 +731,7 @@ end
 
 function FindMarch(cast,team)
 	for i, v in ipairs(cast) do
-		if v.team ~= team and v.dayVision == 600 and v.unitState == 29376768 then
+		if v.team ~= team and v.dayVision == 600 then
 			return v
 		end
 	end
@@ -740,7 +740,7 @@ end
 
 function FindCharge(cast)
 	for i, v in ipairs(cast) do
-		if v.dayVision == 0 and v.unitState == 29901056 then
+		if v.dayVision == 0 then
 			return v
 		end
 	end
@@ -749,7 +749,7 @@ end
 
 function FindBoat(cast,team)
 	for i,v in ipairs(cast) do
-		if v.team ~= team and v.dayVision == 400 and v.unitState == 29901056 then
+		if v.team ~= team and v.dayVision == 400 then
 			return v
 		end
 	end
