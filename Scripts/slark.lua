@@ -65,7 +65,7 @@ function Main(tick)
 				if not Animations.isAttacking(me) and victim.alive and victim.visible then
 					local immune = victim:DoesHaveModifier("modifier_omniknight_repel") or victim:DoesHaveModifier("modifier_black_king_bar_immune")
 					local disable = victim:IsHexed() or victim:IsStunned() or victim:IsLinkensProtected()
-					local shadowplay = me:IsInvisible()
+					local shadowplay = me:DoesHaveModifier("modifier_item_silver_edge_windwalk") or me:DoesHaveModifier("modifier_item_invisibility_edge_windwalk")
 					local abyssal = me:FindItem("item_abyssal_blade")
 					local butterfly = me:FindItem("item_butterfly")
 					local mom = me:FindItem("item_mask_of_madness")
