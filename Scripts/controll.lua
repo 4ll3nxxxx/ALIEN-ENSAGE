@@ -65,11 +65,11 @@ function Tick( tick )
 	end
 	
 	if mode == 1 then
-		target = targetFind:GetLastMouseOver(1300)
+		target = targetFind:GetLastMouseOver(2000)
 	elseif mode == 2 then
 		target = entityList:GetMouseover()
 	elseif mode == 3 then
-		target = targetFind:GetClosestToMouse(1300)
+		target = targetFind:GetClosestToMouse(2000)
 	else
 		print("please check mode 1/2/3. Thank.")
 		return
@@ -89,42 +89,38 @@ function Tick( tick )
 	end
 
 	if target and (activated or bearkey) and tick > control then
-		if target.team == (5-me.team) then
+		if target.team ~= me.team then
 			if #neutrals > 0 then
 			local disabled = target:DoesHaveModifier("modifier_sheepstick_debuff") or target:DoesHaveModifier("modifier_lion_voodoo_restoration") or target:DoesHaveModifier("modifier_shadow_shaman_voodoo_restoration") or target:IsStunned()
 				for i,v in ipairs(neutrals) do
-					if v.controllable and v.handle ~= creepHandle then
-						if v.unitState ~= -1031241196 then
-							local distance = GetDistance2D(v,target)
-							if distance <= 1300 then
-								if v.name == "npc_dota_neutral_centaur_khan" then
-									if v:GetAbility(1):CanBeCasted() and distance < 200 and not disabled then
-										v:CastAbility(v:GetAbility(1))
-									end
-								elseif v.name == "npc_dota_neutral_satyr_hellcaller" then
-									if v:GetAbility(1):CanBeCasted() and distance < 850 then
-										v:CastAbility(v:GetAbility(1),target.position)
-									end						
-								elseif v.name == "npc_dota_neutral_polar_furbolg_ursa_warrior" then
-									if v:GetAbility(1):CanBeCasted() and distance < 240 then
-										v:CastAbility(v:GetAbility(1))
-									end							
-								elseif v.name == "npc_dota_neutral_dark_troll_warlord" then
-									if v:GetAbility(1):CanBeCasted() and distance < 550 and not disabled then
-										v:CastAbility(v:GetAbility(1),target)
-									end	
-								elseif v.name == "npc_dota_neutral_big_thunder_lizard" then
-									if v:GetAbility(1):CanBeCasted() and distance < 250 then
-										v:CastAbility(v:GetAbility(1))
-									end
-									if v:GetAbility(2):CanBeCasted() then
-										v:CastAbility(v:GetAbility(2))
-									end					
-								end
-								if distance <= 1300 then
-									v:Attack(target)
-								end
+					local distance = GetDistance2D(v,target)
+					if distance <= 2000 then
+						if v.name == "npc_dota_neutral_centaur_khan" then
+							if v:GetAbility(1):CanBeCasted() and distance < 200 and not disabled then
+								v:CastAbility(v:GetAbility(1))
 							end
+						elseif v.name == "npc_dota_neutral_satyr_hellcaller" then
+							if v:GetAbility(1):CanBeCasted() and distance < 850 then
+								v:CastAbility(v:GetAbility(1),target.position)
+							end						
+						elseif v.name == "npc_dota_neutral_polar_furbolg_ursa_warrior" then
+							if v:GetAbility(1):CanBeCasted() and distance < 240 then
+								v:CastAbility(v:GetAbility(1))
+							end							
+						elseif v.name == "npc_dota_neutral_dark_troll_warlord" then
+							if v:GetAbility(1):CanBeCasted() and distance < 550 and not disabled then
+								v:CastAbility(v:GetAbility(1),target)
+							end	
+						elseif v.name == "npc_dota_neutral_big_thunder_lizard" then
+							if v:GetAbility(1):CanBeCasted() and distance < 250 then
+								v:CastAbility(v:GetAbility(1))
+							end
+							if v:GetAbility(2):CanBeCasted() then
+								v:CastAbility(v:GetAbility(2))
+							end					
+						end
+						if distance <= 2000 then
+							v:Attack(target)
 						end
 					end
 				end
@@ -132,27 +128,23 @@ function Tick( tick )
 			
 			if #creeps > 0 then
 				for i,v in ipairs(creeps) do
-					if v.controllable and v.unitState ~= -1031241196 then
-						local distance = GetDistance2D(v,target)
-						if v.name:sub(1,28) == "npc_dota_necronomicon_archer" then
-							if v:GetAbility(1):CanBeCasted() and distance <= 600 then
-								v:CastAbility(v:GetAbility(1),target)
-							end				
-						end
-						if distance <= 1300 then
-							v:Attack(target)
-						end
+					local distance = GetDistance2D(v,target)
+					if v.name:sub(1,28) == "npc_dota_necronomicon_archer" then
+						if v:GetAbility(1):CanBeCasted() and distance <= 600 then
+							v:CastAbility(v:GetAbility(1),target)
+						end				
+					end
+					if distance <= 2000 then
+						v:Attack(target)
 					end
 				end
 			end
 			
 			if #illusions > 0 then
 				for i,v in ipairs(illusions) do
-					if v.controllable and v.unitState ~= -1031241196 then
-						local distance = GetDistance2D(v,target)
-						if distance <= 1300 then
-							v:Attack(target)
-						end
+					local distance = GetDistance2D(v,target)
+					if distance <= 2000 then
+						v:Attack(target)
 					end
 				end
 			end
@@ -160,11 +152,9 @@ function Tick( tick )
 			if me.name == "npc_dota_hero_broodmother" or me.name == "npc_dota_hero_invoker" or me.name == "npc_dota_hero_warlock" or me.name == "npc_dota_hero_tusk" then
 				if #manycreeps > 0 then
 					for i,v in ipairs(manycreeps) do
-						if v.controllable and v.unitState ~= -1031241196 then
-							local distance = GetDistance2D(v,target)
-							if distance <= 1300 then
-								v:Attack(target)
-							end
+						local distance = GetDistance2D(v,target)
+						if distance <= 2000 then
+							v:Attack(target)
 						end
 					end
 				end
@@ -173,45 +163,39 @@ function Tick( tick )
 			if me.name == "npc_dota_hero_beastmaster" then
 				if #primalearth > 0 then
 					for i,v in ipairs(primalearth) do
-						if v.controllable and v.unitState ~= -1031241196 then
-							local distance = GetDistance2D(v,target)
-							if v:GetAbility(4):CanBeCasted() and distance <= 340 then
-								v:CastAbility(v:GetAbility(4))
-							end
-							if v:GetAbility(1):CanBeCasted() and distance <= 800 then
-								v:CastAbility(v:GetAbility(1),target)
-							end
-							if distance <= 1300 then
-								v:Attack(target)
-							end
+						local distance = GetDistance2D(v,target)
+						if v:GetAbility(4):CanBeCasted() and distance <= 340 then
+							v:CastAbility(v:GetAbility(4))
+						end
+						if v:GetAbility(1):CanBeCasted() and distance <= 800 then
+							v:CastAbility(v:GetAbility(1),target)
+						end
+						if distance <= 2000 then
+							v:Attack(target)
 						end
 					end
 				end
 
 				if #primalstorm > 0 then
 					for i,v in ipairs(primalstorm) do
-						if v.controllable and v.unitState ~= -1031241196 then
-							local distance = GetDistance2D(v,target)
-							if v:GetAbility(1):CanBeCasted() and distance <= 500 then
-								v:CastAbility(v:GetAbility(1),target.position)
-							end
-							if v:GetAbility(4):CanBeCasted() and distance <= 850 then
-								v:CastAbility(v:GetAbility(4),target)
-							end
-							if distance <= 1300 then
-								v:Attack(target)
-							end
+						local distance = GetDistance2D(v,target)
+						if v:GetAbility(1):CanBeCasted() and distance <= 500 then
+							v:CastAbility(v:GetAbility(1),target.position)
+						end
+						if v:GetAbility(4):CanBeCasted() and distance <= 850 then
+							v:CastAbility(v:GetAbility(4),target)
+						end
+						if distance <= 2000 then
+							v:Attack(target)
 						end
 					end
 				end
 
 				if #primalfire > 0 then
 					for i,v in ipairs(primalfire) do
-						if v.controllable and v.unitState ~= -1031241196 then
-							local distance = GetDistance2D(v,target)
-							if distance <= 1300 then
-								v:Attack(target)
-							end
+						local distance = GetDistance2D(v,target)
+						if distance <= 2000 then
+							v:Attack(target)
 						end
 					end
 				end
@@ -220,14 +204,12 @@ function Tick( tick )
 			if me.name == "npc_dota_hero_visage" then
 				if #visagefamiliar > 0 then
 					for i,v in ipairs(visagefamiliar) do
-						if v.controllable and v.unitState ~= -1031241196 then
-							local distance = GetDistance2D(v,target)
-							if v.health/v.maxHealth < 0.26 and v:GetAbility(1):CanBeCasted() then
-								v:CastAbility(v:GetAbility(1))
-							end
-							if distance <= 1300 then
-								v:Attack(target)
-							end
+						local distance = GetDistance2D(v,target)
+						if v.health/v.maxHealth < 0.26 and v:GetAbility(1):CanBeCasted() then
+							v:CastAbility(v:GetAbility(1))
+						end
+						if distance <= 2000 then
+							v:Attack(target)
 						end
 					end
 				end
@@ -236,26 +218,24 @@ function Tick( tick )
 			if me.name == "npc_dota_hero_lone_druid" then
 				if #spiritbear > 0 then
 					for i,v in ipairs(spiritbear) do
-						if v.controllable and v.unitState ~= -1031241196 then
-							local distance = GetDistance2D(v,target)
-							local ab = v:FindItem("item_abyssal_blade")
-							local mj = v:FindItem("item_mjollnir")
-							local pb = v:FindItem("item_phase_boots")
-							if bearkey and v:GetAbility(1):CanBeCasted() then
-								v:CastAbility(v:GetAbility(1))
-							end
-							if pb and pb:CanBeCasted() then
-								v:CastAbility(pb)
-							end
-							if mj and mj:CanBeCasted() and distance <= 525 then
-								v:CastAbility(mj,v)
-							end
-							if ab and ab:CanBeCasted() and distance <= 140 and not disabled then
-								v:CastAbility(ab,target)
-							end
-							if distance <= 1300 then
-								v:Attack(target)
-							end
+						local distance = GetDistance2D(v,target)
+						local abyssal = v:FindItem("item_abyssal_blade")
+						local mjollnir = v:FindItem("item_mjollnir")
+						local boots = v:FindItem("item_phase_boots")
+						if bearkey and v:GetAbility(1):CanBeCasted() then
+							v:CastAbility(v:GetAbility(1))
+						end
+						if boots and boots:CanBeCasted() then
+							v:CastAbility(boots)
+						end
+						if mjollnir and mjollnir:CanBeCasted() and distance <= 525 then
+							v:CastAbility(mjollnir,v)
+						end
+						if abyssal and abyssal:CanBeCasted() and distance <= 140 and not disabled then
+							v:CastAbility(abyssal,target)
+						end
+						if distance <= 2000 then
+							v:Attack(target)
 						end
 					end
 				end
