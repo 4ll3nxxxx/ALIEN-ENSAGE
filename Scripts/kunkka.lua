@@ -72,7 +72,7 @@ function Main(tick)
 		if  xmarks.name == "kunkka_x_marks_the_spot" and torrent and torrent:CanBeCasted() and xmarks.level > 0 and xmarks.abilityPhase then
 			table.insert(castQueue,{1000+math.ceil(torrent:FindCastPoint()*1000),torrent,target.position})
 		end
-		if xmarks.name == "kunkka_return" and me:CanCast() and math.floor(torrent.cd*10) == 110 + math.floor((client.latency/1100)) then
+		if xmarks.name == "kunkka_return" and me:CanCast() and math.ceil(torrent.cd) ~= math.ceil(torrent:GetCooldown(torrent.cd*10)) then
 			table.insert(castQueue,{1000+math.ceil(xmarks:FindCastPoint()*1000),xmarks})
 		end
 	end
@@ -89,7 +89,7 @@ function Main(tick)
 			if torrent and torrent:CanBeCasted() and me:CanCast() and ghostship.level > 0 and ghostship.abilityPhase then
 				table.insert(castQueue,{1000+math.ceil(torrent:FindCastPoint()*1000),torrent,lastpos})
 			end
-			if xmarks.name == "kunkka_return" and me:CanCast() and math.floor(torrent.cd*10) == 110 + math.floor((client.latency/1100)) then
+			if xmarks.name == "kunkka_return" and me:CanCast() and math.ceil(torrent.cd) ~= math.ceil(torrent:GetCooldown(torrent.cd*10)) then
 				table.insert(castQueue,{1000+math.ceil(xmarks:FindCastPoint()*1000),xmarks})
 			end
 		end
