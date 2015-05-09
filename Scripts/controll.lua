@@ -2,7 +2,6 @@ require("libs.ScriptConfig")
 require("libs.Utils")
 require("libs.TargetFind")
 require("libs.stackpos")
-require("libs.Res")
 
 local config = ScriptConfig.new()
 config:SetParameter("activate", "32", config.TYPE_HOTKEY)
@@ -21,15 +20,28 @@ function Key(msg,code)
 	elseif msg == KEY_UP and code == config.starkkey then
 		local mp = entityList:GetMyPlayer()
 		local creeps = mp.selection[1]
-		if not creepTable[creeps.handle] then
-			creepTable[creeps.handle] = neutrals
-			local neutrals = entityList:GetEntities(function (v) return v.type == LuaEntity.TEAM_NEUTRAL and v.alive and v.visible and v.team == me.team end)[1]
-			local search = MapToMinimap(neutrals.position.x,neutrals.position.y)
-			if search ~= nil then
-				table.sort( neutrals, function (a,b) return a:GetDistance2D(search) < b:GetDistance2D(search) end)
+		if not creepTable[creeps.handle] or creepTable[creeps.handle] == 0 then
+			if creeps then
+				local range = 100000
+				local neutrals = entityList:FindEntities({classId=CDOTA_BaseNPC_Creep_Neutral,controllable=true,alive=true,visible=true})
+				for n,m in ipairs(routes) do 
+					local rang = GetDistance2D(creeps.position,m[1])
+					local empty = true
+					for o,p in ipairs(neutrals) do
+						if creepTable[p.creepHandle] and creepTable[p.creepHandle] == n then
+							empty = false
+						end
+					end
+					if m.team == mp.team and range > rang and empty then
+						range = rang
+						creepTable[creeps.handle] = n
+					end
+				end
 				creeps:Move(routes[creepTable[creeps.handle]][3])
 				startstack = true
 			end
+		else
+			creepTable[creeps.handle] = 0
 		end
 	end
 end
