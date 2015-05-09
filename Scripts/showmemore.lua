@@ -316,7 +316,7 @@ end
 function Jug(teams,tick,visibl)
 	if SleepCheck("Jug") then	
 		if SleepCheck("healward") then
-			local ward = entityList:GetEntities({classId=297,alive = true,team=teams})[1]
+			local ward = entityList:GetEntities({classId=CDOTA_BaseNPC_Additive,alive = true,team=teams})[1]
 			if ward then
 				if not effect.Jugernaut.visible and jugSleep == 0 then
 					jugSleep = tick + 2000
