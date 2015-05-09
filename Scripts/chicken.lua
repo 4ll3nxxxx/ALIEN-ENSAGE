@@ -6,12 +6,12 @@ require("libs.Utils")
 local config = ScriptConfig.new()
 config:SetParameter("Hotkey", "Y", config.TYPE_HOTKEY)
 config:SetParameter("distance", 1200)
-config:SetParameter("Xcord", 500)
+config:SetParameter("Xcord", 1550)
 config:SetParameter("Ycord", 50)
 config:Load()
 
 local play = false local activated = false local giveitem = false local safety = false local delay = 0
-local font = drawMgr:CreateFont("chicken","Tahoma",14,500)
+local font = drawMgr:CreateFont("chicken","Arial",14,500)
 local text = drawMgr:CreateText(config.Xcord,config.Ycord,0xFFFF00FF,"Hello, I'm Waiting for lick your bottle!",font) text.visible = false
 
 function Key(msg,code)

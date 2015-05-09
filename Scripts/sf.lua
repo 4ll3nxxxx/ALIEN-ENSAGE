@@ -8,7 +8,6 @@ require("libs.Skillshot")
 
 local config = ScriptConfig.new()
 config:SetParameter("Hotkey", "32", config.TYPE_HOTKEY)
-config:SetParameter("distanceXYZ", 400)
 config:Load()
 
 local play = false local myhero = nil local victim = nil local start = false local resettime = nil local sleep = {0,0,0}

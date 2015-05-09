@@ -3,9 +3,9 @@ require("libs.Utils")
 require("libs.ScriptConfig")
 
 local config = ScriptConfig.new()
-config:SetParameter("PositionX", 20)
+config:SetParameter("PositionX", 1400)
 config:SetParameter("PositionY", 50)
-config:SetParameter("Size", 15)
+config:SetParameter("Size", 12)
 config:Load()
 
 x = config.PositionX
@@ -14,7 +14,7 @@ size = config.Size
 
 local FPS = nil
 local color = 0x00FF00FF
-local Font = drawMgr:CreateFont("Font","Tahoma",size,550)
+local Font = drawMgr:CreateFont("Font","Arial",size,550)
 
 function ShowFPS(tick)
 	if client.paused or Animations.maxCount < 1 then return end
