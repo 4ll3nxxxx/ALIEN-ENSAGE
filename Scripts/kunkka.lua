@@ -61,7 +61,7 @@ function Main(tick)
 
 	local target = targetFind:GetLowestEHP(2000,phys)
 
-	if target and target.visible then
+	if target and target.alive then
 		if not rec[i] then
 			rec[3].textureId = drawMgr:GetTextureId("NyanUI/miniheroes/"..target.name:gsub("npc_dota_hero_",""))
 		end
