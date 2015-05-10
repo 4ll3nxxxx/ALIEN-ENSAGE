@@ -58,13 +58,9 @@ function Main(tick)
 		end
 	end
 
-	searching = entityList:GetEntities(function (v) return v.type == LuaEntity.TYPE_HERO and v.team ~= me.team and v.alive and not v.illusion and v:GetDistance2D(client.mousePosition) < 100 end)[1]
-	if searching and searching.visible and SleepCheck("holding") then
-		target = searching
-		Sleep(5000,"holding")
-	end
+	local target = entityList:GetEntities(function (v) return v.type == LuaEntity.TYPE_HERO and v.team ~= me.team and v.alive and not v.illusion and (v:GetDistance2D(client.mousePosition) < 100 or v:GetDistance2D(me) < 2000) end)[1]
 
-	if target and target.alive then
+	if target and target.alive and target.visible then
 		if not rec[i] then
 			rec[3].textureId = drawMgr:GetTextureId("NyanUI/miniheroes/"..target.name:gsub("npc_dota_hero_",""))
 		end
@@ -72,7 +68,7 @@ function Main(tick)
 		rec[3].textureId = drawMgr:GetTextureId("NyanUI/spellicons/doom_bringer_empty1")
 	end
 	
-	if target and target.alive and GetDistance2D(me,target) <= 3000 and not IsKeyDown(config.HomeKey) then
+	if not IsKeyDown(config.HomeKey) and target and target.alive and GetDistance2D(me,target) <= 2000 and target.visible then
 		if  xmarks.name == "kunkka_x_marks_the_spot" and torrent and torrent:CanBeCasted() and xmarks.level > 0 and xmarks.abilityPhase then
 			table.insert(castQueue,{1000+math.ceil(torrent:FindCastPoint()*1000),torrent,target.position})
 		end
@@ -82,7 +78,7 @@ function Main(tick)
 	end
 
 	if IsKeyDown(config.HotKey) and not client.chat then
-		if target and target.alive and GetDistance2D(me,target) <= 3000 then
+		if target and target.alive and GetDistance2D(me,target) <= 2000 and target.visible then
 			if xmarks.name == "kunkka_x_marks_the_spot" and xmarks:CanBeCasted() and me:CanCast() then
 				table.insert(castQueue,{1000+math.ceil(xmarks:FindCastPoint()*1000),xmarks,target})
 				lastpos = target.position
