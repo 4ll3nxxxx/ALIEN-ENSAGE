@@ -58,7 +58,7 @@ function Main(tick)
 		end
 	end
 
-	searching = entityList:GetEntities(function (v) return v.type == LuaEntity.TYPE_HERO and v.team ~= me.team and v.alive and not v.illusion and v:GetDistance2D(me) < 3000 end)[1]
+	searching = entityList:GetEntities(function (v) return v.type == LuaEntity.TYPE_HERO and v.team ~= me.team and v.alive and not v.illusion and v:GetDistance2D(client.mousePosition) < 100 end)[1]
 	if searching and searching.visible and SleepCheck("holding") then
 		target = searching
 		Sleep(5000,"holding")
