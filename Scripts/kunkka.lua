@@ -68,7 +68,7 @@ function Main(tick)
 		rec[3].textureId = drawMgr:GetTextureId("NyanUI/spellicons/doom_bringer_empty1")
 	end
 	
-	if not IsKeyDown(config.HomeKey) and target and target.alive and GetDistance2D(me,target) <= 2000 and target.visible then
+	if not IsKeyDown(config.HomeKey) and target and target.alive and GetDistance2D(me,target) <= 2000 then
 		if  xmarks.name == "kunkka_x_marks_the_spot" and torrent and torrent:CanBeCasted() and xmarks.level > 0 and xmarks.abilityPhase then
 			table.insert(castQueue,{1000+math.ceil(torrent:FindCastPoint()*1000),torrent,target.position})
 		end
