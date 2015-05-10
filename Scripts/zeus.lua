@@ -33,7 +33,7 @@ function Main(tick)
 	end
 
 	if IsKeyDown(config.HotKey) and not client.chat then
-		target = targetFind:GetClosestToMouse(100)
+		target = targetFind:GetLowestEHP(2000,phys)
 		if tick > sleep[1] then
 			if target and target.alive and target.visible and GetDistance2D(target,me) <= 2000 and not target:DoesHaveModifier("modifier_item_blade_mail_reflect") and not target:DoesHaveModifier("modifier_item_lotus_orb_active") and not target:IsMagicImmune() and target:CanDie() then
 				local Q = me:GetAbility(1)

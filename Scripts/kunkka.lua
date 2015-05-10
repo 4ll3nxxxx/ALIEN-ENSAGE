@@ -59,7 +59,7 @@ function Main(tick)
 		end
 	end
 
-	local target = targetFind:GetClosestToMouse(100)
+	local target = targetFind:GetLowestEHP(2000,phys)
 
 	if target and target.visible then
 		if not rec[i] then
