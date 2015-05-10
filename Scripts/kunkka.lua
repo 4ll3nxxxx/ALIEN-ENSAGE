@@ -2,7 +2,6 @@
 
 require("libs.ScriptConfig")
 require("libs.Utils")
-require("libs.TargetFind")
 
 local config = ScriptConfig.new()
 config:SetParameter("HotKey", "32", config.TYPE_HOTKEY)
@@ -59,7 +58,11 @@ function Main(tick)
 		end
 	end
 
-	local target = targetFind:GetLowestEHP(2000,phys)
+	searching = entityList:GetEntities(function (v) return v.type == LuaEntity.TYPE_HERO and v.team ~= me.team and v.alive and not v.illusion and v:GetDistance2D(me) < 3000 end)[1]
+	if searching and searching.visible and SleepCheck("holding") then
+		target = searching
+		Sleep(5000,"holding")
+	end
 
 	if target and target.alive then
 		if not rec[i] then
@@ -69,17 +72,17 @@ function Main(tick)
 		rec[3].textureId = drawMgr:GetTextureId("NyanUI/spellicons/doom_bringer_empty1")
 	end
 	
-	if target and target.alive and GetDistance2D(me,target) <= 2000 and not IsKeyDown(config.HomeKey) then
+	if target and target.alive and GetDistance2D(me,target) <= 3000 and not IsKeyDown(config.HomeKey) then
 		if  xmarks.name == "kunkka_x_marks_the_spot" and torrent and torrent:CanBeCasted() and xmarks.level > 0 and xmarks.abilityPhase then
 			table.insert(castQueue,{1000+math.ceil(torrent:FindCastPoint()*1000),torrent,target.position})
 		end
-		if xmarks.name == "kunkka_return" and me:CanCast() and math.ceil(torrent.cd) ~= math.ceil(torrent:GetCooldown(torrent.cd*10)) then
+		if xmarks.name == "kunkka_return" and me:CanCast() and math.ceil(torrent.cd) ~= math.ceil(torrent:GetCooldown(torrent.cd)) then
 			table.insert(castQueue,{100,xmarks})
 		end
 	end
 
 	if IsKeyDown(config.HotKey) and not client.chat then
-		if target and target.alive and GetDistance2D(me,target) <= 2000 then
+		if target and target.alive and GetDistance2D(me,target) <= 3000 then
 			if xmarks.name == "kunkka_x_marks_the_spot" and xmarks:CanBeCasted() and me:CanCast() then
 				table.insert(castQueue,{1000+math.ceil(xmarks:FindCastPoint()*1000),xmarks,target})
 				lastpos = target.position
@@ -90,7 +93,7 @@ function Main(tick)
 			if torrent and torrent:CanBeCasted() and me:CanCast() and ghostship.level > 0 and ghostship.abilityPhase then
 				table.insert(castQueue,{1000+math.ceil(torrent:FindCastPoint()*1000),torrent,lastpos})
 			end
-			if xmarks.name == "kunkka_return" and me:CanCast() and math.ceil(torrent.cd) ~= math.ceil(torrent:GetCooldown(torrent.cd*10)) then
+			if xmarks.name == "kunkka_return" and me:CanCast() and math.ceil(torrent.cd) ~= math.ceil(torrent:GetCooldown(torrent.cd)) then
 				table.insert(castQueue,{100,xmarks})
 			end
 		end
