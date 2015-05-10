@@ -74,7 +74,7 @@ function Main(tick)
 			table.insert(castQueue,{1000+math.ceil(torrent:FindCastPoint()*1000),torrent,target.position})
 		end
 		if xmarks.name == "kunkka_return" and me:CanCast() and math.ceil(torrent.cd) ~= math.ceil(torrent:GetCooldown(torrent.cd*10)) then
-			table.insert(castQueue,{1000+math.ceil(xmarks:FindCastPoint()*1000),xmarks})
+			table.insert(castQueue,{100,xmarks})
 		end
 	end
 
@@ -91,7 +91,7 @@ function Main(tick)
 				table.insert(castQueue,{1000+math.ceil(torrent:FindCastPoint()*1000),torrent,lastpos})
 			end
 			if xmarks.name == "kunkka_return" and me:CanCast() and math.ceil(torrent.cd) ~= math.ceil(torrent:GetCooldown(torrent.cd*10)) then
-				table.insert(castQueue,{1000+math.ceil(xmarks:FindCastPoint()*1000),xmarks})
+				table.insert(castQueue,{100,xmarks})
 			end
 		end
 	end
