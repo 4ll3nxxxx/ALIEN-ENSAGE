@@ -98,9 +98,6 @@ end
 
 function Findtarget(source,range,includeFriendly)
 	local me = entityList:GetMyHero()
-	
-	local mousePos = client.mousePosition
-	-- check if source is provided
 	if not includeFriendly and type(range) == "boolean" then
 		includeFriendly = range
 	end
@@ -108,15 +105,14 @@ function Findtarget(source,range,includeFriendly)
 		range = source
 		source = nil
 	end
-	-- check mouse [and source range
 	local enemies 
 	if includeFriendly then
-		enemies = entityList:FindEntities(function (v) return v.hero and v.alive and v.health > 0 and not v:IsIllusion() and (not source or v:GetDistance2D(source) < range) end)
+		enemies = entityList:FindEntities(function (v) return v.hero and v.alive and v.health > 0 and not v:IsIllusion() and (not source or v:GetDistance2D(source) < range) and v:GetDistance2D(me) < 2000 end)
 	else
 		local enemyTeam = me:GetEnemyTeam()
-		enemies = entityList:FindEntities(function (v) return v.hero and v.alive and v.health > 0 and not v:IsIllusion() and v.team == enemyTeam and (not source or v:GetDistance2D(source) < range) end)
+		enemies = entityList:FindEntities(function (v) return v.hero and v.alive and v.health > 0 and not v:IsIllusion() and v.team == enemyTeam and (not source or v:GetDistance2D(source) < range) and v:GetDistance2D(me) < 2000 end)
 	end
-	table.sort( enemies, function (a,b) return a:GetDistance2D(mousePos) < b:GetDistance2D(mousePos) end )
+	table.sort( enemies, function (a,b) return a:GetDistance2D(client.mousePosition) < b:GetDistance2D(client.mousePosition) end )
 	return enemies[1]
 end
 
