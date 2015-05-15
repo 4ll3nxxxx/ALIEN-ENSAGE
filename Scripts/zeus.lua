@@ -1,7 +1,6 @@
 require("libs.Utils")
 require("libs.TargetFind")
 require("libs.ScriptConfig")
-require("libs.Animations")
 require("libs.Skillshot")
 
 local config = ScriptConfig.new()
@@ -9,7 +8,7 @@ config:SetParameter("HotKey", "32", config.TYPE_HOTKEY)
 config:SetParameter("Ult", true)
 config:Load()
 
-local play = false local target = nil local effect = {} local castQueue = {} local sleep = {0,0,0}
+local play = false local target = nil local castQueue = {} local sleep = {0,0,0}
 
 function Main(tick)
     if not PlayingGame() then return end
@@ -33,7 +32,7 @@ function Main(tick)
 	end
 
 	if IsKeyDown(config.HotKey) and not client.chat then
-		target = targetFind:GetLowestEHP(2000,phys)
+		target = targetFind:GetClosestToMouse(100)
 		if tick > sleep[1] then
 			if target and target.alive and target.visible and GetDistance2D(target,me) <= 2000 and not target:DoesHaveModifier("modifier_item_blade_mail_reflect") and not target:DoesHaveModifier("modifier_item_lotus_orb_active") and not target:IsMagicImmune() and target:CanDie() then
 				local Q = me:GetAbility(1)
