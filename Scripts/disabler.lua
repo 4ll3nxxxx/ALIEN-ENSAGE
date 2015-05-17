@@ -26,7 +26,7 @@ function Key(msg,code)
 			statusText.text = "Disabler: Blink"
 		end
 	end
-	
+
 	for i = 1,5 do
 		if IsMouseOnButton(config.indent*monitor-3+i*27,11*monitor-1,20,20) then
 			if msg == LBUTTON_DOWN and hero[i] == nil then
@@ -48,14 +48,11 @@ function Tick( tick )
 	if not PlayingGame() or sleepTick and sleepTick > tick then return end
     me = entityList:GetMyHero()
 	
-	local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO,team = 5-me.team,illusion=false})
-	table.sort( enemies, function (a,b) return a.playerId < b.playerId end )
-	
-	for i =1,#enemies do
-		local v = enemies[i]
+	local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO,team=me:GetEnemyTeam(),illusion=false})
+	for i,v in ipairs(enemies) do
+		target = v
 		local IV  = v:IsInvul()
 		local MI  = v:IsMagicImmune()
-		local LS  = v:IsLinkensProtected()
 		local ST  = v:IsStunned()
 		local HEX = v:IsHexed()
 		local SI  = v:IsSilenced()
@@ -63,81 +60,80 @@ function Tick( tick )
 		local invis = me:IsInvisible()
 		local chanel = me:IsChanneling()
 		local items = me:CanUseItems()
-		local blink = v:FindItem("item_blink")
-		local forcestaff = v:FindItem("item_force_staff")
-		local DP_activated = v:FindModifier("modifier_slark_dark_pact")
-		local DP_pulses = v:FindModifier("modifier_slark_dark_pact_pulses")
+		local Sight = v:FindItem("item_blink") or v:FindItem("item_force_staff")
+		local dark_pact = v:FindModifier("modifier_slark_dark_pact") or v:FindModifier("modifier_slark_dark_pact_pulses")
 	
 		if me.alive and v.alive and v.visible then
-			if items and not (IV or MI or invis or chanel or DP_activated or DP_pulses) then
-				if (blink and blink.cd > 11) or (forcestaff and forcestaff.cd > 18.6) then
-					UseMedalliontarget(v)
-					UseRodtarget(v)
+			if items and not (IV or MI or invis or chanel or dark_pact) then
+				if Sight and math.ceil(Sight.cd) == math.ceil(Sight:GetCooldown(Sight.level)) then
+					UseMedalliontarget()
+					UseRodtarget()
 				elseif active then
-					UseMedalliontarget(v)
-					UseRodtarget(v)
+					UseMedalliontarget()
+					UseRodtarget()
 				elseif Initiation[v.name] then
-					local iSpell = v:FindSpell(Initiation[v.name].Spell)
-					if iSpell and iSpell.level ~= 0 and iSpell.cd > iSpell:GetCooldown(iSpell.level) - 1.6 then
-						UseMedalliontarget(v)
-						UseRodtarget(v)
+					local Spell = v:FindSpell(Initiation[v.name].Spell)
+					if Spell and math.ceil(Spell.cd) == math.ceil(Spell:GetCooldown(Spell.level)) then
+						UseMedalliontarget()
+						UseRodtarget()
 					end
 				end
 			end
 		end
 
 		if me.alive and v.alive and v.visible and not hero[i] then
-			if items and not (IV or MI or LS or ST or HEX or SI or DA or invis or chanel or DP_activated or DP_pulses) then
-				if (blink and blink.cd > 11) or (forcestaff and forcestaff.cd > 18.6) then
-					UseHex(v)
-					UseSheepStickTarget(v)
-					UseImmediateStun(v)
-					UseAbyssaltarget(v)
-					UseBatriderLasso(v)
-					UseLegionDuel(v)
-					UseOrchidtarget(v)
-					UseSkysSeal(v)
-					UsePucksRift(v)
-					UseHeroSpell(v)
-					UseEulScepterTarget(v)
-					UseAstral(v)
-					UseHalberdtarget(v)
-					UseEtherealtarget(v)
+			if items and not (IV or MI or ST or HEX or SI or DA or invis or chanel or dark_pact) then
+				if Sight and math.ceil(Sight.cd) == math.ceil(Sight:GetCooldown(Sight.level)) then
+					UseHex()
+					UseSheepStickTarget()
+					UseImmediateStun()
+					UseAbyssaltarget()
+					UseBatriderLasso()
+					UseLegionDuel()
+					UseOrchidtarget()
+					UseSkysSeal()
+					UsePucksRift()
+					UseHeroSpell()
+					UseEulScepterTarget()
+					UseAstral()
+					UseHalberdtarget()
+					UseEtherealtarget()
 				elseif active then
-					UseHex(v)
-					UseSheepStickTarget(v)
-					UseImmediateStun(v)
-					UseAbyssaltarget(v)
-					UseBatriderLasso(v)
-					UseLegionDuel(v)
-					UseOrchidtarget(v)
-					UseSkysSeal(v)
-					UsePucksRift(v)
-					UseEulScepterTarget(v)
-					UseAstral(v)
+					UseHex()
+					UseSheepStickTarget()
+					UseImmediateStun()
+					UseAbyssaltarget()
+					UseBatriderLasso()
+					UseLegionDuel()
+					UseOrchidtarget()
+					UseSkysSeal()
+					UsePucksRift()
+					UseEulScepterTarget()
+					UseAstral()
 				elseif Initiation[v.name] then
-					local iSpell = v:FindSpell(Initiation[v.name].Spell)
-					if iSpell and iSpell.level ~= 0 and iSpell.cd > iSpell:GetCooldown(iSpell.level) - 1.6 then
-						UseHex(v)
-						UseSheepStickTarget(v)
-						UseImmediateStun(v)
-						UseAbyssaltarget(v)
-						UseBatriderLasso(v)
-						UseOrchidtarget(v)
-						UseSkysSeal(v)
-						UsePucksRift(v)
-						UseHeroSpell(v)
-						UseEulScepterTarget(v)
-						UseAstral(v)
-						UseHalberdtarget(v)
-						UseEtherealtarget(v)
+					local Spell = v:FindSpell(Initiation[v.name].Spell)
+					if Spell and math.ceil(Spell.cd) == math.ceil(Spell:GetCooldown(Spell.level)) then
+						UseHex()
+						UseSheepStickTarget()
+						UseImmediateStun()
+						UseAbyssaltarget()
+						UseBatriderLasso()
+						UseOrchidtarget()
+						UseSkysSeal()
+						UsePucksRift()
+						UseHeroSpell()
+						UseEulScepterTarget()
+						UseAstral()
+						UseHalberdtarget()
+						UseEtherealtarget()
 					end
 				end
 			end
 		end
 		activated = 0
 
-		if not icon[i] then icon[i] = {}
+		if not icon[i] then
+			icon[i] = {}
 			icon[i].board = drawMgr:CreateRect(config.indent*monitor-3+i*27,11*monitor-1,20,20,0x8B008BFF)
 			icon[i].back = drawMgr:CreateRect(config.indent*monitor-2+i*27,11*monitor,18,18,0x000000FF)
 			icon[i].mini = drawMgr:CreateRect(config.indent*monitor-2+i*27,11*monitor,18,18,0x000000FF)
@@ -154,12 +150,12 @@ end
 
 -- functions for item or skill usage
     
-function UseEulScepterTarget(target)
+function UseEulScepterTarget()
 	if activated == 0 then
 		local disable = me:FindItem("item_cyclone")
 		if disable and disable:CanBeCasted() then
 			if target and GetDistance2D(me,target) < disable.castRange then
-				me:CastAbility(disable,target)
+				me:SafeCastAbility(disable,target)
 				activated = 1
 				sleepTick = GetTick() + 100
 				return
@@ -168,12 +164,12 @@ function UseEulScepterTarget(target)
 	end
 end
    
-function UseSheepStickTarget(target)
+function UseSheepStickTarget()
 	if activated == 0 then
 		local disable = me:FindItem("item_sheepstick")
 		if disable and disable:CanBeCasted() then
 			if target and GetDistance2D(me,target) < disable.castRange then
-				me:CastAbility(disable,target)
+				me:SafeCastAbility(disable,target)
 				activated = 1
 				sleepTick = GetTick() + 100
 				return
@@ -182,12 +178,12 @@ function UseSheepStickTarget(target)
 	end
 end
     
-function UseOrchidtarget(target)
+function UseOrchidtarget()
 	if activated == 0 then
 		local disable = me:FindItem("item_orchid")
 		if disable and disable:CanBeCasted() then
 			if target and GetDistance2D(me,target) < disable.castRange then
-				me:CastAbility(disable,target)
+				me:SafeCastAbility(disable,target)
 				activated = 1
 				sleepTick = GetTick() + 100
 				return
@@ -196,12 +192,12 @@ function UseOrchidtarget(target)
 	end
 end
     
-function UseAbyssaltarget(target)
+function UseAbyssaltarget()
 	if activated == 0 then
 		local disable = me:FindItem("item_abyssal_blade")
 		if disable and disable:CanBeCasted() then
 			if target and GetDistance2D(me,target) < disable.castRange then
-				me:CastAbility(disable,target)
+				me:SafeCastAbility(disable,target)
 				activated = 1 
 				sleepTick = GetTick() + 100
 				return
@@ -210,12 +206,12 @@ function UseAbyssaltarget(target)
 	end
 end
 	
-function UseHalberdtarget(target)
+function UseHalberdtarget()
 	if activated == 0 then
 		local disable = me:FindItem("item_heavens_halberd")
 		if disable and disable:CanBeCasted() then
 			if target and GetDistance2D(me,target) < disable.castRange then
-				me:CastAbility(disable,target)
+				me:SafeCastAbility(disable,target)
 				activated = 1
 				sleepTick = GetTick() + 100
 				return
@@ -224,12 +220,12 @@ function UseHalberdtarget(target)
 	end
 end
 	
-function UseEtherealtarget(target)
+function UseEtherealtarget()
 	if activated == 0 then
 		local disable = me:FindItem("item_ethereal_blade")
 		if disable and disable:CanBeCasted() then
 			if target and GetDistance2D(me,target) < disable.castRange then
-				me:CastAbility(disable,target)
+				me:SafeCastAbility(disable,target)
 				activated = 1
 				sleepTick = GetTick() + 100
 				return
@@ -238,23 +234,23 @@ function UseEtherealtarget(target)
 	end
 end
 
-function UseRodtarget(target)
+function UseRodtarget()
 	local disable = me:FindItem("item_rod_of_atos")
 	if disable and disable:CanBeCasted() then	
 		if target and GetDistance2D(me,target) < disable.castRange then
-			me:CastAbility(disable,target)
+			me:SafeCastAbility(disable,target)
 			sleepTick = GetTick() + 100
 			return
 		end
 	end
 end
 
-function UseMedalliontarget(target)
+function UseMedalliontarget()
 	if me.health/me.maxHealth > 0.1 then
 		local disable = me:FindItem("item_medallion_of_courage")
 		if disable and disable:CanBeCasted() then
 			if target and GetDistance2D(me,target) < disable.castRange then
-				me:CastAbility(disable,target)
+				me:SafeCastAbility(disable,target)
 				sleepTick = GetTick() + 100
 				return
 			end
@@ -262,7 +258,7 @@ function UseMedalliontarget(target)
 	end
 end
 
-function UseHex(target)
+function UseHex()
 	if activated == 0 then
 		local disable = nil
 		local hex_lion  = me:FindSpell("lion_voodoo")
@@ -283,7 +279,7 @@ function UseHex(target)
 	end
 end
 
-function UseAstral(target)
+function UseAstral()
 	if activated == 0 then
 		local disable = nil
 		local astral_od = me:FindSpell("obsidian_destroyer_astral_imprisonment")
@@ -304,7 +300,7 @@ function UseAstral(target)
 	end
 end
 
-function UseImmediateStun(target)
+function UseImmediateStun()
 	if activated == 0 then
 		local disable = nil
 		local tlknz = me:FindSpell("rubick_telekinesis")
@@ -325,7 +321,7 @@ function UseImmediateStun(target)
 	end
 end
 
-function UseBatriderLasso(target)
+function UseBatriderLasso()
 	if activated == 0 then
 		local disable = me:FindSpell("batrider_flaming_lasso")
 		if disable and disable:CanBeCasted() and me:CanCast() then
@@ -339,7 +335,7 @@ function UseBatriderLasso(target)
 	end
 end
 
-function UseLegionDuel(target)
+function UseLegionDuel()
 	if activated == 0 then
 		local disable = me:FindSpell("legion_commander_duel")
 		if disable and disable:CanBeCasted() and me:CanCast() then
@@ -353,7 +349,7 @@ function UseLegionDuel(target)
 	end
 end
 
-function UseSkysSeal(target)
+function UseSkysSeal()
 	if activated == 0 then
 		local disable = me:FindSpell("skywrath_mage_ancient_seal")
 		if disable and disable:CanBeCasted() and me:CanCast() then
@@ -367,7 +363,7 @@ function UseSkysSeal(target)
 	end
 end
 
-function UsePucksRift(target)
+function UsePucksRift()
 	if activated == 0 then
 		local disable = me:FindSpell("puck_waning_rift")
 		if disable and disable:CanBeCasted() and me:CanCast() then
@@ -381,7 +377,7 @@ function UsePucksRift(target)
 	end
 end
 
-function UseHeroSpell(target)
+function UseHeroSpell()
 	if activated == 0 then
 		if DisableSpell[me.name] then
 			local disable = me:FindSpell(DisableSpell[me.name].Spell)
