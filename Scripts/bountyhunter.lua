@@ -10,7 +10,7 @@ function Tick(tick)
     for i,v in ipairs(enemies) do
 	    local spell = me:GetAbility(1)
 	    local spell4 = me:GetAbility(4)
-    	local distance = GetDistance2D(me,v)
+		local distance = GetDistance2D(me,v)
 		local buff = v:DoesHaveModifier("modifier_bounty_hunter_track") or me:DoesHaveModifier("modifier_bounty_hunter_wind_walk")
 		local invis = v:FindItem("item_invis_sword") or v:FindItem("item_shadow_amulet") local irune = v:FindItem("item_bottle")
 
