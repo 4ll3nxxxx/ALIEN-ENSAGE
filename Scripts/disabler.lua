@@ -110,6 +110,7 @@ function Tick( tick )
 					UsePucksRift()
 					UseEulScepterTarget()
 					UseAstral()
+					UseHalberdtarget()
 				elseif Initiation[v.name] then
 					local Spell = v:FindSpell(Initiation[v.name].Spell)
 					if Spell and math.ceil(Spell.cd) == math.ceil(Spell:GetCooldown(Spell.level)) then
