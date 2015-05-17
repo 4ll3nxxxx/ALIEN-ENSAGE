@@ -1,6 +1,6 @@
 require("libs.Utils")
 
-local play = false local myhero = nil local dmg = {150,225,300,375}
+local play = false local myhero = nil
 
 function Tick(tick)
     if not PlayingGame() then return end
@@ -14,7 +14,7 @@ function Tick(tick)
 		local buff = v:DoesHaveModifier("modifier_bounty_hunter_track") or me:DoesHaveModifier("modifier_bounty_hunter_wind_walk")
 		local invis = v:FindItem("item_invis_sword") or v:FindItem("item_shadow_amulet") local irune = v:FindItem("item_bottle")
 
-		if me.alive and spell and spell:CanBeCasted() and (v.health > 0 and v.health < dmg[spell.level]) and GetDistance2D(v,me) <= spell.castRange and  SleepCheck("spell") then
+		if me.alive and spell and spell:CanBeCasted() and v.health < v:DamageTaken(spell:GetSpecialData("bonus_damage",spell.level),DAMAGE_MAGC,me) and GetDistance2D(v,me) <= spell.castRange and  SleepCheck("spell") then
 			me:SafeCastAbility(spell,v)
 			Sleep(400, "spell")
 		end
