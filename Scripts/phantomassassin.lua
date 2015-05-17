@@ -11,7 +11,7 @@ config:SetParameter("Hotkey", "32", config.TYPE_HOTKEY)
 config:SetParameter("lasthit", "D", config.TYPE_HOTKEY)
 config:Load()
 
-local play = false local myhero = nil local victim = nil local start = false local resettime = nil local dmg = {60,100,140,180} local sleep = {0,0,0}
+local play = false local myhero = nil local victim = nil local start = false local resettime = nil local sleep = {0,0,0}
 local rate = client.screenSize.x/1600 local rec = {} local castQueue = {}
 rec[1] = drawMgr:CreateRect(70*rate,26*rate,270*rate,60*rate,0xFFFFFF30,drawMgr:GetTextureId("NyanUI/other/CM_status_1")) rec[1].visible = false
 rec[2] = drawMgr:CreateText(175*rate,52*rate,0xFFFFFF90,"Target :",drawMgr:CreateFont("manabarsFont","Arial",18*rate,700)) rec[2].visible = false
@@ -49,7 +49,7 @@ function Main(tick)
 		local Q = me:GetAbility(1)
 		local creeps = entityList:FindEntities({classId=CDOTA_BaseNPC_Creep_Lane,team=TEAM_ENEMY,alive=true,visible=true,team = me:GetEnemyTeam()})
 		for i,v in ipairs(creeps) do
-			if Q and Q:CanBeCasted() and (v.health > 0 and v.health < dmg[Q.level]) and GetDistance2D(v,me) <= Q.castRange then
+			if Q and Q:CanBeCasted() and v.health < v:DamageTaken(Q:GetSpecialData("AbilityDamage",Q.level),DAMAGE_MAGC,me) and GetDistance2D(v,me) <= Q.castRange then
 				table.insert(castQueue,{math.ceil(Q:FindCastPoint()*1000),Q,v})
 			end
 		end
