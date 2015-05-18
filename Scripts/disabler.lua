@@ -60,12 +60,13 @@ function Tick( tick )
 		local invis = me:IsInvisible()
 		local chanel = me:IsChanneling()
 		local items = me:CanUseItems()
-		local Sight = v:FindItem("item_blink") or v:FindItem("item_force_staff")
+		local blink = v:FindItem("item_blink")
+		local forcestaff = v:FindItem("item_force_staff")
 		local dark_pact = v:FindModifier("modifier_slark_dark_pact") or v:FindModifier("modifier_slark_dark_pact_pulses")
 	
 		if me.alive and v.alive and v.visible then
 			if items and not (IV or MI or invis or chanel or dark_pact) then
-				if Sight and math.ceil(Sight.cd) == math.ceil(Sight:GetCooldown(Sight.level)) then
+				if (blink and blink.cd > 11) or (forcestaff and forcestaff.cd > 18.6) then
 					UseMedalliontarget()
 					UseRodtarget()
 					LinkensSelf()
@@ -75,7 +76,7 @@ function Tick( tick )
 					LinkensSelf()
 				elseif Initiation[v.name] then
 					local Spell = v:FindSpell(Initiation[v.name].Spell)
-					if Spell and math.ceil(Spell.cd) == math.ceil(Spell:GetCooldown(Spell.level)) then
+					if Spell and Spell.level ~= 0 and Spell.cd > Spell:GetCooldown(Spell.level) - 1.6 then
 						UseMedalliontarget()
 						UseRodtarget()
 						LinkensSelf()
@@ -86,7 +87,7 @@ function Tick( tick )
 
 		if me.alive and v.alive and v.visible and not hero[i] then
 			if items and not (IV or MI or ST or HEX or SI or DA or invis or chanel or dark_pact) then
-				if Sight and math.ceil(Sight.cd) == math.ceil(Sight:GetCooldown(Sight.level)) then
+				if (blink and blink.cd > 11) or (forcestaff and forcestaff.cd > 18.6) then
 					UseHex()
 					UseSheepStickTarget()
 					UseImmediateStun()
@@ -116,7 +117,7 @@ function Tick( tick )
 					UseHalberdtarget()
 				elseif Initiation[v.name] then
 					local Spell = v:FindSpell(Initiation[v.name].Spell)
-					if Spell and math.ceil(Spell.cd) == math.ceil(Spell:GetCooldown(Spell.level)) then
+					if Spell and Spell.level ~= 0 and Spell.cd > Spell:GetCooldown(Spell.level) - 1.6 then
 						UseHex()
 						UseSheepStickTarget()
 						UseImmediateStun()
