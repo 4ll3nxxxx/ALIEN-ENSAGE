@@ -46,7 +46,7 @@ end
  
 function Tick( tick )
 	if not PlayingGame() or sleepTick and sleepTick > tick then return end
-    me = entityList:GetMyHero()
+	me = entityList:GetMyHero()
 	
 	local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO,team=me:GetEnemyTeam(),illusion=false})
 	for i,v in ipairs(enemies) do
@@ -68,14 +68,17 @@ function Tick( tick )
 				if Sight and math.ceil(Sight.cd) == math.ceil(Sight:GetCooldown(Sight.level)) then
 					UseMedalliontarget()
 					UseRodtarget()
+					LinkensSelf()
 				elseif active then
 					UseMedalliontarget()
 					UseRodtarget()
+					LinkensSelf()
 				elseif Initiation[v.name] then
 					local Spell = v:FindSpell(Initiation[v.name].Spell)
 					if Spell and math.ceil(Spell.cd) == math.ceil(Spell:GetCooldown(Spell.level)) then
 						UseMedalliontarget()
 						UseRodtarget()
+						LinkensSelf()
 					end
 				end
 			end
@@ -298,6 +301,15 @@ function UseAstral()
 				return
 			end
 		end
+	end
+end
+
+function LinkensSelf()
+	local disable = me:FindItem("item_sphere")
+	if disable and disable:CanBeCasted() then	
+		me:SafeCastAbility(disable,me)
+		sleepTick = GetTick() + 100
+		return
 	end
 end
 
