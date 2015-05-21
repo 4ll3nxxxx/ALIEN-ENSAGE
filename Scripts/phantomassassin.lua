@@ -49,7 +49,7 @@ function Main(tick)
 		local Q = me:GetAbility(1)
 		local creeps = entityList:FindEntities({classId=CDOTA_BaseNPC_Creep_Lane,team=TEAM_ENEMY,alive=true,visible=true,team = me:GetEnemyTeam()})
 		for i,v in ipairs(creeps) do
-			if Q and Q:CanBeCasted() and v.health < v:DamageTaken(Q:GetSpecialData("AbilityDamage",Q.level),DAMAGE_MAGC,me) and GetDistance2D(v,me) <= Q.castRange then
+			if Q and Q:CanBeCasted() and v.health < v:DamageTaken(Q:GetSpecialData("AbilityDamage",Q.level),DAMAGE_PURE,me) and GetDistance2D(v,me) <= Q.castRange then
 				table.insert(castQueue,{math.ceil(Q:FindCastPoint()*1000),Q,v})
 			end
 		end
