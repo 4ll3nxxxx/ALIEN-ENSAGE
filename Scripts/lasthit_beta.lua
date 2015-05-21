@@ -4,7 +4,7 @@ require("libs.ScriptConfig")
 require("libs.Utils")
 
 local config = ScriptConfig.new()
-config:SetParameter("Hotkey", "16", config.TYPE_HOTKEY)
+config:SetParameter("Lasthit", "16", config.TYPE_HOTKEY)
 config:SetParameter("Xcord", 1462)
 config:SetParameter("Ycord", 50)
 config:Load()
