@@ -34,7 +34,6 @@ end
 function Load()
 	if PlayingGame() then
 		play = true
-		activated = true
 		script:RegisterEvent(EVENT_TICK, Main)
 		script:UnregisterEvent(Load)
 	end
