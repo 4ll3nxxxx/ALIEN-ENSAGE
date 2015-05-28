@@ -14,10 +14,11 @@ function Main(tick)
 	Sleep(100)
 	local me = entityList:GetMyHero()
 	local creeps = FindCreeps(me)
+	local damageMin = GetDamage(creeps,me)
 	if IsKeyDown(config.Lasthit) and not client.chat then
-		if creeps.health < creeps:DamageTaken(dmg + 50 + me.dmgMin + me.dmgBonus, DAMAGE_PHYS, me) then
+		if creeps.health < damageMin *2 then
 			me:Attack(creeps)
-			if creeps.health < creeps:DamageTaken(me.dmgMin + me.dmgBonus, DAMAGE_PHYS, me) then
+			if creeps.health < damageMin then
 				me:Attack(creeps)
 			else
 				if SleepCheck("stop") then
@@ -39,6 +40,27 @@ function FindCreeps(me)
 		table.sort(creeps, function (a,b) return a.health < b.health end)
 		return creeps[1]
 	end
+end
+
+function GetDamage(creeps,me)
+	local creeps = FindCreeps(me)
+    local damageMin = me.dmgMin + me.dmgBonus
+    local qb = me:FindItem("item_quelling_blade")
+    if creeps.team ~= me.team and creeps.classId ~= CDOTA_BaseNPC_Creep_Siege then
+        if qb then
+            if me.attackType == LuaEntityNPC.ATTACK_MELEE then
+            	local bonus = qb:GetSpecialData("damage_bonus")/100
+                damageMin = damageMin + damageMin * bonus
+            elseif me.attackType == LuaEntityNPC.ATTACK_RANGED then
+            	local bonus = qb:GetSpecialData("damage_bonus_ranged")/100
+                damageMin = damageMin + damageMin * bonus
+            end
+        end
+    end
+    if creeps.classId == CDOTA_BaseNPC_Creep_Siege then
+        damageMin = damageMin / 2
+    end
+    return creeps:DamageTaken(damageMin,DAMAGE_PHYS,me)
 end
 
 function Load()
