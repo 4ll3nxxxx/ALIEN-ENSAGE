@@ -15,15 +15,16 @@ function Main(tick)
 	local creeps = FindCreeps(me)
 	local damageMin = GetDamage(creeps,me)
 	if IsKeyDown(config.Lasthit) and not client.chat then
-		if creeps.health < damageMin *3 then
+		if creeps.health < creeps.maxHealth * 0.5 and not isAttacking(me) and SleepCheck("move") and GetDistance2D(creeps,me) >= me.attackRange + 50 then
+			me:Move(creeps.position, true)
+			Sleep(1000, "move")
+		end
+		if creeps.health < damageMin then
 			me:Attack(creeps)
-			if creeps.health < damageMin then
-				me:Attack(creeps)
-			else
-				if GetDistance2D(creeps,me) <= me.attackRange + 50 and SleepCheck("stop") then
-					me:Stop()
-					Sleep(100, "stop")
-				end
+		else
+			if isAttacking(me) and GetDistance2D(creeps,me) <= me.attackRange + 50 and SleepCheck("stop") then
+				me:Stop()
+				Sleep(100, "stop")
 			end
 		end
 	end
@@ -39,6 +40,10 @@ function FindCreeps(me)
 		table.sort(creeps, function (a,b) return a.health < b.health end)
 		return creeps[1]
 	end
+end
+
+function isAttacking(ent)
+	return ent.activity == LuaEntityNPC.ACTIVITY_ATTACK or ent.activity == LuaEntityNPC.ACTIVITY_ATTACK1 or ent.activity == LuaEntityNPC.ACTIVITY_ATTACK2
 end
 
 function GetDamage(creeps,me)
