@@ -44,10 +44,10 @@ end
 
 function GetDamage(creeps,me)
 	local creeps = FindCreeps(me)
-    local damageMin = me.dmgMin + me.dmgBonus
-    local qb = me:FindItem("item_quelling_blade")
-    if creeps.team ~= me.team and creeps.classId ~= CDOTA_BaseNPC_Creep_Siege then
-        if qb then
+	local damageMin = me.dmgMin + me.dmgBonus
+	local qb = me:FindItem("item_quelling_blade")
+	if creeps.team ~= me.team and creeps.classId ~= CDOTA_BaseNPC_Creep_Siege then
+		if qb then
             if me.attackType == LuaEntityNPC.ATTACK_MELEE then
             	local bonus = qb:GetSpecialData("damage_bonus")/100
                 damageMin = damageMin + damageMin * bonus
@@ -56,6 +56,13 @@ function GetDamage(creeps,me)
                 damageMin = damageMin + damageMin * bonus
             end
         end
+        if me.classId == CDOTA_Unit_Hero_BountyHunter then
+			local Ability = me:GetAbility(2)
+			local bonus = Ability:GetSpecialData("crit_multiplier",Ability.level)/100
+			if Ability and Ability.cd == 0 then
+				damageMin = damageMin + damageMin * bonus
+			end
+		end
     end
     if creeps.classId == CDOTA_BaseNPC_Creep_Siege then
         damageMin = damageMin / 2
