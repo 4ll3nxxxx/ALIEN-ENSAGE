@@ -2,7 +2,6 @@
 
 require("libs.ScriptConfig")
 require("libs.Utils")
-require("libs.Animations")
 
 local config = ScriptConfig.new()
 config:SetParameter("Lasthit", "9", config.TYPE_HOTKEY)
@@ -11,7 +10,7 @@ config:Load()
 local play = false local creeps = nil
 
 function Main(tick)
-	if Animations.maxCount < 1 or not SleepCheck() or not PlayingGame() then return end Sleep(100)
+	if not SleepCheck() or not PlayingGame() then return end Sleep(100)
 	local me = entityList:GetMyHero()
 	local creeps = FindCreeps(me)
 	local damageMin = GetDamage(creeps,me)
@@ -67,10 +66,6 @@ function GetDamage(creeps,me)
 			local bonus = Ability:GetSpecialData("var_type",Ability.level)
 			if Ability.level > 0 and Ability.cd == 0 then
 				damageMin = damageMin + damageMin + bonus
-			end
-        elseif me.classId == CDOTA_Unit_Hero_Juggernaut then
-			if Animations.isCriting(me) then
-				damageMin = damageMin + damageMin * 2
 			end
 		end
     end
