@@ -7,7 +7,7 @@ local config = ScriptConfig.new()
 config:SetParameter("Lasthit", "9", config.TYPE_HOTKEY)
 config:Load()
 
-local play = false local creeps = nil local dmg = 0
+local play = false local creeps = nil
 
 function Main(tick)
 	if not SleepCheck() or not PlayingGame() then return end
