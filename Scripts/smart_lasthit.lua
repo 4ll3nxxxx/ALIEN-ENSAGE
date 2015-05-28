@@ -16,12 +16,12 @@ function Main(tick)
 	local creeps = FindCreeps(me)
 	local damageMin = GetDamage(creeps,me)
 	if IsKeyDown(config.Lasthit) and not client.chat then
-		if creeps.health < damageMin *2 then
+		if creeps.health < damageMin *3 then
 			me:Attack(creeps)
 			if creeps.health < damageMin then
 				me:Attack(creeps)
 			else
-				if SleepCheck("stop") and Animations.isAttacking(me) then
+				if SleepCheck("stop") then
 					me:Stop()
 					Sleep(100, "stop")
 				end
@@ -67,12 +67,6 @@ function GetDamage(creeps,me)
 			local bonus = Ability:GetSpecialData("var_type",Ability.level)
 			if Ability.level > 0 and Ability.cd == 0 then
 				damageMin = damageMin + damageMin + bonus
-			end
-        elseif me.classId == CDOTA_Unit_Hero_PhantomAssassin then
-        	local Ability = me:GetAbility(4)
-        	local bonus = Ability:GetSpecialData("crit_bonus",Ability.level)/100
-			if Ability.level > 0 and Animations.isCriting(me) then
-				damageMin = damageMin + damageMin * bonus
 			end
         elseif me.classId == CDOTA_Unit_Hero_Juggernaut then
 			if Animations.isCriting(me) then
