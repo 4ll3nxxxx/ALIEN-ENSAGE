@@ -2,6 +2,7 @@
 
 require("libs.ScriptConfig")
 require("libs.Utils")
+require("libs.Animations")
 
 local config = ScriptConfig.new()
 config:SetParameter("Lasthit", "9", config.TYPE_HOTKEY)
@@ -59,14 +60,24 @@ function GetDamage(creeps,me)
         if me.classId == CDOTA_Unit_Hero_BountyHunter then
 			local Ability = me:GetAbility(2)
 			local bonus = Ability:GetSpecialData("crit_multiplier",Ability.level)/100
-			if Ability and Ability.cd == 0 then
+			if Ability.level > 0 and Ability.cd == 0 then
 				damageMin = damageMin + damageMin * bonus
 			end
         elseif me.classId == CDOTA_Unit_Hero_Kunkka then
 			local Ability = me:GetAbility(2)
 			local bonus = Ability:GetSpecialData("var_type",Ability.level)
-			if Ability and Ability.cd == 0 then
+			if Ability.level > 0 and Ability.cd == 0 then
 				damageMin = damageMin + damageMin + bonus
+			end
+        elseif me.classId == CDOTA_Unit_Hero_PhantomAssassin then
+        	local Ability = me:GetAbility(4)
+        	local bonus = Ability:GetSpecialData("crit_bonus",Ability.level)/100
+			if Ability.level > 0 and Animations.isCriting(me) then
+				damageMin = damageMin + damageMin * bonus
+			end
+        elseif me.classId == CDOTA_Unit_Hero_Juggernaut then
+			if Animations.isCriting(me) then
+				damageMin = damageMin + damageMin * 2
 			end
 		end
     end
