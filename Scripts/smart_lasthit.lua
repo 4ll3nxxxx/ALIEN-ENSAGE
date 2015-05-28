@@ -20,7 +20,7 @@ function Main(tick)
 			if creeps.health < damageMin then
 				me:Attack(creeps)
 			else
-				if SleepCheck("stop") then
+				if GetDistance2D(creeps,me) <= me.attackRange + 50 and SleepCheck("stop") then
 					me:Stop()
 					Sleep(100, "stop")
 				end
