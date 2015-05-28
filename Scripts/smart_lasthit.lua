@@ -62,6 +62,12 @@ function GetDamage(creeps,me)
 			if Ability and Ability.cd == 0 then
 				damageMin = damageMin + damageMin * bonus
 			end
+        elseif me.classId == CDOTA_Unit_Hero_Kunkka then
+			local Ability = me:GetAbility(2)
+			local bonus = Ability:GetSpecialData("var_type",Ability.level)
+			if Ability and Ability.cd == 0 then
+				damageMin = damageMin + damageMin + bonus
+			end
 		end
     end
     if creeps.classId == CDOTA_BaseNPC_Creep_Siege then
