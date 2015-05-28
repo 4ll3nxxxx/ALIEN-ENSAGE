@@ -7,20 +7,21 @@ local config = ScriptConfig.new()
 config:SetParameter("Lasthit", "9", config.TYPE_HOTKEY)
 config:Load()
 
-local play = false local creeps = nil
+local play = false local creeps = nil local sleep = 0
 
 function Main(tick)
-	if not SleepCheck() or not PlayingGame() then return end Sleep(100)
+	if not PlayingGame() then return end
 	local me = entityList:GetMyHero()
 	local creeps = FindCreeps(me)
 	local damageMin = GetDamage(creeps,me)
-	if IsKeyDown(config.Lasthit) and not client.chat then
-		if creeps.health < creeps.maxHealth * 0.5 and not isAttacking(me) and SleepCheck("move") and GetDistance2D(creeps,me) >= me.attackRange + 50 then
+	if IsKeyDown(config.Lasthit) and not client.chat and tick > sleep then
+		if creeps.health < creeps.maxHealth * 0.4 and not isAttacking(me) and SleepCheck("move") and GetDistance2D(creeps,me) >= me.attackRange + 50 then
 			me:Move(creeps.position, true)
 			Sleep(1000, "move")
 		end
 		if creeps.health < damageMin then
 			me:Attack(creeps)
+			sleep = tick + 100
 		else
 			if isAttacking(me) and GetDistance2D(creeps,me) <= me.attackRange + 50 and SleepCheck("stop") then
 				me:Stop()
