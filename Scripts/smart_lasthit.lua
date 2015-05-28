@@ -16,12 +16,12 @@ function Main(tick)
 	local creeps = FindCreeps(me)
 	local damageMin = GetDamage(creeps,me)
 	if IsKeyDown(config.Lasthit) and not client.chat then
-		if creeps.health < damageMin *2 then
+		if creeps.health < damageMin *3 then
 			me:Attack(creeps)
 			if creeps.health < damageMin then
 				me:Attack(creeps)
 			else
-				if SleepCheck("stop") then
+				if SleepCheck("stop") and Animations.isAttacking(me) then
 					me:Stop()
 					Sleep(100, "stop")
 				end
