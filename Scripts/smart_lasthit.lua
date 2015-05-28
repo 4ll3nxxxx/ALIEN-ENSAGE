@@ -11,8 +11,7 @@ config:Load()
 local play = false local creeps = nil
 
 function Main(tick)
-	if not SleepCheck() or not PlayingGame() then return end
-	Sleep(100)
+	if Animations.maxCount < 1 or not SleepCheck() or not PlayingGame() then return end Sleep(100)
 	local me = entityList:GetMyHero()
 	local creeps = FindCreeps(me)
 	local damageMin = GetDamage(creeps,me)
@@ -24,7 +23,7 @@ function Main(tick)
 			else
 				if SleepCheck("stop") then
 					me:Stop()
-					Sleep(250, "stop")
+					Sleep(100, "stop")
 				end
 			end
 		end
