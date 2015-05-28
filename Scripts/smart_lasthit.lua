@@ -63,7 +63,7 @@ function GetDamage(creeps,me)
 			end
         elseif me.classId == CDOTA_Unit_Hero_Kunkka then
 			local Ability = me:GetAbility(2)
-			local bonus = Ability:GetSpecialData("var_type",Ability.level)
+			local bonus = Ability:GetSpecialData("damage_bonus",Ability.level)
 			if Ability.level > 0 and Ability.cd == 0 then
 				damageMin = damageMin + damageMin + bonus
 			end
