@@ -9,22 +9,12 @@ function Tick(tick)
 		if not (heroEntity.type == 9 and heroEntity.meepoIllusion == false) then
 			if heroEntity.visible and heroEntity.alive and heroEntity:GetProperty("CDOTA_BaseNPC","m_nUnitState") ~= -1031241196  then	
 				if not illusionTable[heroEntity.handle] then
-					illusionTable[heroEntity.handle] = {}
-					illusionTable[heroEntity.handle].effect1 = drawMgr3D:CreateText(heroEntity, Vector(0,0,heroEntity.healthbarOffset),Vector2D(0,-9),0x00F9FF59,"Illusion",drawMgr:CreateFont("defaultFont","Arial",16,1800))			
-					illusionTable[heroEntity.handle].effect2 = drawMgr3D:CreateText(heroEntity, Vector(0,0,heroEntity.healthbarOffset),Vector2D(0,-9),0x00F9FF59,"Illusion",drawMgr:CreateFont("defaultFont","Arial",16,1800))
-					illusionTable[heroEntity.handle].effect3 = drawMgr3D:CreateText(heroEntity, Vector(0,0,heroEntity.healthbarOffset),Vector2D(0,-9),0x00F9FF59,"Illusion",drawMgr:CreateFont("defaultFont","Arial",16,1800))		
-					illusionTable[heroEntity.handle].effect4 = drawMgr3D:CreateText(heroEntity, Vector(0,0,heroEntity.healthbarOffset),Vector2D(0,-9),0x00F9FF59,"Illusion",drawMgr:CreateFont("defaultFont","Arial",16,1800))
+					illusionTable[heroEntity.handle] = drawMgr3D:CreateText(heroEntity, Vector(0,0,heroEntity.healthbarOffset),Vector2D(0,-9),0x00F9FF59,"Illusion",drawMgr:CreateFont("defaultFont","Arial",16,1800))
 				end
 			else
 				if illusionTable[heroEntity.handle] then
-					illusionTable[heroEntity.handle].effect1:Destroy()
-					illusionTable[heroEntity.handle].effect1 = nil
-					illusionTable[heroEntity.handle].effect2:Destroy()
-					illusionTable[heroEntity.handle].effect2 = nil
-					illusionTable[heroEntity.handle].effect3:Destroy()
-					illusionTable[heroEntity.handle].effect3 = nil
-					illusionTable[heroEntity.handle].effect4:Destroy()
-					illusionTable[heroEntity.handle].effect4 = nil
+					illusionTable[heroEntity.handle]:Destroy()
+					illusionTable[heroEntity.handle] = nil
 				end
 			end
 		end
