@@ -2,6 +2,7 @@ require('libs.DrawManager3D')
 
 local play = false
 local illusionTable = {}
+local heroTable = {}
 
 function Tick(tick)
     if not SleepCheck() or not PlayingGame() then return end Sleep(200)
@@ -19,6 +20,21 @@ function Tick(tick)
 			end
 		end
 	end	
+
+	for _, heroEntity in ipairs(entityList:FindEntities({type = LuaEntity.TYPE_HERO, illusion = false, team = entityList:GetMyHero():GetEnemyTeam()})) do
+		if heroEntity.classId == CDOTA_Unit_Hero_PhantomLancer or heroEntity.classId == CDOTA_Unit_Hero_Naga_Siren or heroEntity.classId == CDOTA_Unit_Hero_ChaosKnight then
+			if heroEntity.visible and heroEntity.alive then
+				if not heroTable[heroEntity.handle] then
+					heroTable[heroEntity.handle] = drawMgr3D:CreateText(heroEntity, Vector(0,0,heroEntity.healthbarOffset),Vector2D(0,-9),0xFF0000FF,"Real",drawMgr:CreateFont("defaultFont","Arial",16,1800))
+				end
+			else
+				if heroTable[heroEntity.handle] then
+					heroTable[heroEntity.handle]:Destroy()
+					heroTable[heroEntity.handle] = nil
+				end
+			end
+		end
+	end
 end
 
 function Load()
