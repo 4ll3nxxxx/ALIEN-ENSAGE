@@ -47,6 +47,7 @@ end
 
 function Close()
 	llusionTable = {}
+	heroTable = {}
 	collectgarbage("collect")
 	if play then	
 		script:UnregisterEvent(Tick)
