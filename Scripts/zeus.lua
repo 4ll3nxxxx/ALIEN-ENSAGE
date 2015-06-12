@@ -8,7 +8,7 @@ config:SetParameter("HotKey", "32", config.TYPE_HOTKEY)
 config:SetParameter("Ult", true)
 config:Load()
 
-local play = false local target = nil local castQueue = {} local sleep = {0,0,0}
+local play, target, castQueue, castsleep, sleep = false, nil, {}, 0, 0
 
 function Main(tick)
     if not PlayingGame() then return end
@@ -26,25 +26,20 @@ function Main(tick)
 			if v[4] and ability:CanBeCasted() then
 				me:CastAbility(ability,v[3],false)
 			end
-			sleep[2] = tick + v[1] + client.latency
+			castsleep = tick + v[1]
 			return
 		end
 	end
 
 	if IsKeyDown(config.HotKey) and not client.chat then
 		target = targetFind:GetClosestToMouse(100)
-		if tick > sleep[1] then
+		if tick > sleep then
 			if target and target.alive and target.visible and GetDistance2D(target,me) <= 2000 and not target:DoesHaveModifier("modifier_item_blade_mail_reflect") and not target:DoesHaveModifier("modifier_item_lotus_orb_active") and not target:IsMagicImmune() and target:CanDie() then
-				local Q = me:GetAbility(1)
-				local W = me:GetAbility(2)
-				local R = me:GetAbility(4)
+				local Q, W, R = me:GetAbility(1), me:GetAbility(2), me:GetAbility(4)
 				local distance = GetDistance2D(target,me)
-				local dagon = me:FindDagon()
-				local ethereal = me:FindItem("item_ethereal_blade")
-				local veil = me:FindItem("item_veil_of_discord")
-				local soulring = me:FindItem("item_soul_ring")
+				local dagon, ethereal, veil, soulring = me:FindDagon(), me:FindItem("item_ethereal_blade"), me:FindItem("item_veil_of_discord"), me:FindItem("item_soul_ring")
 				local slow = target:DoesHaveModifier("modifier_item_ethereal_blade_slow")
-				if dagon and dagon:CanBeCasted() and me:CanCast() and target:DoesHaveModifier("modifier_item_veil_of_discord_debuff") then
+				if dagon and dagon:CanBeCasted() and me:CanCast() and (veil and veil.cd ~= 0 and target:DoesHaveModifier("modifier_item_veil_of_discord_debuff") or not veil) then
 					table.insert(castQueue,{1000+math.ceil(dagon:FindCastPoint()*1000),dagon,target})
 					Sleep(me:GetTurnTime(target)*1000, "casting")
 				end
@@ -83,7 +78,7 @@ function Main(tick)
 				elseif slow then
 					me:Follow(target)
 				end
-				sleep[1] = tick + 100
+				sleep = tick + 100
 			end
 		end
 	end
