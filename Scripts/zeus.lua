@@ -34,7 +34,7 @@ function Main(tick)
 	if IsKeyDown(config.HotKey) and not client.chat then
 		target = targetFind:GetClosestToMouse(100)
 		if tick > sleep then
-			if target and target.alive and target.visible and GetDistance2D(target,me) <= 2000 and not target:DoesHaveModifier("modifier_item_blade_mail_reflect") and not target:DoesHaveModifier("modifier_item_lotus_orb_active") and not target:IsMagicImmune() and target:CanDie() then
+			if target and GetDistance2D(target,me) <= 2000 and not target:DoesHaveModifier("modifier_item_blade_mail_reflect") and not target:DoesHaveModifier("modifier_item_lotus_orb_active") and not target:IsMagicImmune() and target:CanDie() then
 				local Q, W, R = me:GetAbility(1), me:GetAbility(2), me:GetAbility(4)
 				local distance = GetDistance2D(target,me)
 				local dagon, ethereal, veil, soulring = me:FindDagon(), me:FindItem("item_ethereal_blade"), me:FindItem("item_veil_of_discord"), me:FindItem("item_soul_ring")
@@ -90,9 +90,7 @@ function Load()
 		if not me or me.classId ~= CDOTA_Unit_Hero_Zuus then 
 			script:Disable()
 		else
-			play = true
-			target = nil
-			myhero = me.classId
+			play, target, myhero = true, nil, me.classId
 			script:RegisterEvent(EVENT_FRAME, Main)
 			script:UnregisterEvent(Load)
 		end
@@ -100,8 +98,7 @@ function Load()
 end
 
 function Close()
-	target = nil 
-	myhero = nil
+	target, myhero = nil, nil
 	collectgarbage("collect")
 	if play then
 		script:UnregisterEvent(Main)
