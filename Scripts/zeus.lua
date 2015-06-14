@@ -31,54 +31,52 @@ function Main(tick)
 		end
 	end
 
-	if IsKeyDown(config.HotKey) and not client.chat then
+	if IsKeyDown(config.HotKey) and not client.chat and tick > sleep then
 		target = targetFind:GetClosestToMouse(100)
-		if tick > sleep then
-			if target and GetDistance2D(target,me) <= 2000 and not target:DoesHaveModifier("modifier_item_blade_mail_reflect") and not target:DoesHaveModifier("modifier_item_lotus_orb_active") and not target:IsMagicImmune() and target:CanDie() then
-				local Q, W, R = me:GetAbility(1), me:GetAbility(2), me:GetAbility(4)
-				local distance = GetDistance2D(target,me)
-				local dagon, ethereal, veil, soulring = me:FindDagon(), me:FindItem("item_ethereal_blade"), me:FindItem("item_veil_of_discord"), me:FindItem("item_soul_ring")
-				local slow = target:DoesHaveModifier("modifier_item_ethereal_blade_slow")
-				if dagon and dagon:CanBeCasted() and me:CanCast() and (veil and veil.cd ~= 0 and target:DoesHaveModifier("modifier_item_veil_of_discord_debuff") or not veil) then
-					table.insert(castQueue,{1000+math.ceil(dagon:FindCastPoint()*1000),dagon,target})
-				end
-				if ethereal and ethereal:CanBeCasted() and me:CanCast() then
-					table.insert(castQueue,{math.ceil(ethereal:FindCastPoint()*1000),ethereal,target})
-				end
-				if distance <= 850 and Q and Q:CanBeCasted() and me:CanCast() then
-					table.insert(castQueue,{1000+math.ceil(Q:FindCastPoint()*1000),Q,target})
-				end
-				if W and W:CanBeCasted() and me:CanCast() then
-					local CP = W:FindCastPoint()
-					local delay = CP*1000+client.latency+me:GetTurnTime(target)*1000
-					local speed = W:GetSpecialData("true_sight_radius")
-					local xyz = SkillShot.SkillShotXYZ(me,target,delay,speed)
-					if xyz and distance <= 700 then 
-						table.insert(castQueue,{math.ceil(CP*1000+client.latency),W,xyz})
-					end
-				end
-				if veil and veil:CanBeCasted() and me:CanCast() then
-					table.insert(castQueue,{1000+math.ceil(veil:FindCastPoint()*1000),veil,target.position})        
-				end
-				if me.mana < me.maxMana*0.5 and soulring and soulring:CanBeCasted() then
-					table.insert(castQueue,{100,soulring})
-				end
-				if config.Ult and target and R and R:CanBeCasted() then
-					Dmg = R:GetSpecialData("damage",R.level)
-					if me:AghanimState() then		
-						Dmg = R:GetSpecialData("damage_scepter",R.level)
-					end
-					if target.health < target:DamageTaken(Dmg, DAMAGE_MAGC, me) then
-						table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R})
-					end
-				end
-				if not slow then
-					me:Attack(target)
-				elseif slow then
-					me:Follow(target)
-				end
-				sleep = tick + 100
+		if target and GetDistance2D(target,me) <= 2000 and not target:DoesHaveModifier("modifier_item_blade_mail_reflect") and not target:DoesHaveModifier("modifier_item_lotus_orb_active") and not target:IsMagicImmune() and target:CanDie() then
+			local Q, W, R = me:GetAbility(1), me:GetAbility(2), me:GetAbility(4)
+			local distance = GetDistance2D(target,me)
+			local dagon, ethereal, veil, soulring = me:FindDagon(), me:FindItem("item_ethereal_blade"), me:FindItem("item_veil_of_discord"), me:FindItem("item_soul_ring")
+			local slow = target:DoesHaveModifier("modifier_item_ethereal_blade_slow")
+			if dagon and dagon:CanBeCasted() and me:CanCast() and (veil and veil.cd ~= 0 and target:DoesHaveModifier("modifier_item_veil_of_discord_debuff") or not veil) then
+				table.insert(castQueue,{1000+math.ceil(dagon:FindCastPoint()*1000),dagon,target})
 			end
+			if ethereal and ethereal:CanBeCasted() and me:CanCast() then
+				table.insert(castQueue,{math.ceil(ethereal:FindCastPoint()*1000),ethereal,target})
+			end
+			if distance <= 850 and Q and Q:CanBeCasted() and me:CanCast() then
+				table.insert(castQueue,{1000+math.ceil(Q:FindCastPoint()*1000),Q,target})
+			end
+			if W and W:CanBeCasted() and me:CanCast() then
+				local CP = W:FindCastPoint()
+				local delay = CP*1000+client.latency+me:GetTurnTime(target)*1000
+				local speed = W:GetSpecialData("true_sight_radius")
+				local xyz = SkillShot.SkillShotXYZ(me,target,delay,speed)
+				if xyz and distance <= 700 then 
+					table.insert(castQueue,{math.ceil(CP*1000+client.latency),W,xyz})
+				end
+			end
+			if veil and veil:CanBeCasted() and me:CanCast() then
+				table.insert(castQueue,{1000+math.ceil(veil:FindCastPoint()*1000),veil,target.position})        
+			end
+			if me.mana < me.maxMana*0.5 and soulring and soulring:CanBeCasted() then
+				table.insert(castQueue,{100,soulring})
+			end
+			if config.Ult and target and R and R:CanBeCasted() then
+				Dmg = R:GetSpecialData("damage",R.level)
+				if me:AghanimState() then		
+					Dmg = R:GetSpecialData("damage_scepter",R.level)
+				end
+				if target.health < target:DamageTaken(Dmg, DAMAGE_MAGC, me) then
+					table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R})
+				end
+			end
+			if not slow then
+				me:Attack(target)
+			elseif slow then
+				me:Follow(target)
+			end
+			sleep = tick + 100
 		end
 	end
 end
