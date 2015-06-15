@@ -76,7 +76,7 @@ function Main(tick)
 		if not Animations.CanMove(me) and victim and GetDistance2D(me,victim) <= 2000 then
 			if tick > castsleep then
 				if not Animations.isAttacking(me) then
-					Q, W, R = me:GetAbility(1), me:GetAbility(2), me:GetAbility(4)
+					local Q, W, R = me:GetAbility(1), me:GetAbility(2), me:GetAbility(4)
 					local Overload, balling = me:DoesHaveModifier("modifier_storm_spirit_overload"), me:DoesHaveModifier("modifier_storm_spirit_ball_lightning")
 					local Sheep = me:FindItem("item_sheepstick")
 					local Orchid = me:FindItem("item_orchid")
