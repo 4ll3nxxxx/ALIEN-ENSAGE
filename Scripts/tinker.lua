@@ -21,7 +21,7 @@ ScriptConfig:AddParam("hotkey","Key",SGC_TYPE_ONKEYDOWN,false,false,32)
 ScriptConfig:AddParam("blink","Auto Blink",SGC_TYPE_TOGGLE,false,true,nil)
 ScriptConfig:AddParam("rearm","Auto Rearm",SGC_TYPE_TOGGLE,false,true,nil)
 
-play, myhero, victim, start, resettime, rec, castQueue, castsleep, move = false, nil, nil, false, false, {}, {}, 0, 0
+play, myhero, victim, start, resettime, castQueue, castsleep, move = false, nil, nil, false, false, {}, 0, 0
 
 function Main(tick)
 	if not PlayingGame() then return end
