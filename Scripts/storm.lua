@@ -12,8 +12,12 @@ ScriptConfig:SetExtention(-.3)
 ScriptConfig:SetVisible(false)
 
 ScriptConfig:AddParam("hotkey","Key",SGC_TYPE_ONKEYDOWN,false,false,32)
+ScriptConfig:AddParam("dodge","Auto Dodge Spells",SGC_TYPE_TOGGLE,false,true,nil)
 
-play, myhero, victim, start, resettime, castQueue, castsleep, move = false, nil, nil, false, false, {}, 0, 0
+play, myhero, victim, start, resettime, castQueue, castsleep, move, dodge = false, nil, nil, false, false, {}, 0, 0, 0
+
+dodgeList = {npc_dota_hero_lina = {spell = "lina_laguna_blade"}, npc_dota_hero_sven = {spell = "sven_storm_bolt"}, npc_dota_hero_sandking = {spell = "sandking_burrowstrike"},
+npc_dota_hero_vengefulspirit = {spell = "vengefulspirit_magic_missile"}, npc_dota_hero_skeleton_king = {spell = "skeleton_king_hellfire_blast"}} --npc_dota_hero_sniper = {spell = "sniper_assassinate"}
 
 function Main(tick)
 	if not PlayingGame() then return end
@@ -32,8 +36,25 @@ function Main(tick)
 				me:CastAbility(ability,v[3],false)
 			end
 			castsleep = tick + v[1] + client.latency
+			dodge = tick + v[1] + client.latency
 			return
 		end
+	end
+
+	if ScriptConfig.dodge and tick > dodge then
+		local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO,team=me:GetEnemyTeam(),illusion=false})
+		for i,v in ipairs(enemies) do
+			local R = me:GetAbility(4)
+			if R and R:CanBeCasted() and me:CanCast() then
+				if dodgeList[v.name] then
+					local spell = v:FindSpell(dodgeList[v.name].spell)
+					if spell and spell.level ~= 0 and spell.abilityPhase then
+						table.insert(castQueue,{math.ceil(R:FindCastPoint()*1000),R,me.position})
+					end
+				end
+			end
+		end
+		dodge = tick + 200
 	end
 
 	local attackRange = me.attackRange	
@@ -56,7 +77,7 @@ function Main(tick)
 		if not Animations.CanMove(me) and victim and GetDistance2D(me,victim) <= 2000 then
 			if tick > castsleep then
 				if not Animations.isAttacking(me) then
-					local Q, W, E, R = me:GetAbility(1), me:GetAbility(2), me:GetAbility(3), me:GetAbility(4)
+					Q, W, E, R = me:GetAbility(1), me:GetAbility(2), me:GetAbility(3), me:GetAbility(4)
 					local Overload, balling = me:DoesHaveModifier("modifier_storm_spirit_overload"), me:DoesHaveModifier("modifier_storm_spirit_ball_lightning")
 					local Sheep = me:FindItem("item_sheepstick")
 					local Orchid = me:FindItem("item_orchid")
