@@ -17,7 +17,7 @@ ScriptConfig:AddParam("dodge","Auto Dodge Spells",SGC_TYPE_TOGGLE,false,true,nil
 play, myhero, victim, start, resettime, castQueue, castsleep, move, dodge = false, nil, nil, false, false, {}, 0, 0, 0
 
 dodgeList = {npc_dota_hero_lina = {spell = "lina_laguna_blade"}, npc_dota_hero_sven = {spell = "sven_storm_bolt"}, npc_dota_hero_sandking = {spell = "sandking_burrowstrike"},
-npc_dota_hero_vengefulspirit = {spell = "vengefulspirit_magic_missile"}, npc_dota_hero_skeleton_king = {spell = "skeleton_king_hellfire_blast"}} --npc_dota_hero_sniper = {spell = "sniper_assassinate"}
+npc_dota_hero_vengefulspirit = {spell = "vengefulspirit_magic_missile"}, npc_dota_hero_skeleton_king = {spell = "skeleton_king_hellfire_blast"}, npc_dota_hero_lion = {spell = "lion_finger_of_death"}} --npc_dota_hero_sniper = {spell = "sniper_assassinate"}
 
 function Main(tick)
 	if not PlayingGame() then return end
@@ -45,10 +45,10 @@ function Main(tick)
 		local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO,team=me:GetEnemyTeam(),illusion=false})
 		for i,v in ipairs(enemies) do
 			local R = me:GetAbility(4)
-			if R and R:CanBeCasted() and me:CanCast() then
+			if R and R:CanBeCasted() and me:CanCast() and not me:IsStunned() and GetDistance2D(me,v) < 950 then
 				if dodgeList[v.name] then
 					local spell = v:FindSpell(dodgeList[v.name].spell)
-					if spell and spell.level ~= 0 and spell.abilityPhase then
+					if spell and spell.level > 0 and spell.abilityPhase then
 						table.insert(castQueue,{math.ceil(R:FindCastPoint()*1000),R,me.position})
 					end
 				end
