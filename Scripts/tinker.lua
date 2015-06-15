@@ -1,6 +1,4 @@
---<<Download texture https://mega.co.nz/#!8AZiFAbY!kMdEz0Fezz6cRzpVPrsNJTuUd4RFwHqDSI3cOV51U34 and unpack to nyanui/other>>
-
-require("libs.ScriptConfig")
+require("libs.HotkeyConfig2")
 require("libs.Utils")
 require("libs.TargetFind")
 require("libs.Animations")
@@ -12,24 +10,23 @@ config:SetParameter("blink", true)
 config:SetParameter("rearm", true)
 config:Load()
 
-local play = false local myhero = nil local victim = nil local start = false local resettime = nil local sleep = {0,0,0}
-local rate = client.screenSize.x/1600 local rec = {} local castQueue = {}
-rec[1] = drawMgr:CreateRect(70*rate,26*rate,270*rate,60*rate,0xFFFFFF30,drawMgr:GetTextureId("NyanUI/other/CM_status_1")) rec[1].visible = false
-rec[2] = drawMgr:CreateText(175*rate,52*rate,0xFFFFFF90,"Target :",drawMgr:CreateFont("manabarsFont","Arial",18*rate,700)) rec[2].visible = false
-rec[3] = drawMgr:CreateRect(220*rate,54*rate,16*rate,16*rate,0xFFFFFF30) rec[3].visible = false
+ScriptConfig = ConfigGUI:New(script.name)
+script:RegisterEvent(EVENT_KEY, ScriptConfig.Key, ScriptConfig)
+script:RegisterEvent(EVENT_TICK, ScriptConfig.Refresh, ScriptConfig)
+ScriptConfig:SetName("Tinker")
+ScriptConfig:SetExtention(-.3)
+ScriptConfig:SetVisible(false)
+
+ScriptConfig:AddParam("hotkey","Key",SGC_TYPE_ONKEYDOWN,false,false,32)
+ScriptConfig:AddParam("blink","Auto Blink",SGC_TYPE_TOGGLE,false,true,nil)
+ScriptConfig:AddParam("rearm","Auto Rearm",SGC_TYPE_TOGGLE,false,true,nil)
+
+play, myhero, victim, start, resettime, rec, castQueue, castsleep, move = false, nil, nil, false, false, {}, {}, 0, 0
 
 function Main(tick)
 	if not PlayingGame() then return end
 	local me = entityList:GetMyHero()
 	local ID = me.classId if ID ~= myhero then return end
-
-	if victim and victim.visible then
-		if not rec[i] then
-			rec[3].textureId = drawMgr:GetTextureId("NyanUI/miniheroes/"..victim.name:gsub("npc_dota_hero_",""))
-		end
-	else
-		rec[3].textureId = drawMgr:GetTextureId("NyanUI/spellicons/doom_bringer_empty1")
-	end
 
 	for i=1,#castQueue,1 do
 		local v = castQueue[1]
@@ -42,14 +39,14 @@ function Main(tick)
 			if v[4] and ability:CanBeCasted() then
 				me:CastAbility(ability,v[3],false)
 			end
-			sleep[1] = tick + v[1] + client.latency
+			castsleep = tick + v[1] + client.latency
 			return
 		end
 	end
 
 	local attackRange = me.attackRange	
 
-	if IsKeyDown(config.hotkey) and not client.chat then	
+	if ScriptConfig.hotkey then	
 		if Animations.CanMove(me) or not start or (victim and GetDistance2D(victim,me) > attackRange+50) then
 			start = true
 			local lowestHP = targetFind:GetLowestEHP(3000, phys)
@@ -66,7 +63,7 @@ function Main(tick)
 		end
 		if not Animations.CanMove(me) and victim and GetDistance2D(me,victim) <= 2000 then
 			if not Animations.isAttacking(me) and victim.alive and victim.visible then
-				if tick > sleep[2] and SleepCheck("123") then
+				if tick > castsleep and SleepCheck("123") then
 					local rearm = me:DoesHaveModifier("modifier_tinker_rearm")
 					local slow = victim:DoesHaveModifier("modifier_item_ethereal_blade_slow")
 					local blink = me:FindItem("item_blink")
@@ -80,7 +77,7 @@ function Main(tick)
 					local W = me:GetAbility(2)
 					local R = me:GetAbility(4)
 					if not rearm then
-						if blink and blink:CanBeCasted() and me:CanCast() and distance > attackRange and config.blink then
+						if ScriptConfig.blink and blink:CanBeCasted() and me:CanCast() and distance > attackRange and config.blink then
 							local CP = blink:FindCastPoint()
 							local delay = ((500-Animations.getDuration(blink)*1000)+CP*1000+client.latency+me:GetTurnTime(victim)*1000)
 							local speed = blink:GetSpecialData("blink_range")
@@ -110,7 +107,7 @@ function Main(tick)
 						if ethereal and ethereal:CanBeCasted() and me:CanCast() then
 							table.insert(castQueue,{math.ceil(ethereal:FindCastPoint()*1000),ethereal,victim})
 						end
-						if config.rearm then
+						if ScriptConfig.rearm then
 							if dagon and not ethereal and not sheep and R and R:CanBeCasted() and me:CanCast() then
 								if dagon.cd ~= 0 and W.cd ~= 0 then
 									table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R})
@@ -139,11 +136,11 @@ function Main(tick)
 					end
 					if not rearm and not slow then
 						me:Attack(victim)
-						sleep[2] = tick + 100
+						castsleep = tick + 200
 					end
 				end
 			end
-		elseif tick > sleep[3] then
+		elseif tick > move then
 			local rearm = me:DoesHaveModifier("modifier_tinker_rearm") or me:IsChanneling()
 			if victim and not rearm then
 				if victim.visible then
@@ -153,13 +150,13 @@ function Main(tick)
 					me:Follow(victim)
 				end
 			end
-			sleep[3] = tick + 100
+			move = tick + 200
 			start = false
 		end
 	elseif victim then
 		if not resettime then
 			resettime = client.gameTime
-		elseif (client.gameTime - resettime) >= 2 then
+		elseif (client.gameTime - resettime) >= 6 then
 			victim = nil		
 		end
 		start = false
@@ -172,14 +169,8 @@ function Load()
 		if me.classId ~= CDOTA_Unit_Hero_Tinker then 
 			script:Disable() 
 		else
-			play = true
-			victim = nil
-			start = false
-			resettime = nil
-			myhero = me.classId
-			rec[1].w = 90*rate + 30*0*rate + 65*rate rec[1].visible = true
-			rec[2].x = 30*rate + 90*rate + 30*0*rate + 65*rate - 95*rate rec[2].visible = true
-			rec[3].x = 80*rate + 90*rate + 30*0*rate + 65*rate - 50*rate rec[3].visible = true
+			ScriptConfig:SetVisible(true)
+			play, victim, start, resettime, myhero = true, nil, false, nil, me.classId
 			script:RegisterEvent(EVENT_FRAME, Main)
 			script:UnregisterEvent(Load)
 		end
@@ -187,13 +178,9 @@ function Load()
 end
 
 function Close()
-	myhero = nil
-	victim = nil
-	start = false
-	resettime = nil
-	rec[1].visible = false
-	rec[2].visible = false
-	rec[3].visible = false
+	myhero, victim, start, resettime = nil, nil, false, nil
+	ScriptConfig:SetVisible(false)
+	collectgarbage("collect")
 	if play then
 		script:UnregisterEvent(Main)
 		script:RegisterEvent(EVENT_TICK,Load)
