@@ -44,8 +44,7 @@ function Main(tick)
 	if ScriptConfig.dodge and tick > dodge then
 		local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO,team=me:GetEnemyTeam(),illusion=false})
 		for i,v in ipairs(enemies) do
-			local R = me:GetAbility(4)
-			if R and R:CanBeCasted() and me:CanCast() and not me:IsStunned() and GetDistance2D(me,v) < 950 then
+			if me:GetAbility(4) and me:GetAbility(4):CanBeCasted() and me:CanCast() and not me:IsStunned() and GetDistance2D(me,v) < 950 then
 				if dodgeList[v.name] then
 					local spell = v:FindSpell(dodgeList[v.name].spell)
 					if spell and spell.level > 0 and spell.abilityPhase then
@@ -77,7 +76,7 @@ function Main(tick)
 		if not Animations.CanMove(me) and victim and GetDistance2D(me,victim) <= 2000 then
 			if tick > castsleep then
 				if not Animations.isAttacking(me) then
-					Q, W, E, R = me:GetAbility(1), me:GetAbility(2), me:GetAbility(3), me:GetAbility(4)
+					Q, W, R = me:GetAbility(1), me:GetAbility(2), me:GetAbility(4)
 					local Overload, balling = me:DoesHaveModifier("modifier_storm_spirit_overload"), me:DoesHaveModifier("modifier_storm_spirit_ball_lightning")
 					local Sheep = me:FindItem("item_sheepstick")
 					local Orchid = me:FindItem("item_orchid")
