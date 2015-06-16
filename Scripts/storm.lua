@@ -47,11 +47,8 @@ function Main(tick)
 			if R and R:CanBeCasted() and me:CanCast() then
 				if dodgeList[v.name] then
 					local spell = v:FindSpell(dodgeList[v.name].spell)
-					if spell and spell.level > 0 and spell.abilityPhase then
-						turntime = (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0))
-						if turntime == 0 then
-							table.insert(castQueue,{math.ceil(R:FindCastPoint()*1000),R,me.position})
-						end
+					if spell and spell.abilityPhase and (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0)) == 0 then
+						table.insert(castQueue,{math.ceil(R:FindCastPoint()*1000),R,me.position})
 					end
 				end
 			end
