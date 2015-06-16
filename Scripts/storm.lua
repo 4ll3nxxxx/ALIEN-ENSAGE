@@ -44,11 +44,15 @@ function Main(tick)
 	if ScriptConfig.dodge and tick > dodge then
 		local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO,team=me:GetEnemyTeam(),illusion=false})
 		for i,v in ipairs(enemies) do
-			if me:GetAbility(4) and me:GetAbility(4):CanBeCasted() and me:CanCast() and not me:IsStunned() and GetDistance2D(me,v) < 950 then
+			local R = me:GetAbility(4)
+			if R and R:CanBeCasted() and me:CanCast() then
 				if dodgeList[v.name] then
 					local spell = v:FindSpell(dodgeList[v.name].spell)
 					if spell and spell.level > 0 and spell.abilityPhase then
-						table.insert(castQueue,{math.ceil(R:FindCastPoint()*1000),R,me.position})
+						turntime = (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0))
+						if turntime == 0 then
+							table.insert(castQueue,{math.ceil(R:FindCastPoint()*1000),R,me.position})
+						end
 					end
 				end
 			end
@@ -76,7 +80,7 @@ function Main(tick)
 		if not Animations.CanMove(me) and victim and GetDistance2D(me,victim) <= 2000 then
 			if tick > castsleep then
 				if not Animations.isAttacking(me) then
-					local Q, W, R = me:GetAbility(1), me:GetAbility(2), me:GetAbility(4)
+					Q, W, E, R = me:GetAbility(1), me:GetAbility(2), me:GetAbility(3), me:GetAbility(4)
 					local Overload, balling = me:DoesHaveModifier("modifier_storm_spirit_overload"), me:DoesHaveModifier("modifier_storm_spirit_ball_lightning")
 					local Sheep = me:FindItem("item_sheepstick")
 					local Orchid = me:FindItem("item_orchid")
@@ -84,7 +88,7 @@ function Main(tick)
 					local Sphere = me:FindItem("item_sphere")
 					local distance = GetDistance2D(victim,me)
 					local disabled = victim:IsSilenced() or victim:IsHexed() or victim:IsStunned()
-					if R and R:CanBeCasted() and me:CanCast() and distance > attackRange+50 and not balling and not R.abilityPhase then
+					if R and R:CanBeCasted() and me:CanCast() and distance > attackRange+200 and not balling and not R.abilityPhase then
 						local xyz = SkillShot.SkillShotXYZ(me,victim,((270-Animations.getDuration(W)*1000)+R:FindCastPoint()*1000+client.latency+me:GetTurnTime(victim)*1000),R:GetSpecialData("ball_lightning_move_speed", R.level))
 						if xyz then 
 							table.insert(castQueue,{math.ceil(R:FindCastPoint()*1000),R,xyz})
@@ -96,7 +100,7 @@ function Main(tick)
 					if W and W:CanBeCasted() and not disable and distance <= W.castRange then
 						table.insert(castQueue,{math.ceil(W:FindCastPoint()*1000),W,victim,true})
 					end
-					if Orchid and Orchid:CanBeCasted() and not disable and (Sheep and Sheep.cd ~= 0 and victim:DoesHaveModifier("modifier_sheepstick_debuff") or not Sheep) then
+					if Orchid and Orchid:CanBeCasted() and not disable and (Sheep and Sheep.cd ~= 0 and not victim:IsHexed() or not Sheep) then
 						table.insert(castQueue,{math.ceil(Orchid:FindCastPoint()*1000),Orchid,victim})
 					end
 					if Sheep and Sheep:CanBeCasted() and not disable then
