@@ -100,11 +100,7 @@ function Main(tick)
 					if W and W:CanBeCasted() and not disable and distance <= W.castRange then
 						table.insert(castQueue,{math.ceil(W:FindCastPoint()*1000),W,victim,true})
 					end
-<<<<<<< HEAD
 					if Orchid and Orchid:CanBeCasted() and not disable and (Sheep and Sheep.cd ~= 0 and not victim:IsHexed() or not Sheep) then
-=======
-					if Orchid and Orchid:CanBeCasted() and not disable and (Sheep and Sheep.cd ~= 0 or not Sheep) then
->>>>>>> origin/master
 						table.insert(castQueue,{math.ceil(Orchid:FindCastPoint()*1000),Orchid,victim})
 					end
 					if Sheep and Sheep:CanBeCasted() and not disable then
