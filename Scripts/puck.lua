@@ -58,9 +58,8 @@ function Main(tick)
 			if tick > castsleep then
 				if not Animations.isAttacking(me) and victim.alive and victim.visible then
 					local Q, W, D, R = me:GetAbility(1), me:GetAbility(2), me:GetAbility(4), me:GetAbility(5)
-					local sheep, dagon, blink, shivas, Sphere = me:FindItem("item_sheepstick"), me:FindDagon(), me:FindItem("item_blink"), me:FindItem("item_shivas_guard"), me:FindItem("item_sphere")
-					local distance = GetDistance2D(victim,me)
-					local disabled = victim:IsSilenced() or victim:IsHexed() or victim:IsStunned()
+					local sheep, dagon, blink, shivas, ethereal = me:FindItem("item_sheepstick"), me:FindDagon(), me:FindItem("item_blink"), me:FindItem("item_shivas_guard"), me:FindItem("item_ethereal_blade")
+					local disabled, distance = victim:IsSilenced() or victim:IsHexed() or victim:IsStunned(), GetDistance2D(victim,me)
 					if ScriptConfig.blink and blink and blink:CanBeCasted() and me:CanCast() and distance >= me.attackRange then
 						local xyz = SkillShot.SkillShotXYZ(me,victim,blink:FindCastPoint()*1000+client.latency+me:GetTurnTime(victim)*1000,blink:GetSpecialData("blink_range"))
 						if xyz then
@@ -77,7 +76,7 @@ function Main(tick)
 						table.insert(castQueue,{100,W})
 					end
 					if D and D:CanBeCasted() and me:CanCast() then
-						local orb = entityList:GetEntities(function (v) return (v.type == LuaEntity.TYPE_NPC and v.team == me.team and v.alive == true) end)
+						local orb = entityList:GetEntities({type = LuaEntity.TYPE_NPC, alive = true, team = me.team})
 						for i = 1, #orb do
 							local v = orb[i]
 							if GetDistance2D(v,victim) < 360 then
@@ -88,21 +87,21 @@ function Main(tick)
 					if R and R:CanBeCasted() and me:CanCast() and distance <= 750 and ScriptConfig.ult then
 						table.insert(castQueue,{math.ceil(R:FindCastPoint()*1000),R,victim.position})
 					end
-					if dagon and dagon:CanBeCasted() and me:CanCast() then 
+					if dagon and dagon:CanBeCasted() and me:CanCast() and (ethereal and ethereal.cd ~= 0 and victim:DoesHaveModifier("modifier_item_ethereal_blade_slow") or not ethereal) then 
 						table.insert(castQueue,{math.ceil(dagon:FindCastPoint()*1000),dagon,victim})
 					end
 					if sheep and sheep:CanBeCasted() and not disabled then
 						table.insert(castQueue,{math.ceil(sheep:FindCastPoint()*1000),sheep,victim})
 					end
-					if sphere and Sphere:CanBeCasted() then
-						table.insert(castQueue,{100,sphere})
-					end
 					if shivas and shivas:CanBeCasted() and distance <= 600 then
 						table.insert(castQueue,{100,shivas})
 					end
+					if ethereal and ethereal:CanBeCasted() and me:CanCast() then
+						table.insert(castQueue,{math.ceil(ethereal:FindCastPoint()*1000),ethereal,victim})
+					end
 				end
 				me:Attack(victim)
-				castsleep = tick + 200
+				castsleep = tick + 160
 			end
 		elseif tick > move then
 			if victim then
@@ -113,7 +112,7 @@ function Main(tick)
 					me:Follow(victim)
 				end
 			end
-			move = tick + 200
+			move = tick + 160
 			start = false
 		end
 	elseif victim then
