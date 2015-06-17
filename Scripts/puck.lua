@@ -55,7 +55,7 @@ function Main(tick)
 		end
 		if not Animations.CanMove(me) and victim and GetDistance2D(me,victim) <= 2000 then
 			if tick > castsleep then
-				if not Animations.isAttacking(me) then
+				if not Animations.isAttacking(me) and victim.alive and victim.visible then
 					local Q, W, D, R = me:GetAbility(1), me:GetAbility(2), me:GetAbility(4), me:GetAbility(5)
 					local sheep, dagon, blink, shivas, Sphere = me:FindItem("item_sheepstick"), me:FindDagon(), me:FindItem("item_blink"), me:FindItem("item_shivas_guard"), me:FindItem("item_sphere")
 					local distance = GetDistance2D(victim,me)
