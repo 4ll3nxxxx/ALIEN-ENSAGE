@@ -77,7 +77,7 @@ function Main(tick)
 					local W = me:GetAbility(2)
 					local R = me:GetAbility(4)
 					if not rearm then
-						if ScriptConfig.blink and blink:CanBeCasted() and me:CanCast() and distance > attackRange and config.blink then
+						if ScriptConfig.blink and blink:CanBeCasted() and me:CanCast() and distance >= attackRange then
 							local CP = blink:FindCastPoint()
 							local delay = ((500-Animations.getDuration(blink)*1000)+CP*1000+client.latency+me:GetTurnTime(victim)*1000)
 							local speed = blink:GetSpecialData("blink_range")
