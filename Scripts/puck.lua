@@ -34,7 +34,6 @@ function Main(tick)
 				me:CastAbility(ability,v[3],false)
 			end
 			castsleep = tick + v[1] + client.latency
-			dodge = tick + v[1] + client.latency
 			return
 		end
 	end
