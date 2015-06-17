@@ -13,6 +13,7 @@ ScriptConfig:SetVisible(false)
 
 ScriptConfig:AddParam("hotkey","Key",SGC_TYPE_ONKEYDOWN,false,false,32)
 ScriptConfig:AddParam("blink","Auto Blink To Enemy",SGC_TYPE_TOGGLE,false,true,nil)
+ScriptConfig:AddParam("ult","Auto Dream Coil",SGC_TYPE_TOGGLE,false,true,nil)
 
 play, myhero, victim, start, resettime, castQueue, castsleep, move = false, nil, nil, false, false, {}, 0, 0
 
@@ -84,7 +85,7 @@ function Main(tick)
 							end
 						end
 					end
-					if R and R:CanBeCasted() and me:CanCast() and distance <= 750 then
+					if R and R:CanBeCasted() and me:CanCast() and distance <= 750 and ScriptConfig.ult then
 						table.insert(castQueue,{math.ceil(R:FindCastPoint()*1000),R,victim.position})
 					end
 					if dagon and dagon:CanBeCasted() and me:CanCast() then 
