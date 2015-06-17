@@ -84,7 +84,7 @@ function Main(tick)
 							end
 						end
 					end
-					if R and R:CanBeCasted() and me:CanCast() and not disabled and distance <= me.attackRange then
+					if R and R:CanBeCasted() and me:CanCast() and not disabled and distance <= 600 then
 						table.insert(castQueue,{math.ceil(R:FindCastPoint()*1000),R,victim.position})
 					end
 					if dagon and dagon:CanBeCasted() and me:CanCast() then 
@@ -96,7 +96,7 @@ function Main(tick)
 					if sphere and Sphere:CanBeCasted() then
 						table.insert(castQueue,{100,sphere})
 					end
-					if shivas and shivas:CanBeCasted() and distance < me.attackRange then
+					if shivas and shivas:CanBeCasted() and distance <= 600 then
 						table.insert(castQueue,{100,shivas})
 					end
 				end
