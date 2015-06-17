@@ -76,7 +76,7 @@ function Main(tick)
 						table.insert(castQueue,{100,W})
 					end
 					if D and D:CanBeCasted() and me:CanCast() then
-						local orb = entityList:GetEntities(function (v) return (v.type == LuaEntity.TYPE_NPC and v.team == me.team and v.alive == true and GetDistance2D(v,victim) < 400) end)
+						local orb = entityList:GetEntities(function (v) return (v.type == LuaEntity.TYPE_NPC and v.team == me.team and v.alive == true) end)
 						for i = 1, #orb do
 							local v = orb[i]
 							if GetDistance2D(v,victim) < 360 then
@@ -101,7 +101,7 @@ function Main(tick)
 					end
 				end
 				me:Attack(victim)
-				castsleep = tick + 120
+				castsleep = tick + 200
 			end
 		elseif tick > move then
 			if victim then
@@ -112,7 +112,7 @@ function Main(tick)
 					me:Follow(victim)
 				end
 			end
-			move = tick + 120
+			move = tick + 200
 			start = false
 		end
 	elseif victim then
