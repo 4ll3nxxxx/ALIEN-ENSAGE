@@ -84,7 +84,7 @@ function Main(tick)
 							end
 						end
 					end
-					if R and R:CanBeCasted() and me:CanCast() and not disabled and distance <= 600 then
+					if R and R:CanBeCasted() and me:CanCast() and distance <= 750 then
 						table.insert(castQueue,{math.ceil(R:FindCastPoint()*1000),R,victim.position})
 					end
 					if dagon and dagon:CanBeCasted() and me:CanCast() then 
