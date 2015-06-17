@@ -66,7 +66,7 @@ function Main(tick)
 							table.insert(castQueue,{math.ceil(blink:FindCastPoint()*1000),blink,xyz})
 						end
 					end
-					if Q and Q:CanBeCasted() and me:CanCast() and (blink and blink.cd ~= 0 or not blink or not ScriptConfig.blink) and distance <= blink:GetSpecialData("blink_range") and distance >= me.attackRange then
+					if Q and Q:CanBeCasted() and me:CanCast() and (blink and blink.cd ~= 0 or not blink or not ScriptConfig.blink) and distance <= 1200 and distance >= me.attackRange then
 						local xyz = SkillShot.SkillShotXYZ(me,victim,((270-Animations.getDuration(Q)*1000)+Q:FindCastPoint()*1000+client.latency+me:GetTurnTime(victim)*1000),1233)
 						if xyz then 
 							table.insert(castQueue,{math.ceil(Q:FindCastPoint()*1000),Q,xyz})
