@@ -11,15 +11,12 @@ config:SetParameter("a3spell", "E", config.TYPE_HOTKEY)
 config:SetParameter("a4spell", "R", config.TYPE_HOTKEY)
 config:SetParameter("a5spell", "D", config.TYPE_HOTKEY)
 config:SetParameter("a6spell", "F", config.TYPE_HOTKEY)
+config:SetParameter("queue", true)
 config:Load()
 
-local spells = {}
-spells[1] = config.a1spell --first ability hotkey.
-spells[2] = config.a2spell --second ability hotkey.
-spells[3] = config.a3spell --third ability hotkey.
-spells[4] = config.a4spell --fourth ability hotkey.
-spells[5] = config.a5spell --fifth ability hotkey.
-spells[6] = config.a6spell --sixth ability hotkey.
+play, using, panel, heroes, selected, spells = false, false, {}, {{},{}}, false, {}
+
+spells[1], spells[2], spells[3], spells[4], spells[5], spells[6] = config.a1spell, config.a2spell, config.a3spell, config.a4spell, config.a5spell, config.a6spell
 
 if client.screenSize.x/client.screenSize.y == 1.25 or client.screenSize.x/client.screenSize.y == 4/3 then
 	xx = math.ceil(client.screenSize.x*0.15234375) -- x parameter of left-top corner of top bar heroes of your team.
@@ -41,24 +38,19 @@ else
 	centwidth = math.ceil(client.screenSize.x*0.27890625) -- distance between icons of heroes of different teams.
 end
 
-local play = false local using = false local panel = {} local heroes = {{},{}} local reg = false local selected = false local sleeptick = 0
-
 function Key(msg,code)
-	if not PlayingGame() or client.console or client.paused or not play then return end
-
+	if client.chat or client.console or not PlayingGame() or client.paused then return end
 	if msg == RBUTTON_UP then
 		using = false
 	end
-
 	if not client.chat and msg == KEY_UP and code == spells[1] or code == spells[2] or code == spells[3] or code == spells[4] or code == spells[5] or code == spells[6] then
-		for i,v in ipairs(sel.abilities) do
+		for i,v in ipairs(entityList:GetMyHero().abilities) do
 			if list2[v.name] and code == spells[list2[v.name].number] and v.state == LuaEntityAbility.STATE_READY then
 				Skill = v
 				using = true
 			end
 		end
 	end
-
 	if msg == RBUTTON_UP or msg == LBUTTON_UP then
 		for w = 1,2 do
 			for i,v in ipairs(heroes[w]) do
@@ -71,39 +63,39 @@ function Key(msg,code)
 				if IsMouseOnButton(xx+i*ww+selftop,yy,hh,ww) then
 
 					if msg == RBUTTON_UP then
-						if v.team == sel.team then
-							if IsKeyDown(16) then
-								sel:Follow(v,true)
+						if v.team == entityList:GetMyHero().team then
+							if config.queue then
+								entityList:GetMyHero():Follow(v,true)
 							else
-								sel:Follow(v)
+								entityList:GetMyHero():Follow(v)
 							end
-							if v ~= sel then selected = true end
+							if v ~= entityList:GetMyHero() then selected = true end
 						else
-							if IsKeyDown(16) then
-								sel:Attack(v,true)
+							if config.queue then
+								entityList:GetMyHero():Attack(v,true)
 							else
-								sel:Attack(v)
+								entityList:GetMyHero():Attack(v)
 							end
 						end
 					end
 
 					if msg == LBUTTON_UP and Skill and using then
 						if list2[Skill.name].target == "target" then
-							if IsKeyDown(16) then
-								sel:SafeCastAbility(Skill,v,true)
+							if config.queue then
+								entityList:GetMyHero():SafeCastAbility(Skill,v,true)
 							else
-								sel:SafeCastAbility(Skill,v)
+								entityList:GetMyHero():SafeCastAbility(Skill,v)
 							end
 						using = false
 						elseif v.visible then
-							if IsKeyDown(16) then
-								sel:SafeCastAbility(Skill,v.position,true)
+							if config.queue then
+								entityList:GetMyHero():SafeCastAbility(Skill,v.position,true)
 							else
-								sel:SafeCastAbility(Skill,v.position)
+								entityList:GetMyHero():SafeCastAbility(Skill,v.position)
 							end
 						using = false
 						end
-						if v ~= sel and v.team == sel.team then selected = true end
+						if v ~= entityList:GetMyHero() and v.team == entityList:GetMyHero().team then selected = true end
 					end
 				end
 			end
@@ -118,14 +110,8 @@ function IsMouseOnButton(x,y,h,w)
 end
 
 function Tick(tick)
-	if not client.connected or client.loading or client.console or tick < sleeptick  or not entityList:GetMyHero() then
-		return
-	end
-	sleeptick = tick + 200
-	mp = entityList:GetMyPlayer()
-	sel = mp.selection[1]
-	heroes[1] = entityList:GetEntities({type = LuaEntity.TYPE_HERO, team = mp.team, illusion = false})
-	heroes[2] = entityList:GetEntities({type = LuaEntity.TYPE_HERO, team = (5-mp.team), illusion = false})
+	if not PlayingGame() or not SleepCheck() then return end Sleep(250)
+	heroes[1], heroes[2] = entityList:GetEntities({type = LuaEntity.TYPE_HERO, team = entityList:GetMyHero().team, illusion = false}), entityList:GetEntities({type = LuaEntity.TYPE_HERO, team = (5-entityList:GetMyHero().team), illusion = false})
 	for k = 1,2 do
 		table.sort( heroes[k], function (a,b) return a.playerId < b.playerId end )
 		for g,h in ipairs(heroes[k]) do
@@ -151,22 +137,20 @@ function Tick(tick)
 	end
 
 	if selected then
-		mp:Select(sel)
+		entityList:GetMyHero():Select(entityList:GetMyHero())
 		selected = false
 	end
 end
 
 function Load()
 	if PlayingGame() then
-		local me = entityList:GetMyHero()
-		if not me then 
+		if not entityList:GetMyHero() then 
 			script:Disable()
 		else
 			play = true
-			reg = true
-		script:RegisterEvent(EVENT_TICK,Tick)
-		script:RegisterEvent(EVENT_KEY,Key)
-		script:UnregisterEvent(Load)
+			script:RegisterEvent(EVENT_TICK,Tick)
+			script:RegisterEvent(EVENT_KEY,Key)
+			script:UnregisterEvent(Load)
 		end
 	end	
 end
@@ -178,14 +162,13 @@ function Close()
 	using = false
 	selected = false
 	sleeptick = 0
-	play = false
 	panel = {}
 	collectgarbage("collect")
-	if reg then
+	if play then
 		script:UnregisterEvent(Key)
 		script:UnregisterEvent(Tick)
 		script:RegisterEvent(EVENT_TICK, Load)
-		reg = false
+		play = false
 	end
 end
 
