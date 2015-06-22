@@ -41,7 +41,6 @@ function Key(msg,code)
 	if msg == RBUTTON_UP then
 		using = false
 	end
-	
 	for i,v in ipairs(entityList:GetMyHero().abilities) do
 		if list2[v.name] then
 			local code = spells[list2[v.name].number]
@@ -80,7 +79,6 @@ function Key(msg,code)
 							end
 						end
 					end
-
 					if msg == LBUTTON_UP and Skill and using then
 						if list2[Skill.name].target == "target" then
 							if config.queue then
@@ -133,11 +131,9 @@ function Tick(tick)
 			end
 		end
 	end
-
 	if using and Skill and Skill.abilityPhase then
 		using = false
 	end
-
 	if selected then
 		entityList:GetMyHero():Select(entityList:GetMyHero())
 		selected = false
@@ -149,7 +145,7 @@ function Load()
 		if not entityList:GetMyHero() then 
 			script:Disable()
 		else
-			play = true
+			play, panel, heroes, spells = true, {}, {{},{}}, {}
 			script:RegisterEvent(EVENT_TICK,Tick)
 			script:RegisterEvent(EVENT_KEY,Key)
 			script:UnregisterEvent(Load)
@@ -158,7 +154,7 @@ function Load()
 end
 
 function Close()
-	using, panel, heroes, selected, spells = false, {}, {{},{}}, false, {}
+	panel, heroes, spells = {}, {{},{}}, {}
 	collectgarbage("collect")
 	if play then
 		script:UnregisterEvent(Key)
