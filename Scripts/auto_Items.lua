@@ -5,14 +5,14 @@ local play = false
 
 function Tick(tick)
     if not PlayingGame() or not SleepCheck() then return end Sleep(250)
-    local me = entityList:GetMyHero()
-    local bloodstone = me:FindItem("item_bloodstone")
-    local bottle, stick = me:FindItem("item_bottle"), me:FindItem("item_magic_stick") or me:FindItem("item_magic_wand")
+	local me = entityList:GetMyHero()
+	local bloodstone = me:FindItem("item_bloodstone")
+	local bottle, stick = me:FindItem("item_bottle"), me:FindItem("item_magic_stick") or me:FindItem("item_magic_wand")
 	local phaseboots = me:FindItem("item_phase_boots")
 	local midas = me:FindItem("item_hand_of_midas")
 	if not me:IsInvisible() and not me:IsChanneling() and me.alive then
 		if bloodstone and bloodstone:CanBeCasted() then
-			for i,v in ipairs(entityList:GetEntities({type=LuaEntity.TYPE_HERO,team=me:GetEnemyTeam(),illusion=false})) do						
+			for i,v in ipairs(entityList:GetEntities({type=LuaEntity.TYPE_HERO,team=me:GetEnemyTeam()})) do						
 				for i,z in ipairs(v.abilities) do
 					local dmg, dmg2 = me:DamageTaken(AbilityDamage.GetDamage(z, me.healthRegen), AbilityDamage.GetDmgType(z), v), me:DamageTaken(v.dmgMin + v.dmgBonus, DAMAGE_PHYS, v)
 					if GetDistance2D(v,me) <= z.castRange+100 and (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0)) < 0.15 then
