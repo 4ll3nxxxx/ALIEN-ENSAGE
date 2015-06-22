@@ -11,7 +11,7 @@ config:SetParameter("a3spell", "E", config.TYPE_HOTKEY)
 config:SetParameter("a4spell", "R", config.TYPE_HOTKEY)
 config:SetParameter("a5spell", "D", config.TYPE_HOTKEY)
 config:SetParameter("a6spell", "F", config.TYPE_HOTKEY)
-config:SetParameter("queue", true)
+config:SetParameter("queue", true, config.TYPE_BOOL)
 config:Load()
 
 play, using, panel, heroes, selected, spells = false, false, {}, {{},{}}, false, {}
