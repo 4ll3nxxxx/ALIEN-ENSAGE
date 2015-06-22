@@ -1,8 +1,6 @@
 require("libs.Utils")
 require("libs.AbilityDamage")
 
-local play = false
-
 function Tick(tick)
     if not PlayingGame() or not SleepCheck() then return end Sleep(250)
 	local me = entityList:GetMyHero()
@@ -38,7 +36,6 @@ end
 
 function Load()
 	if PlayingGame() then
-		play = true
 		script:RegisterEvent(EVENT_TICK,Tick)
 		script:UnregisterEvent(Load)
 	end
@@ -46,11 +43,8 @@ end
 
 function Close()
 	collectgarbage("collect")
-	if play then
-		script:UnregisterEvent(Tick)
-		script:RegisterEvent(EVENT_TICK,Load)
-		play = false
-	end
+	script:UnregisterEvent(Tick)
+	script:RegisterEvent(EVENT_TICK,Load)
 end
 
 script:RegisterEvent(EVENT_CLOSE,Close)

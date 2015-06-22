@@ -1,3 +1,5 @@
+--reload me
+
 require("libs.Utils")
 require("libs.spelltype")
 require("libs.ScriptConfig")
@@ -12,7 +14,7 @@ config:SetParameter("a6spell", "F", config.TYPE_HOTKEY)
 config:SetParameter("queue", true, config.TYPE_BOOL)
 config:Load()
 
-play, using, panel, heroes, selected, spells = false, false, {}, {{},{}}, false, {}
+using, panel, heroes, selected, spells = false, {}, {{},{}}, false, {}
 
 spells[1], spells[2], spells[3], spells[4], spells[5], spells[6] = config.a1spell, config.a2spell, config.a3spell, config.a4spell, config.a5spell, config.a6spell
 
@@ -139,26 +141,19 @@ end
 
 function Load()
 	if PlayingGame() then
-		if not entityList:GetMyHero() then 
-			script:Disable()
-		else
-			play = true
-			script:RegisterEvent(EVENT_TICK,Tick)
-			script:RegisterEvent(EVENT_KEY,Key)
-			script:UnregisterEvent(Load)
-		end
+		script:RegisterEvent(EVENT_TICK,Tick)
+		script:RegisterEvent(EVENT_KEY,Key)
+		script:UnregisterEvent(Load)
 	end	
 end
 
 function Close()
 	panel, heroes, spells = {}, {{},{}}, {}
 	collectgarbage("collect")
-	if play then
-		script:UnregisterEvent(Key)
-		script:UnregisterEvent(Tick)
-		script:RegisterEvent(EVENT_TICK, Load)
-		play = false
-	end
+	script:UnregisterEvent(Key)
+	script:UnregisterEvent(Tick)
+	script:RegisterEvent(EVENT_TICK, Load)
+
 end
 
 script:RegisterEvent(EVENT_CLOSE,Close)
