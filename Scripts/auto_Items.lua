@@ -12,13 +12,10 @@ function Tick(tick)
 	local midas = me:FindItem("item_hand_of_midas")
 	if not me:IsInvisible() and not me:IsChanneling() and me.alive then
 		if bloodstone and bloodstone:CanBeCasted() then
-			local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO,team=me:GetEnemyTeam(),illusion=false})
-			for i,v in ipairs(enemies) do
-				local distance = GetDistance2D(v,me)						
+			for i,v in ipairs(entityList:GetEntities({type=LuaEntity.TYPE_HERO,team=me:GetEnemyTeam(),illusion=false})) do						
 				for i,z in ipairs(v.abilities) do
-					local dmg = me:DamageTaken(AbilityDamage.GetDamage(z, me.healthRegen), AbilityDamage.GetDmgType(z), v)
-					local dmg2 = me:DamageTaken(v.dmgMin + v.dmgBonus, DAMAGE_PHYS, v)
-					if distance <= z.castRange+100 and (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0)) < 0.15 then
+					local dmg, dmg2 = me:DamageTaken(AbilityDamage.GetDamage(z, me.healthRegen), AbilityDamage.GetDmgType(z), v), me:DamageTaken(v.dmgMin + v.dmgBonus, DAMAGE_PHYS, v)
+					if GetDistance2D(v,me) <= z.castRange+100 and (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0)) < 0.15 then
 						if (z.abilityPhase and me.health < dmg2 or me.health < dmg) then
 							me:CastAbility(bloodstone,me.position)
 						end
