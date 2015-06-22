@@ -156,13 +156,7 @@ function Load()
 end
 
 function Close()
-	spells = {}
-	panel = {}
-	heroes = {{},{}}
-	using = false
-	selected = false
-	sleeptick = 0
-	panel = {}
+	using, panel, heroes, selected, spells = false, {}, {{},{}}, false, {}
 	collectgarbage("collect")
 	if play then
 		script:UnregisterEvent(Key)
