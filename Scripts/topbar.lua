@@ -111,7 +111,7 @@ end
 
 function Tick(tick)
 	if not PlayingGame() or not SleepCheck() then return end Sleep(250)
-	heroes[1], heroes[2] = entityList:GetEntities({type = LuaEntity.TYPE_HERO, team = entityList:GetMyHero().team, illusion = false}), entityList:GetEntities({type = LuaEntity.TYPE_HERO, team = (5-entityList:GetMyHero().team), illusion = false})
+	heroes[1], heroes[2] = entityList:GetEntities({type = LuaEntity.TYPE_HERO, team = entityList:GetMyHero().team, illusion = false}), entityList:GetEntities({type = LuaEntity.TYPE_HERO, team = entityList:GetMyHero():GetEnemyTeam(), illusion = false})
 	for k = 1,2 do
 		table.sort( heroes[k], function (a,b) return a.playerId < b.playerId end )
 		for g,h in ipairs(heroes[k]) do
