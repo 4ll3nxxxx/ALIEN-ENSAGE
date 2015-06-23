@@ -1,5 +1,3 @@
---reload me
-
 require("libs.Utils")
 require("libs.spelltype")
 require("libs.ScriptConfig")
@@ -14,40 +12,23 @@ config:SetParameter("a6spell", "F", config.TYPE_HOTKEY)
 config:SetParameter("queue", true, config.TYPE_BOOL)
 config:Load()
 
-using, panel, heroes, selected, spells = false, {}, {{},{}}, false, {}
+spells, panel, heroes, spells, using, selected = {}, {}, {{},{}}, {}, false, false
 
 spells[1], spells[2], spells[3], spells[4], spells[5], spells[6] = config.a1spell, config.a2spell, config.a3spell, config.a4spell, config.a5spell, config.a6spell
-
-if client.screenSize.x/client.screenSize.y == 1.25 or client.screenSize.x/client.screenSize.y == 4/3 then
-	xx = math.ceil(client.screenSize.x*0.15234375)
-	yy = math.ceil(client.screenSize.y*0.0048828125)
-	ww = math.ceil(client.screenSize.x*0.04609375)
-	hh = math.ceil(client.screenSize.y*0.03125)
-	centwidth = math.ceil(client.screenSize.x*0.371875)
-elseif client.screenSize.x/client.screenSize.y == 1.6 or client.screenSize.x/client.screenSize.y == 1.5 or client.screenSize.x/client.screenSize.y == 5/3 then
-	xx = math.ceil(client.screenSize.x*0.21180555)
-	yy = math.ceil(client.screenSize.y*0.00347222)
-	ww = math.ceil(client.screenSize.x*0.03819444)
-	hh = math.ceil(client.screenSize.y*0.02222222)
-	centwidth = math.ceil(client.screenSize.x*0.31666666)
-else
-	xx = math.ceil(client.screenSize.x*0.23984375)
-	yy = math.ceil(client.screenSize.y*0.00416666)
-	ww = math.ceil(client.screenSize.x*0.034375)
-	hh = math.ceil(client.screenSize.y*0.03472222)
-	centwidth = math.ceil(client.screenSize.x*0.27890625)
-end
 
 function Key(msg,code)
 	if client.chat or client.console or not PlayingGame() or client.paused then return end
 	if msg == RBUTTON_UP then
 		using = false
 	end
-	if not client.chat and msg == KEY_UP and code == spells[1] or code == spells[2] or code == spells[3] or code == spells[4] or code == spells[5] or code == spells[6] then
-		for i,v in ipairs(entityList:GetMyHero().abilities) do
-			if list2[v.name] and code == spells[list2[v.name].number] and v.state == LuaEntityAbility.STATE_READY then
-				Skill = v
-				using = true
+	for i,v in ipairs(entityList:GetMyHero().abilities) do
+		if list2[v.name] then
+			local code = spells[list2[v.name].number]
+			if not client.chat and msg == KEY_UP and code == spells[1] or code == spells[2] or code == spells[3] or code == spells[4] or code == spells[5] or code == spells[6] then
+				if v.state == LuaEntityAbility.STATE_READY then
+					Skill = v
+					using = true
+				end
 			end
 		end
 	end
@@ -102,14 +83,27 @@ function Key(msg,code)
 	end
 end
 
-function IsMouseOnButton(x,y,h,w)
-	local mx = client.mouseScreenPosition.x
-	local my = client.mouseScreenPosition.y
-	return mx >= x and mx <= x + w and my >= y and my <= y + h
-end
-
 function Tick(tick)
 	if not PlayingGame() or not SleepCheck() then return end Sleep(250)
+	if client.screenSize.x/client.screenSize.y == 1.25 or client.screenSize.x/client.screenSize.y == 4/3 then
+		xx = math.ceil(client.screenSize.x*0.15234375)
+		yy = math.ceil(client.screenSize.y*0.0048828125)
+		ww = math.ceil(client.screenSize.x*0.04609375)
+		hh = math.ceil(client.screenSize.y*0.03125)
+		centwidth = math.ceil(client.screenSize.x*0.371875)
+	elseif client.screenSize.x/client.screenSize.y == 1.6 or client.screenSize.x/client.screenSize.y == 1.5 or client.screenSize.x/client.screenSize.y == 5/3 then
+		xx = math.ceil(client.screenSize.x*0.21180555)
+		yy = math.ceil(client.screenSize.y*0.00347222)
+		ww = math.ceil(client.screenSize.x*0.03819444)
+		hh = math.ceil(client.screenSize.y*0.02222222)
+		centwidth = math.ceil(client.screenSize.x*0.31666666)
+	else
+		xx = math.ceil(client.screenSize.x*0.23984375)
+		yy = math.ceil(client.screenSize.y*0.00416666)
+		ww = math.ceil(client.screenSize.x*0.034375)
+		hh = math.ceil(client.screenSize.y*0.03472222)
+		centwidth = math.ceil(client.screenSize.x*0.27890625)
+	end
 	heroes[1], heroes[2] = entityList:GetEntities({type = LuaEntity.TYPE_HERO, team = entityList:GetMyHero().team, illusion = false}), entityList:GetEntities({type = LuaEntity.TYPE_HERO, team = entityList:GetMyHero():GetEnemyTeam(), illusion = false})
 	for k = 1,2 do
 		table.sort( heroes[k], function (a,b) return a.playerId < b.playerId end )
@@ -139,6 +133,13 @@ function Tick(tick)
 	end
 end
 
+function IsMouseOnButton(x,y,h,w)
+	local mx = client.mouseScreenPosition.x
+	local my = client.mouseScreenPosition.y
+	return mx >= x and mx <= x + w and my >= y and my <= y + h
+end
+
+
 function Load()
 	if PlayingGame() then
 		script:RegisterEvent(EVENT_TICK,Tick)
@@ -148,12 +149,11 @@ function Load()
 end
 
 function Close()
-	panel, heroes, spells = {}, {{},{}}, {}
+	spells, panel, heroes, spells, using, selected = {}, {}, {{},{}}, {}, false, false
 	collectgarbage("collect")
 	script:UnregisterEvent(Key)
 	script:UnregisterEvent(Tick)
 	script:RegisterEvent(EVENT_TICK, Load)
-
 end
 
 script:RegisterEvent(EVENT_CLOSE,Close)
