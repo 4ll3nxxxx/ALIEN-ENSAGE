@@ -25,7 +25,7 @@ function Key(msg,code)
 		if list2[v.name] then
 			local code = spells[list2[v.name].number]
 			if not client.chat and msg == KEY_UP and code == spells[1] or code == spells[2] or code == spells[3] or code == spells[4] or code == spells[5] or code == spells[6] then
-				if v.state == LuaEntityAbility.STATE_READY then
+				if code == spells[list2[v.name].number] and v.state == LuaEntityAbility.STATE_READY then
 					Skill = v
 					using = true
 				end
