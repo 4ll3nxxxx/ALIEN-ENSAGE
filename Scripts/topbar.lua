@@ -32,7 +32,7 @@ else
 	centwidth = math.ceil(client.screenSize.x*0.27890625)
 end
 
-spells, panel, heroes, using, selected = {}, {}, {}, false, false
+spells, panel, heroes, selected, using = {}, {}, {{},{}}, false, false
 
 function Key(msg,code)
 	if client.chat or client.console or not PlayingGame() or client.paused then return end
@@ -146,7 +146,7 @@ function Load()
 end
 
 function Close()
-	spells, panel, heroes, spells, using, selected = {}, {}, {{},{}}, {}, false, false
+	spells, panel, heroes, selected, using = {}, {}, {{},{}}, false, false
 	collectgarbage("collect")
 	script:UnregisterEvent(Key)
 	script:UnregisterEvent(Tick)
