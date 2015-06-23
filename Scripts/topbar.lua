@@ -40,7 +40,7 @@ function Key(msg,code)
 		using = false
 	end
 	spells[1], spells[2], spells[3], spells[4], spells[5], spells[6] = config.a1spell, config.a2spell, config.a3spell, config.a4spell, config.a5spell, config.a6spell
-	if not client.chat and msg == KEY_UP and code == spells[1] or code == spells[2] or code == spells[3] or code == spells[4] or code == spells[5] or code == spells[6] then
+	if not client.chat and code == spells[1] or code == spells[2] or code == spells[3] or code == spells[4] or code == spells[5] or code == spells[6] then
 		for i,v in ipairs(entityList:GetMyHero().abilities) do
 			if list2[v.name] and code == spells[list2[v.name].number] and v.state == LuaEntityAbility.STATE_READY then
 				Skill = v
