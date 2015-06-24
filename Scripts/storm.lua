@@ -14,14 +14,14 @@ ScriptConfig:SetVisible(false)
 ScriptConfig:AddParam("hotkey","Key",SGC_TYPE_ONKEYDOWN,false,false,32)
 ScriptConfig:AddParam("dodge","Auto Dodge Spells",SGC_TYPE_TOGGLE,false,true,nil)
 
-play, myhero, victim, start, resettime, castQueue, castsleep, move, dodge = false, nil, nil, false, false, {}, 0, 0, 0
+play, myhero, victim, start, resettime, castQueue, castsleep, move = false, nil, nil, false, false, {}, 0, 0
 
 dodgeList = {
 	npc_dota_hero_lina = {spell = "lina_laguna_blade"},
 	npc_dota_hero_sven = {spell = "sven_storm_bolt"},
 	npc_dota_hero_vengefulspirit = {spell = "vengefulspirit_magic_missile"},
 	npc_dota_hero_skeleton_king = {spell = "skeleton_king_hellfire_blast"},
-	npc_dota_hero_lion = {spell = "lion_finger_of_death"}
+	npc_dota_hero_lion = {spell = "lion_finger_of_death"},
 } 
 
 function Main(tick)
@@ -46,18 +46,17 @@ function Main(tick)
 		end
 	end
 
-	if ScriptConfig.dodge and tick > dodge then
+	if ScriptConfig.dodge then
 		local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO,team=me:GetEnemyTeam(),illusion=false})
 		for i,v in ipairs(enemies) do
 			local R = me:GetAbility(4)
-			if R and R:CanBeCasted() and me:CanCast() and dodgeList[v.name] then
+			if R and R:CanBeCasted() and me:CanCast() and dodgeList[v.name] and SleepCheck("cd") then
 				local spell = v:FindSpell(dodgeList[v.name].spell)
 				if spell and spell.abilityPhase and (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0)) == 0 then
-					table.insert(castQueue,{math.ceil(R:FindCastPoint()*1000),R,me.position})
+					table.insert(castQueue,{math.ceil(R:FindCastPoint()*1000),R,me.position}) Sleep(1000 + client.latency, "cd")
 				end
 			end
 		end
-		dodge = tick + 200
 	end
 
 	if ScriptConfig.hotkey then	
@@ -83,7 +82,7 @@ function Main(tick)
 					local Sheep, Orchid, Shivas, Sphere = me:FindItem("item_sheepstick"), me:FindItem("item_orchid"), me:FindItem("item_shivas_guard"), me:FindItem("item_sphere")
 					local distance, disabled = GetDistance2D(victim,me),victim:IsSilenced() or victim:IsHexed() or victim:IsStunned()
 					if R and R:CanBeCasted() and me:CanCast() and distance > me.attackRange+200 and not balling and not R.abilityPhase then
-						local xyz = SkillShot.SkillShotXYZ(me,victim,((270-Animations.getDuration(W)*1000)+R:FindCastPoint()*1000+client.latency+me:GetTurnTime(victim)*1000),R:GetSpecialData("ball_lightning_move_speed", R.level))
+						local xyz = SkillShot.SkillShotXYZ(me,victim,((150-Animations.getDuration(W)*1000)+R:FindCastPoint()*1000+client.latency+me:GetTurnTime(victim)*1000),R:GetSpecialData("ball_lightning_move_speed", R.level))
 						if xyz then 
 							table.insert(castQueue,{math.ceil(R:FindCastPoint()*1000),R,xyz})
 						end
