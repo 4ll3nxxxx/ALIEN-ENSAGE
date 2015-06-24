@@ -94,7 +94,7 @@ function Main(tick)
 					end
 				end
 				me:Attack(victim)
-				castsleep = tick + 200
+				castsleep = tick + 100
 			end
 		elseif tick > move then
 			if victim then
