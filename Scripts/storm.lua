@@ -21,7 +21,7 @@ dodgeList = {
 	npc_dota_hero_sven = {spell = "sven_storm_bolt"},
 	npc_dota_hero_vengefulspirit = {spell = "vengefulspirit_magic_missile"},
 	npc_dota_hero_skeleton_king = {spell = "skeleton_king_hellfire_blast"},
-	npc_dota_hero_lion = {spell = "lion_finger_of_death"},
+	npc_dota_hero_lion = {spell = "lion_finger_of_death"}
 } 
 
 function Main(tick)
@@ -53,7 +53,7 @@ function Main(tick)
 			if R and R:CanBeCasted() and me:CanCast() and dodgeList[v.name] and SleepCheck("cd") then
 				local spell = v:FindSpell(dodgeList[v.name].spell)
 				if spell and spell.abilityPhase and (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0)) == 0 then
-					table.insert(castQueue,{math.ceil(R:FindCastPoint()*1000),R,me.position}) Sleep(1000 + client.latency, "cd")
+					table.insert(castQueue,{math.ceil(R:FindCastPoint()*1000),R,me.position}) Sleep(250 + client.latency, "cd")
 				end
 			end
 		end
