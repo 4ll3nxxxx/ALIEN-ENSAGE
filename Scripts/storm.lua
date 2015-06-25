@@ -21,7 +21,7 @@ dodgeList = {
 	npc_dota_hero_sven = {spell = "sven_storm_bolt"},
 	npc_dota_hero_vengefulspirit = {spell = "vengefulspirit_magic_missile"},
 	npc_dota_hero_skeleton_king = {spell = "skeleton_king_hellfire_blast"},
-	npc_dota_hero_lion = {spell = "lion_finger_of_death"}
+	npc_dota_hero_lion = {spell = "lion_finger_of_death"},
 } 
 
 function Main(tick)
@@ -53,7 +53,7 @@ function Main(tick)
 			if R and R:CanBeCasted() and me:CanCast() and dodgeList[v.name] and SleepCheck("cd") then
 				local spell = v:FindSpell(dodgeList[v.name].spell)
 				if spell and spell.abilityPhase and (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0)) == 0 then
-					table.insert(castQueue,{math.ceil(R:FindCastPoint()*1000),R,me.position}) Sleep(250 + client.latency, "cd")
+					table.insert(castQueue,{math.ceil(R:FindCastPoint()*1000),R,me.position}) Sleep(1000 + client.latency, "cd")
 				end
 			end
 		end
@@ -63,7 +63,7 @@ function Main(tick)
 		if Animations.CanMove(me) or not start or (victim and GetDistance2D(victim,me) > me.attackRange+50) then
 			start = true
 			local lowestHP = targetFind:GetLowestEHP(3000, phys)
-			if lowestHP and (not victim or victim.creep or GetDistance2D(me,victim) > 600 or not victim.alive or lowestHP.health < victim.health) and SleepCheck("victim") then			
+			if lowestHP and (not victim or GetDistance2D(me,victim) > 600 or not victim.alive or lowestHP.health < victim.health) and SleepCheck("victim") then			
 				victim = lowestHP
 				Sleep(250,"victim")
 			end
@@ -117,6 +117,8 @@ function Main(tick)
 				else
 					me:Follow(victim)
 				end
+			else
+				me:Move(client.mousePosition)
 			end
 			move = tick + 200
 			start = false

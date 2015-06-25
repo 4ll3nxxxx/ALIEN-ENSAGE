@@ -104,6 +104,8 @@ function Main(tick)
 				else
 					me:Follow(victim)
 				end
+			else
+				me:Move(client.mousePosition)
 			end
 			move = tick + 200
 			start = false

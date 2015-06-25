@@ -42,7 +42,7 @@ function Main(tick)
 		if Animations.CanMove(me) or not start or (victim and GetDistance2D(victim,me) > me.attackRange+50) then
 			start = true
 			local lowestHP = targetFind:GetLowestEHP(3000, phys)
-			if lowestHP and (not victim or victim.creep or GetDistance2D(me,victim) > 600 or not victim.alive or lowestHP.health < victim.health) and SleepCheck("victim") then			
+			if lowestHP and (not victim or GetDistance2D(me,victim) > 600 or not victim.alive or lowestHP.health < victim.health) and SleepCheck("victim") then			
 				victim = lowestHP
 				Sleep(250,"victim")
 			end
@@ -112,6 +112,8 @@ function Main(tick)
 				else
 					me:Follow(victim)
 				end
+			else
+				me:Move(client.mousePosition)
 			end
 			move = tick + 160
 			start = false
