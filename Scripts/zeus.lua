@@ -83,8 +83,8 @@ function Main(tick)
 				elseif slow then
 					me:Follow(target)
 				end
-				castsleep = tick 
 			end
+			castsleep = tick + 150
 		end
 	end
 end

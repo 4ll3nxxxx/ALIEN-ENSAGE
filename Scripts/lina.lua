@@ -1,31 +1,24 @@
-require("libs.ScriptConfig")
+require("libs.HotkeyConfig2")
 require("libs.Utils")
 require("libs.TargetFind")
 require("libs.Skillshot")
 
-local config = ScriptConfig.new()
-config:SetParameter("Hotkey", "32", config.TYPE_HOTKEY)
-config:SetParameter("Ult", true)
-config:Load()
+ScriptConfig = ConfigGUI:New(script.name)
+script:RegisterEvent(EVENT_KEY, ScriptConfig.Key, ScriptConfig)
+script:RegisterEvent(EVENT_TICK, ScriptConfig.Refresh, ScriptConfig)
+ScriptConfig:SetName("Lina")
+ScriptConfig:SetExtention(-.3)
+ScriptConfig:SetVisible(false)
 
-local play = false local myhero = nil local target = nil local start = false local resettime = nil local sleep = {0,0,0}
-local rate = client.screenSize.x/1600 local rec = {} local castQueue = {}
-rec[1] = drawMgr:CreateRect(70*rate,26*rate,270*rate,60*rate,0xFFFFFF30,drawMgr:GetTextureId("NyanUI/other/CM_status_1")) rec[1].visible = false
-rec[2] = drawMgr:CreateText(175*rate,52*rate,0xFFFFFF90,"Target :",drawMgr:CreateFont("manabarsFont","Arial",18*rate,700)) rec[2].visible = false
-rec[3] = drawMgr:CreateRect(220*rate,54*rate,16*rate,16*rate,0xFFFFFF30) rec[3].visible = false
+ScriptConfig:AddParam("hotkey","Key",SGC_TYPE_ONKEYDOWN,false,false,32)
+ScriptConfig:AddParam("ult","Auto Laguna Blade",SGC_TYPE_TOGGLE,false,true,nil)
+
+play, myhero, target, castQueue, castsleep, move = false, nil, nil, {}, 0, 0
 
 function Main(tick)
 	if not PlayingGame() then return end
 	local me = entityList:GetMyHero()
 	local ID = me.classId if ID ~= myhero then return end
-
-	if target and target.visible then
-		if not rec[i] then
-			rec[3].textureId = drawMgr:GetTextureId("NyanUI/miniheroes/"..target.name:gsub("npc_dota_hero_",""))
-		end
-	else
-		rec[3].textureId = drawMgr:GetTextureId("NyanUI/spellicons/doom_bringer_empty1")
-	end
 
 	for i=1,#castQueue,1 do
 		local v = castQueue[1]
@@ -35,122 +28,94 @@ function Main(tick)
 			ability = me:FindItem(ability)
 		end
 		if ability and me:SafeCastAbility(ability,v[3],false) then
-			sleep[3] = tick + v[1] + client.latency
+			castsleep = tick + v[1] + client.latency
 			return
 		end
 	end
 
-	if IsKeyDown(config.Hotkey) and not client.chat then
+	if ScriptConfig.hotkey then	
 		target = targetFind:GetClosestToMouse(100)
-		start = true
 		if target and GetDistance2D(me,target) <= 2000 then
-			if tick > sleep[1] then
+			if tick > move then
 				local blow = target:DoesHaveModifier("modifier_eul_cyclone")
 				if GetDistance2D(target,me) <= 625 and not blow then
 					me:Attack(target)
 				else
 					me:Follow(target)
 				end
-				sleep[1] = tick + 100 + client.latency
+				move = tick + 150
 			end
-			if tick > sleep[2] then
-				local Q = me:GetAbility(1)
-				local W = me:GetAbility(2)
-				local R = me:GetAbility(4)
-				local euls = me:FindItem("item_cyclone")
-				if config.Ult and target and R and R:CanBeCasted() and target:CanDie() and not target:DoesHaveModifier("modifier_item_blade_mail_reflect") and not target:IsLinkensProtected() and not target:DoesHaveModifier("modifier_item_lotus_orb_active") then
-					Dmg = R:GetSpecialData("damage",R.level)
-					if target.health < target:DamageTaken(Dmg, DAMAGE_MAGC, me) and target.health > 400 then
-						table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R,target})
-					end
-				end
-				if euls then
-					if euls and euls:CanBeCasted() then
-						if GetDistance2D(target,me) <= euls.castRange and W and W:CanBeCasted() then
-							me:CastAbility(euls,target)
-							table.insert(castQueue,{math.ceil(euls:FindCastPoint()*1000),euls,target,true})
-							sleep[2] = tick + 1700 + client.latency
+			if tick > castsleep then
+				if not target:DoesHaveModifier("modifier_item_blade_mail_reflect") and not target:DoesHaveModifier("modifier_item_lotus_orb_active") and not target:IsMagicImmune() and target:CanDie() then
+					local Q, W, R, euls = me:GetAbility(1), me:GetAbility(2), me:GetAbility(4), me:FindItem("item_cyclone")
+					if ScriptConfig.ult and target and R and R:CanBeCasted() and not target:IsLinkensProtected() then
+						Dmg = R:GetSpecialData("damage",R.level)
+						if target.health < target:DamageTaken(Dmg, DAMAGE_MAGC, me) and target.health > 400 then
+							table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R,target})
 						end
 					end
-					if W and W:CanBeCasted() and euls.cd ~= 0 then
-						xyz2(target,me,W)
+					if euls then
+						if euls and euls:CanBeCasted() then
+							if GetDistance2D(target,me) <= euls.castRange and W and W:CanBeCasted() then
+								table.insert(castQueue,{math.ceil(euls:FindCastPoint()*1000),euls,target,true})
+							end
+						end
+						if W and W:CanBeCasted() and math.ceil(euls.cd + 1.4) == math.ceil(euls:GetCooldown(euls.level)) then
+							xyz2(target,me,W)
+						end
+						if Q and Q:CanBeCasted() and W.cd ~= 0 then
+							xyz1(target,me,Q)
+						end
 					end
-					if Q and Q:CanBeCasted() and W.cd ~= 0 then
-						xyz1(target,me,Q)
+					if (not euls or euls.cd > 0 and euls.cd < 13) then
+						if W and W:CanBeCasted() then
+							xyz2(target,me,W)
+						end
+						if Q and Q:CanBeCasted() and W.cd ~= 0 then
+							xyz1(target,me,Q)
+						end
 					end
 				end
-				if not euls then
-					if W and W:CanBeCasted() then
-						xyz2(target,me,W)
-					end
-					if Q and Q:CanBeCasted() and W.cd ~= 0 then
-						xyz1(target,me,Q)
-					end
-				end
+				castsleep = tick + 150
 			end
 		end
-	elseif target then
-		if not resettime then
-			resettime = client.gameTime
-		elseif (client.gameTime - resettime) >= 6 then
-			target = nil		
-		end
-		start = false
 	end 
 end
 
 function xyz1(target,me,Q)
-	local CP = Q:FindCastPoint()
-	local delay = CP*1000+client.latency+me:GetTurnTime(target)*1000
-	local speed = 800
-	local xyz = SkillShot.SkillShotXYZ(me,target,delay,speed)
+	local xyz = SkillShot.SkillShotXYZ(me,target,Q:FindCastPoint()*1000+client.latency+me:GetTurnTime(target)*1000,800)
 	if xyz and GetDistance2D(target,me) <= Q.castRange then 
-		table.insert(castQueue,{math.ceil(CP*1000+client.latency),Q,xyz})
+		table.insert(castQueue,{math.ceil(Q:FindCastPoint()*1000+client.latency),Q,xyz})
 	end
 end
 
 function xyz2(target,me,W)
-	local CP = W:FindCastPoint()
-	local delay = CP*1000+client.latency+me:GetTurnTime(target)*1000
-	local speed = 625
-	local xyz = SkillShot.SkillShotXYZ(me,target,delay,speed)
+	local xyz = SkillShot.SkillShotXYZ(me,target,W:FindCastPoint()*1000+client.latency+me:GetTurnTime(target)*1000,625)
 	if xyz and GetDistance2D(target,me) <= W.castRange then 
-		table.insert(castQueue,{math.ceil(CP*1000+client.latency),W,xyz})
+		table.insert(castQueue,{math.ceil(W:FindCastPoint()*1000+client.latency),W,xyz})
 	end
 end
-
 
 function Load()
 	if PlayingGame() then
 		local me = entityList:GetMyHero()
 		if me.classId ~= CDOTA_Unit_Hero_Lina then 
-			script:Disable()
+			script:Disable() 
 		else
-			play = true
-			target = nil
-			start = false
-			resettime = nil
-			myhero = me.classId
-			rec[1].w = 90*rate + 30*0*rate + 65*rate rec[1].visible = true
-			rec[2].x = 30*rate + 90*rate + 30*0*rate + 65*rate - 95*rate rec[2].visible = true
-			rec[3].x = 80*rate + 90*rate + 30*0*rate + 65*rate - 50*rate rec[3].visible = true
+			ScriptConfig:SetVisible(true)
+			play, target, myhero = true, nil, me.classId
 			script:RegisterEvent(EVENT_FRAME, Main)
 			script:UnregisterEvent(Load)
 		end
-	end
+	end	
 end
 
 function Close()
-	myhero = nil
-	target = nil
-	start = false
-	resettime = nil
-	rec[1].visible = false
-	rec[2].visible = false
-	rec[3].visible = false
+	myhero, target = nil, nil
+	ScriptConfig:SetVisible(false)
 	collectgarbage("collect")
 	if play then
-		script:UnregisterEvent(Tick)
+		script:UnregisterEvent(Main)
 		script:RegisterEvent(EVENT_TICK,Load)
 		play = false
 	end
