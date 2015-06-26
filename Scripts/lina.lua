@@ -28,7 +28,6 @@ function Main(tick)
 			ability = me:FindItem(ability)
 		end
 		if ability and me:SafeCastAbility(ability,v[3],false) then
-			castsleep = tick + v[1] + client.latency
 			return
 		end
 	end
@@ -57,16 +56,17 @@ function Main(tick)
 						if euls and euls:CanBeCasted() then
 							if GetDistance2D(target,me) <= euls.castRange and W and W:CanBeCasted() then
 								table.insert(castQueue,{math.ceil(euls:FindCastPoint()*1000),euls,target,true})
+								castsleep = tick + 1700 + client.latency
 							end
 						end
-						if W and W:CanBeCasted() and math.ceil(euls.cd + 1.4) == math.ceil(euls:GetCooldown(euls.level)) then
+						if W and W:CanBeCasted() and euls.cd ~= 0 then
 							xyz2(target,me,W)
 						end
 						if Q and Q:CanBeCasted() and W.cd ~= 0 then
 							xyz1(target,me,Q)
 						end
 					end
-					if (not euls or euls and euls.cd > 0 and euls.cd < 13) then
+					if not euls then
 						if W and W:CanBeCasted() then
 							xyz2(target,me,W)
 						end
@@ -75,7 +75,6 @@ function Main(tick)
 						end
 					end
 				end
-				castsleep = tick + 150
 			end
 		end
 	end 
