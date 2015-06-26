@@ -48,7 +48,7 @@ function Main(tick)
 				if not target:DoesHaveModifier("modifier_item_blade_mail_reflect") and not target:DoesHaveModifier("modifier_item_lotus_orb_active") and not target:IsMagicImmune() and target:CanDie() then
 					local Q, W, R, euls = me:GetAbility(1), me:GetAbility(2), me:GetAbility(4), me:FindItem("item_cyclone")
 					if ScriptConfig.ult and R and R:CanBeCasted() and not target:IsLinkensProtected() then
-						if target.health < target:DamageTaken(R:GetSpecialData("damage",R.level), DAMAGE_MAGC, me) and target.health > 400 then
+						if target.health < target:DamageTaken(R:GetSpecialData("damage",R.level), DAMAGE_MAGC, me) then
 							table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R,target})
 						end
 					end
