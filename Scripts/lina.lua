@@ -67,7 +67,7 @@ function Main(tick)
 							xyz1(target,me,Q)
 						end
 					end
-					if (not euls or euls.cd > 0 and euls.cd < 13) then
+					if (not euls or euls and euls.cd > 0 and euls.cd < 13) then
 						if W and W:CanBeCasted() then
 							xyz2(target,me,W)
 						end
