@@ -5,7 +5,7 @@ config = ScriptConfig.new()
 config:SetParameter("Hotkey", "9", config.TYPE_HOTKEY)
 config:Load()
 
-active, disableAutoAttack, treads_changed, treads_laststate = false, false 
+play, active, disableAutoAttack, treads_changed, treads_laststate = false, false, false 
 
 function Key(msg,code)
 	if client.chat or client.console or not PlayingGame() or client.paused then return end
@@ -149,6 +149,7 @@ end
 
 function Load()
 	if PlayingGame() then
+		play = true
 		script:RegisterEvent(EVENT_TICK,Tick)
 		script:RegisterEvent(EVENT_KEY,Key)
 		script:UnregisterEvent(Load)
@@ -158,9 +159,12 @@ end
 function Close()
 	active, disableAutoAttack = false, false
 	collectgarbage("collect")
-	script:UnregisterEvent(Tick)
-	script:UnregisterEvent(Key)
-	script:RegisterEvent(EVENT_TICK,Load)
+	if play then
+		script:UnregisterEvent(Tick)
+		script:UnregisterEvent(Key)
+		script:RegisterEvent(EVENT_TICK,Load)
+		play = false
+	end
 end 
  
 script:RegisterEvent(EVENT_CLOSE,Close)
