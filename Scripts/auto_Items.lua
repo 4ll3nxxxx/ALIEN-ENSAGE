@@ -52,7 +52,7 @@ end
 function Load()
 	if PlayingGame() then
 		play = true
-		script:RegisterEvent(EVENT_TICK,Tick)
+		script:RegisterEvent(EVENT_FRAME,Tick)
 		script:UnregisterEvent(Load)
 	end
 end
