@@ -1,10 +1,18 @@
 require("libs.Utils")
 require("libs.AbilityDamage")
 
+play, spellList = false, {
+	npc_dota_hero_pudge = {spell = "pudge_dismember"},
+	npc_dota_hero_crystal_maiden = {spell = "crystal_maiden_freezing_field"},
+	npc_dota_hero_enigma = {spell = "enigma_black_hole"},
+	npc_dota_hero_witch_doctor = {spell = "witch_doctor_death_ward"},
+	npc_dota_hero_luna = {spell = "luna_eclipse"}
+}
+
 function Tick(tick)
-    if not PlayingGame() or not SleepCheck() then return end Sleep(1000)
+    if not PlayingGame() or not SleepCheck() then return end Sleep(250+client.latency)
 	local me = entityList:GetMyHero()
-	local bloodstone = me:FindItem("item_bloodstone")
+	local bloodstone, glimmercape = me:FindItem("item_bloodstone"), me:FindItem("item_glimmer_cape")
 	local bottle, stick = me:FindItem("item_bottle"), me:FindItem("item_magic_stick") or me:FindItem("item_magic_wand")
 	local phaseboots = me:FindItem("item_phase_boots")
 	local midas = me:FindItem("item_hand_of_midas")
@@ -18,6 +26,13 @@ function Tick(tick)
 							me:CastAbility(bloodstone,me.position)
 						end
 					end
+				end
+			end
+		elseif glimmercape and glimmercape:CanBeCasted() then
+			if spellList[me.name] then
+				local spell = me:FindSpell(spellList[me.name].spell)
+				if spell and spell.level > 0 and spell.abilityPhase then
+					me:CastAbility(glimmercape,me)
 				end
 			end
 		elseif midas and midas:CanBeCasted() then
@@ -36,6 +51,7 @@ end
 
 function Load()
 	if PlayingGame() then
+		play = true
 		script:RegisterEvent(EVENT_TICK,Tick)
 		script:UnregisterEvent(Load)
 	end
@@ -43,8 +59,11 @@ end
 
 function Close()
 	collectgarbage("collect")
-	script:UnregisterEvent(Tick)
-	script:RegisterEvent(EVENT_TICK,Load)
+	if play then
+		script:UnregisterEvent(Tick)
+		script:RegisterEvent(EVENT_TICK,Load)
+		play = false
+	end
 end
 
 script:RegisterEvent(EVENT_CLOSE,Close)
