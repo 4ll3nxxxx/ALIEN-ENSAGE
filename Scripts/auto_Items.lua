@@ -10,7 +10,7 @@ play, spellList = false, {
 }
 
 function Tick(tick)
-    if not PlayingGame() or not SleepCheck() then return end Sleep(250+client.latency)
+    if not PlayingGame() or not SleepCheck() then return end Sleep(150+client.latency)
 	local me = entityList:GetMyHero()
 	local bloodstone, glimmercape = me:FindItem("item_bloodstone"), me:FindItem("item_glimmer_cape")
 	local bottle, stick = me:FindItem("item_bottle"), me:FindItem("item_magic_stick") or me:FindItem("item_magic_wand")
