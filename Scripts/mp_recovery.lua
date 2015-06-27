@@ -156,7 +156,7 @@ function Load()
 end
 
 function Close()
-	active, disableAutoAttack, treads_changed, treads_laststate = false, false, nil, nil
+	active, disableAutoAttack = false, false
 	collectgarbage("collect")
 	script:UnregisterEvent(Tick)
 	script:UnregisterEvent(Key)
