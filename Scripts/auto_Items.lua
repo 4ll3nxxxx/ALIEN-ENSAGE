@@ -2,7 +2,7 @@ require("libs.Utils")
 require("libs.AbilityDamage")
 
 function Tick(tick)
-    if not PlayingGame() or not SleepCheck() then return end Sleep(250)
+    if not PlayingGame() or not SleepCheck() then return end Sleep(1000)
 	local me = entityList:GetMyHero()
 	local bloodstone = me:FindItem("item_bloodstone")
 	local bottle, stick = me:FindItem("item_bottle"), me:FindItem("item_magic_stick") or me:FindItem("item_magic_wand")

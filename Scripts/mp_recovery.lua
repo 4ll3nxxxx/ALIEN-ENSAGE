@@ -1,42 +1,25 @@
---<<Drop all hp/mp adding items and also use acrane, bottle, etc. Also has keys for dropping tranquil boots and blink.>>
---===By Blaxpirit===--
-
 require("libs.Utils")
 require("libs.ScriptConfig")
 
-local config = ScriptConfig.new()
+config = ScriptConfig.new()
 config:SetParameter("Hotkey", "9", config.TYPE_HOTKEY)
-config:SetParameter("DropBlink", "115", config.TYPE_HOTKEY)
-config:SetParameter("DropTranquils", "116", config.TYPE_HOTKEY)
 config:Load()
 
-local play = false local active = false local activated = false local disableAutoAttack = false local treads_laststate
-local treads_changed local BugedItems = {"item_ancient_janggo","item_veil_of_discord"}
+active, disableAutoAttack, treads_changed, treads_laststate = false, false 
 
 function Key(msg,code)
 	if client.chat or client.console or client.loading then return end
-	local me = entityList:GetMyHero()
-	local mp = entityList:GetMyPlayer()
+	local me, mp = entityList:GetMyHero(), entityList:GetMyPlayer()
 	if msg == KEY_DOWN then
 		if active then
 			if code == config.Hotkey then
 				DropItems(me,mp)
 			end
 		end
-		if code == config.DropBlink then
-			DropBlink(me,mp)
-		end
 	end	
 	if msg == KEY_UP then
 		if code == config.Hotkey then
 			PickUpItems(me,mp)
-		end
-		if code == config.DropBlink then
-			PickUpItems(me,mp)
-		end
-		if code == config.DropTranquils then
-			DropTranquils(me,mp)
-			PickUpTranquils(me,mp)
 		end
 	end
 end
@@ -59,27 +42,15 @@ function Tick( tick )
 end	
 	
 function DropItems(me,mp)
-	if me.alive and (me.mana ~= me.maxMana or me.health ~= me.maxHealth) then
-		Sleep(3250,"auto_attack")
-		mp:HoldPosition()
-		local aboots = me:FindItem("item_arcane_boots")
-		local soulring = me:FindItem("item_soul_ring")
-		local lowstick = me:FindItem("item_magic_stick")
-		local gradestick = me:FindItem("item_magic_wand")
-		local mek = me:FindItem("item_mekansm")
-		local bottle = me:FindItem("item_bottle")
-		local invis = me:IsInvisible()
-		local chanel = me:IsChanneling()
-		local cuseitems = me:CanUseItems()
-		
+	if me.alive and (me.mana ~= me.maxMana or me.health ~= me.maxHealth) then Sleep(1000,"auto_attack") mp:HoldPosition()
+		local chanel, invis, cuseitems = me:IsChanneling(), me:IsInvisible(), me:CanUseItems()
+		local arcane, soulring = me:FindItem("item_arcane_boots"), me:FindItem("item_soul_ring")
+		local lowstick, gradestick = me:FindItem("item_magic_stick"), me:FindItem("item_magic_wand")
+		local mek, bottle = me:FindItem("item_mekansm"), me:FindItem("item_bottle")
 		for i,v in ipairs(me.items) do	
-			local bonusStrength = v:GetSpecialData("bonus_strength")
-			local bonusMana = v:GetSpecialData("bonus_mana")
-			local bonusHealth = v:GetSpecialData("bonus_health")
-			local bonusIntellect = v:GetSpecialData("bonus_intellect")
-			local bonusAll = v:GetSpecialData("bonus_all_stats")
-			local treads = me:FindItem("item_power_treads")
-			
+			local bonusStrength, bonusMana = v:GetSpecialData("bonus_strength"), v:GetSpecialData("bonus_mana")
+			local bonusHealth, bonusIntellect = v:GetSpecialData("bonus_health"), v:GetSpecialData("bonus_intellect")
+			local bonusAll, treads = v:GetSpecialData("bonus_all_stats"), me:FindItem("item_power_treads")
 			if not chanel then
 				if v.name == "item_power_treads" then
 					if treads.bootsState == 0 and me.health ~= me.maxHealth then
@@ -97,13 +68,14 @@ function DropItems(me,mp)
 				if v.name == "item_refresher" and me.mana ~= me.maxMana then
 					mp:DropItem(v,me.position)
 				end
+				local BugedItems = {"item_ancient_janggo","item_veil_of_discord"}
 				for j,k in ipairs(BugedItems) do
 					if v.name == BugedItems[j] then
 						mp:DropItem(v,me.position)
 					end
 				end
 				if bonusHealth or bonusMana or bonusStrength or bonusIntellect or bonusAll then
-					if aboots and aboots.cd == 0 and me.mana ~= me.maxMana then
+					if arcane and arcane.cd == 0 and me.mana ~= me.maxMana then
 						if v.name ~= "item_arcane_boots" then
 							mp:DropItem(v,me.position)
 						end
@@ -125,51 +97,22 @@ function DropItems(me,mp)
 				end
 			end
 		end
-		if cuseitems and not (invis and chanel) then
-			if aboots and aboots.cd == 0 and me.mana ~= me.maxMana and aboots:CanBeCasted() then
+		if cuseitems and not (invis and chanel) then Sleep(1000)
+			if arcane and arcane.cd == 0 and me.mana ~= me.maxMana and arcane:CanBeCasted() then
 				me:SafeCastItem("item_arcane_boots")
-				Sleep(1000)
 			elseif mek and mek.cd == 0 and me.health ~= me.maxHealth and mek:CanBeCasted() then
 				me:SafeCastItem("item_mekansm")
-				Sleep(1000)
 			elseif soulring and soulring.cd == 0 and me.mana ~= me.maxMana then
 				me:SafeCastItem("item_soul_ring")
-				Sleep(50)
 			elseif bottle and bottle.charges > 0 and bottle.cd == 0 and not me:FindModifier("modifier_bottle_regeneration") then
 				me:SafeCastItem("item_bottle")
-				Sleep(3000)
 			elseif lowstick and lowstick.charges > 0 and lowstick.cd == 0 then
 				me:SafeCastItem("item_magic_stick")
-				Sleep(50)
 			elseif gradestick and gradestick.charges > 0 and gradestick.cd == 0 then
 				me:SafeCastItem("item_magic_wand")
-				Sleep(1000)
 			end
 		end
 	end	
-end
-
-function DropBlink(me,mp)	
-	local blink  = me:FindItem("item_blink")
-	local chanel = me:IsChanneling()
-	if me.alive and not chanel then
-		Sleep(1000,"auto_attack")
-		mp:HoldPosition()
-		if blink then
-			mp:DropItem(blink,me.position)
-		end
-	end
-end
-
-function DropTranquils(me,mp)	
-	local tranquilboots = me:FindItem("item_tranquil_boots")
-	local chanel = me:IsChanneling()
-	if me.alive and not chanel then
-		if tranquilboots then 
-			mp:DropItem(tranquilboots,me.position)
-			mp:Attack(client.mousePosition)
-		end
-	end
 end
 
 function PickUpItems(me,mp)
@@ -206,7 +149,6 @@ end
 
 function Load()
 	if PlayingGame() then
-		play = true
 		script:RegisterEvent(EVENT_TICK,Tick)
 		script:RegisterEvent(EVENT_KEY,Key)
 		script:UnregisterEvent(Load)
@@ -214,13 +156,11 @@ function Load()
 end
 
 function Close()
+	active, disableAutoAttack, treads_changed, treads_laststate = false, false, nil, nil
 	collectgarbage("collect")
-	if play then
-		script:UnregisterEvent(Tick)
-		script:UnregisterEvent(Key)
-		script:RegisterEvent(EVENT_TICK,Load)
-		play = false
-	end
+	script:UnregisterEvent(Tick)
+	script:UnregisterEvent(Key)
+	script:RegisterEvent(EVENT_TICK,Load)
 end 
  
 script:RegisterEvent(EVENT_CLOSE,Close)
