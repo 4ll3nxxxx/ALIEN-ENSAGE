@@ -8,7 +8,7 @@ config:Load()
 active, disableAutoAttack, treads_changed, treads_laststate = false, false 
 
 function Key(msg,code)
-	if client.chat or client.console or client.loading then return end
+	if client.chat or client.console or not PlayingGame() or client.paused then return end
 	local me, mp = entityList:GetMyHero(), entityList:GetMyPlayer()
 	if msg == KEY_DOWN then
 		if active then
