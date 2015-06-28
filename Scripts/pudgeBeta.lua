@@ -46,7 +46,7 @@ function Main(tick)
 			end
 			if tick > castsleep then
 				if not me:IsChanneling() and not target:DoesHaveModifier("modifier_item_blade_mail_reflect") and not target:DoesHaveModifier("modifier_item_lotus_orb_active") and not target:IsMagicImmune() and target:CanDie() then
-					if ScriptConfig.hook and Q:CanBeCasted() and me:CanCast() then
+					if ScriptConfig.hook and Q and Q:CanBeCasted() and me:CanCast() then
 						if distance >= me.attackRange and distance <= Q:GetSpecialData("hook_distance",Q.level) then
 						local xyz = SkillShot.BlockableSkillShotXYZ(me,target,1600,(500+client.latency+me:GetTurnTime(target)*1000),300,true)
 							if xyz then
@@ -63,7 +63,7 @@ function Main(tick)
 							table.insert(castQueue,{100,W}) 
 						end
 					end
-					if R and R:CanBeCasted() and me:CanCast() and W.toggled or ethereal and target:DoesHaveModifier("modifier_item_ethereal_blade_slow") then
+					if R and R:CanBeCasted() and me:CanCast() and W.toggled then
 						table.insert(castQueue,{100,R,target}) Sleep(3000 + client.latency,"sleeping")
 					end
 					if ethereal and ethereal:CanBeCasted() and me:CanCast() then
