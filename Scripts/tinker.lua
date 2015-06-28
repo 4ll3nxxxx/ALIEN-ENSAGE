@@ -4,12 +4,6 @@ require("libs.TargetFind")
 require("libs.Animations")
 require("libs.Skillshot")
 
-local config = ScriptConfig.new()
-config:SetParameter("hotkey", "32", config.TYPE_HOTKEY)
-config:SetParameter("blink", true)
-config:SetParameter("rearm", true)
-config:Load()
-
 ScriptConfig = ConfigGUI:New(script.name)
 script:RegisterEvent(EVENT_KEY, ScriptConfig.Key, ScriptConfig)
 script:RegisterEvent(EVENT_TICK, ScriptConfig.Refresh, ScriptConfig)
