@@ -54,13 +54,13 @@ function Main(tick)
 							end
 						end
 					end
-					if W and W:CanBeCasted() and me:CanCast() and SleepCheck("rot") then Sleep(250 + client.latency,"rot")
+					if W and W:CanBeCasted() and me:CanCast() and SleepCheck("rot") then
 						if Q and math.ceil(Q.cd - 0.1) == math.ceil(Q:GetCooldown(Q.level)) and not W.toggled then
-							table.insert(castQueue,{100,W}) 
+							table.insert(castQueue,{100,W}) Sleep(500 + client.latency,"rot")
 						elseif Q and Q.cd ~= 0 and distance < 250 and not W.toggled then
-							table.insert(castQueue,{100,W}) 
-						elseif W.toggled and distance > 450 then
-							table.insert(castQueue,{100,W}) 
+							table.insert(castQueue,{100,W}) Sleep(500 + client.latency,"rot")
+						elseif W.toggled and distance > 250 then
+							table.insert(castQueue,{100,W}) Sleep(500 + client.latency,"rot")
 						end
 					end
 					if R and R:CanBeCasted() and me:CanCast() and W.toggled then
