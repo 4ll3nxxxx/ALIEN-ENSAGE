@@ -41,10 +41,10 @@ function Main(tick)
 		if target and GetDistance2D(me,target) <= 2000 then
 			local Q, W, R, distance = me:GetAbility(1), me:GetAbility(2), me:GetAbility(4), GetDistance2D(target,me)
 			local blink, ethereal = me:FindItem("item_blink"), me:FindItem("item_ethereal_blade")
-			local xyz = SkillShot.BlockableSkillShotXYZ(me,target,1600,(250+client.latency+me:GetTurnTime(target)*1000),100,true)
+			local xyz = SkillShot.BlockableSkillShotXYZ(me,target,1600,(100+client.latency+me:GetTurnTime(target)*1000),100,true)
 			if xyz then
 				if Q and Q.abilityPhase and (math.max(math.abs(FindAngleR(me) - math.rad(FindAngleBetween(me, xyz))) - 0.1, 0)) ~= 0 or me:FindRelativeAngle(xyz) > 0.1 then
-					me:Stop() Sleep(client.latency + 200,"sleeping")
+					me:Stop() Sleep(client.latency + 100,"sleeping")
 				end
 			end
 			if tick > castsleep then
