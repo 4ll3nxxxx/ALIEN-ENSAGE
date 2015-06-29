@@ -37,27 +37,29 @@ function Main(tick)
 	end
 
 	if ScriptConfig.hotkey and SleepCheck("sleeping") then	
-		target = targetFind:GetClosestToMouse(100)
+		target = targetFind:GetLowestEHP(2000,magic)
 		if target and GetDistance2D(me,target) <= 2000 then
 			local Q, W, R, distance = me:GetAbility(1), me:GetAbility(2), me:GetAbility(4), GetDistance2D(target,me)
 			local blink, ethereal = me:FindItem("item_blink"), me:FindItem("item_ethereal_blade")
-			if Q and Q.abilityPhase and (math.max(math.abs(FindAngleR(me) - math.rad(FindAngleBetween(me, target))) - 0.1, 0)) > 0.1 then
-				me:Stop() Sleep(client.latency + 200,"sleeping")
+			local xyz = SkillShot.BlockableSkillShotXYZ(me,target,1600,(250+client.latency+me:GetTurnTime(target)*1000),100,true)
+			if xyz then
+				if Q and Q.abilityPhase and (math.max(math.abs(FindAngleR(me) - math.rad(FindAngleBetween(me, xyz))) - 0.1, 0)) ~= 0 or me:FindRelativeAngle(xyz) > 0.1 then
+					me:Stop() Sleep(client.latency + 200,"sleeping")
+				end
 			end
 			if tick > castsleep then
 				if not me:IsChanneling() and not target:DoesHaveModifier("modifier_item_blade_mail_reflect") and not target:DoesHaveModifier("modifier_item_lotus_orb_active") and not target:IsMagicImmune() and target:CanDie() then
 					if ScriptConfig.hook and Q and Q:CanBeCasted() and me:CanCast() then
 						if distance >= me.attackRange and distance <= Q:GetSpecialData("hook_distance",Q.level) then
-						local xyz = SkillShot.BlockableSkillShotXYZ(me,target,1600,(500+client.latency+me:GetTurnTime(target)*1000),300,true)
 							if xyz then
 								table.insert(castQueue,{100,Q,xyz})
 							end
 						end
 					end
 					if W and W:CanBeCasted() and me:CanCast() and SleepCheck("rot") then
-						if Q and math.ceil(Q.cd - 0.1) == math.ceil(Q:GetCooldown(Q.level)) and not W.toggled then
+						if distance < 250 and not W.toggled then
 							table.insert(castQueue,{100,W}) Sleep(500 + client.latency,"rot")
-						elseif Q and Q.cd ~= 0 and distance < 250 and not W.toggled then
+						elseif Q and math.ceil(Q.cd - 0.1) == math.ceil(Q:GetCooldown(Q.level)) and not W.toggled then
 							table.insert(castQueue,{100,W}) Sleep(500 + client.latency,"rot")
 						elseif W.toggled and distance > 250 then
 							table.insert(castQueue,{100,W}) Sleep(500 + client.latency,"rot")

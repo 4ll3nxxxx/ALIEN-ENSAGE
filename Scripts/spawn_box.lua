@@ -10,7 +10,7 @@ spots = {
 	{-832,4098,-3,3203,183},{447,3778,1659,2822,183}
 }
 
-eff, eff1, eff2, eff3, eff4 = {}, {}, {}, {}, {}
+play, eff, eff1, eff2, eff3, eff4 = false, {}, {}, {}, {}, {}
 
 function Tick(tick)
     if not PlayingGame() or not SleepCheck() then return end Sleep(250)
@@ -54,6 +54,7 @@ end
 
 function Load()
 	if PlayingGame() then
+		play = true
 		script:RegisterEvent(EVENT_TICK,Tick)
 		script:UnregisterEvent(Load)
 	end
@@ -62,8 +63,11 @@ end
 function Close()
 	spots, eff, eff1, eff2, eff3, eff4 = {}, {}, {}, {}, {}, {}
 	collectgarbage("collect")
-	script:UnregisterEvent(Tick)
-	script:RegisterEvent(EVENT_TICK,Load)
+	if play then
+		script:UnregisterEvent(Tick)
+		script:RegisterEvent(EVENT_TICK,Load)
+		play = false
+	end
 end
 
 script:RegisterEvent(EVENT_TICK,Load)
