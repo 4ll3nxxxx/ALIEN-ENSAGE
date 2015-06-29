@@ -38,19 +38,17 @@ function Main(tick)
 
 	if ScriptConfig.hotkey and SleepCheck("sleeping") then	
 		target = targetFind:GetLowestEHP(2000,magic)
-		if target and GetDistance2D(me,target) <= 2000 then
-			local Q, W, R, distance = me:GetAbility(1), me:GetAbility(2), me:GetAbility(4), GetDistance2D(target,me)
+		if target and not me:IsChanneling() then
+			local Q, W, rot, R, distance = me:GetAbility(1), me:GetAbility(2), me:DoesHaveModifier("modifier_pudge_rot"), me:GetAbility(4), GetDistance2D(target,me)
 			local blink, ethereal = me:FindItem("item_blink"), me:FindItem("item_ethereal_blade")
-			local xyz = SkillShot.BlockableSkillShotXYZ(me,target,1600,(100+client.latency+me:GetTurnTime(target)*1000),100,true)
-			if xyz then
-				if Q and Q.abilityPhase and (math.max(math.abs(FindAngleR(me) - math.rad(FindAngleBetween(me, xyz))) - 0.1, 0)) ~= 0 or me:FindRelativeAngle(xyz) > 0.1 then
-					me:Stop() Sleep(client.latency + 100,"sleeping")
-				end
+			if Q and Q.abilityPhase and (math.max(math.abs(FindAngleR(me) - math.rad(FindAngleBetween(me, target))) - 0.1, 0)) ~= 0 or me:FindRelativeAngle(target) > 0.1 then
+				me:Stop() Sleep(client.latency + 100,"sleeping")
 			end
 			if tick > castsleep then
-				if not me:IsChanneling() and not target:DoesHaveModifier("modifier_item_blade_mail_reflect") and not target:DoesHaveModifier("modifier_item_lotus_orb_active") and not target:IsMagicImmune() and target:CanDie() then
+				if not target:DoesHaveModifier("modifier_item_blade_mail_reflect") and not target:DoesHaveModifier("modifier_item_lotus_orb_active") and not target:IsMagicImmune() and target:CanDie() then
 					if ScriptConfig.hook and Q and Q:CanBeCasted() and me:CanCast() then
 						if distance >= me.attackRange and distance <= Q:GetSpecialData("hook_distance",Q.level) then
+							local xyz = SkillShot.BlockableSkillShotXYZ(me,target,1600,(100+client.latency+me:GetTurnTime(target)*1000),100,true)
 							if xyz then
 								table.insert(castQueue,{100,Q,xyz})
 							end
@@ -65,7 +63,7 @@ function Main(tick)
 							table.insert(castQueue,{100,W}) Sleep(500 + client.latency,"rot")
 						end
 					end
-					if R and R:CanBeCasted() and me:CanCast() and W.toggled then
+					if R and R:CanBeCasted() and me:CanCast() and rot then
 						table.insert(castQueue,{100,R,target}) Sleep(3000 + client.latency,"sleeping")
 					end
 					if ethereal and ethereal:CanBeCasted() and me:CanCast() then
