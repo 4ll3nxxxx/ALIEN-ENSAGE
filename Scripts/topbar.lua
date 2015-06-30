@@ -125,7 +125,7 @@ function Tick(tick)
 		using = false
 	end
 	if selected then
-		entityList:GetMyHero():Select(entityList:GetMyHero())
+		entityList:GetMyPlayer():Select(entityList:GetMyPlayer().selection[1])
 		selected = false
 	end
 end
