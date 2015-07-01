@@ -2,16 +2,12 @@ text = drawMgr:CreateText(client.screenSize.x/2.34,client.screenSize.y/17,0xD10A
 
 function Frame() 
 	if not PlayingGame() then return end 
-	local mins = entityList:GetEntities({classId=CDOTA_NPC_TechiesMines})
-	for i,v in ipairs(mins) do
-		if v.team ~= team then
-			if v.alive and GetDistance2D(entityList:GetMyHero(),v[1]) <= 800 then
-				text.visible = true
-			else
-				text.visible = false
-			end
-		end
-	end
+	local mins = entityList:GetEntities(function (v) return (v.classId == CDOTA_BaseNPC_Additive and v.team ~= entityList:GetMyHero().team and v.alive == true and (v.name == "npc_dota_techies_land_mine" or  v.name == "npc_dota_techies_remote_mine" or v.name == "npc_dota_techies_stasis_trap")) end)[1]
+	if entityList:GetMyHero().visibleToEnemy and GetDistance2D(entityList:GetMyHero(),mins) <= 800 then
+		text.visible = true
+	else
+		text.visible = false
+	end       
 end
  
 script:RegisterEvent(EVENT_TICK,Frame)
