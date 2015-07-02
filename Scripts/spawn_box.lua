@@ -12,8 +12,8 @@ spots = {
 
 play, eff, eff1, eff2, eff3, eff4 = false, {}, {}, {}, {}, {}
 
-function Tick(tick)
-    if not PlayingGame() or not SleepCheck() then return end Sleep(250)
+function FRAME()
+    if not PlayingGame() then return end
 	for i,k in ipairs(spots) do
 		if not eff[i] then
 			local coint1 = math.floor(math.floor(k[3]-k[1])/50)
@@ -26,17 +26,17 @@ function Tick(tick)
 			for a = 1,coint1 do				
 				local first = Vector(k[1]+a*50, k[4], 0)
 				local second = Vector(k[1]+a*50, k[2], 0)				
-				eff[i].eff1[a] = Effect(first,"origin_gizmo")
+				eff[i].eff1[a] = Effect(first,"candle_flame_medium")
 				eff[i].eff1[a]:SetVector(0,GetVector(first,k[5]))				
-				eff[i].eff3[a] = Effect(second,"origin_gizmo")
+				eff[i].eff3[a] = Effect(second,"candle_flame_medium")
 				eff[i].eff3[a]:SetVector(0,GetVector(second,k[5]))
 			end
 			for a = 1,coint2 do		
 				local first = Vector(k[1], k[4]+a*50, 0)
 				local second = Vector(k[3], k[4]+a*50, 0)				
-				eff[i].eff2[a] = Effect(first,"origin_gizmo")
+				eff[i].eff2[a] = Effect(first,"candle_flame_medium")
 				eff[i].eff2[a]:SetVector(0,GetVector(first,k[5]))				
-				eff[i].eff4[a] = Effect(second,"origin_gizmo")
+				eff[i].eff4[a] = Effect(second,"candle_flame_medium")
 				eff[i].eff4[a]:SetVector(0,GetVector(second,k[5]))
 			end	
 		end
@@ -55,7 +55,7 @@ end
 function Load()
 	if PlayingGame() then
 		play = true
-		script:RegisterEvent(EVENT_TICK,Tick)
+		script:RegisterEvent(EVENT_FRAME,FRAME)
 		script:UnregisterEvent(Load)
 	end
 end
@@ -64,7 +64,7 @@ function Close()
 	spots, eff, eff1, eff2, eff3, eff4 = {}, {}, {}, {}, {}, {}
 	collectgarbage("collect")
 	if play then
-		script:UnregisterEvent(Tick)
+		script:UnregisterEvent(FRAME)
 		script:RegisterEvent(EVENT_TICK,Load)
 		play = false
 	end
