@@ -78,9 +78,8 @@ function Main(tick)
 						if D and D:CanBeCasted() and me:CanCast() then
 							local orb = entityList:GetEntities({type = LuaEntity.TYPE_NPC, alive = true, team = me.team})
 							for i = 1, #orb do
-								local v = orb[i]
-								local AbilityDamage = {70,140,210,280}
-								if victim:DamageTaken(AbilityDamage[Q.level],DAMAGE_MAGC,me) and GetDistance2D(v,victim) < 360 then
+								local v = orb[i] 
+								if GetDistance2D(v,victim) < 100 then
 									table.insert(castQueue,{100,D})
 								end
 							end
