@@ -185,6 +185,12 @@ function prepare(v,z,modif)
 		local tname = string.sub(modif.name,10)
 		if tname == "item_sphere_target" then
 			timers[v.handle][z].texture.textureId = drawMgr:GetTextureId("NyanUI/items/"..string.sub(modif.texture,6))
+		elseif tname == "item_silver_edge_windwalk" then
+			timers[v.handle][z].texture.textureId = drawMgr:GetTextureId("NyanUI/items/silver_edge")
+		elseif tname == "item_glimmer_cape_fade" then
+			timers[v.handle][z].texture.textureId = drawMgr:GetTextureId("NyanUI/items/glimmer_cape")
+		elseif tname == "item_lotus_orb_active" then
+			timers[v.handle][z].texture.textureId = drawMgr:GetTextureId("NyanUI/items/lotus_orb")
 		elseif string.sub(modif.texture,1,17) == "item_necronomicon" then
 			timers[v.handle][z].texture.textureId = drawMgr:GetTextureId("NyanUI/modifiers/necronomicon_archer_aura")
 		elseif tname ~= "eul_cyclone" and tname ~= "manta_phase" then
@@ -379,7 +385,7 @@ function Load()
 end
 
 function Close()
-	timers, entities, wisp, modifs, wispTime.visible, wispTexture.visible = {}, {}, {}, {}, false, false
+	timers, entities, wisp, modifs = {}, {}, {}, {}
 	collectgarbage("collect")
 	if play then
 		script:UnregisterEvent(Tick)
