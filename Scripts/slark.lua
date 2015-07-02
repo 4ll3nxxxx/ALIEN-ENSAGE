@@ -61,7 +61,7 @@ function Main(tick)
 							if Q and Q:CanBeCasted() and me:CanCast() and distance <= 325 then
 								table.insert(castQueue,{100,Q})
 							end
-							if W and W:CanBeCasted() and me:CanCast() and distance <= 580 and (math.max(math.abs(FindAngleR(me) - math.rad(FindAngleBetween(me, victim))) - 0.10, 0)) == 0 then
+							if W and W:CanBeCasted() and me:CanCast() and distance <= 580 and (math.max(math.abs(FindAngleR(me) - math.rad(FindAngleBetween(me, victim))) - 0.1, 0)) == 0 then
 								table.insert(castQueue,{1000+math.ceil(W:FindCastPoint()*1000),W})
 							end
 						end
