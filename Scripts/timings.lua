@@ -379,7 +379,7 @@ function Load()
 end
 
 function Close()
-	timers, entities, wisp, modifs = {}, {}, {}, {}
+	timers, entities, wisp, modifs, wispTime.visible, wispTexture.visible = {}, {}, {}, {}, false, false
 	collectgarbage("collect")
 	if play then
 		script:UnregisterEvent(Tick)
