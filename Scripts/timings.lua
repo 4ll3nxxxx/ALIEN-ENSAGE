@@ -4,7 +4,7 @@
 -- Config
 require("libs.ScriptConfig")
 
-local config = ScriptConfig.new()
+config = ScriptConfig.new()
 config:SetParameter("Fontsize", 20)
 config:SetParameter("Imagesize", 20)
 config:SetParameter("Distancefontimage", 15)
@@ -12,11 +12,11 @@ config:SetParameter("Verticaldistance", 14)
 config:SetParameter("Antiheight", 150)
 config:Load()
 
-local play = false local timers = {} local entities = {} local wisp = {} local sleeptick = 0 local modifs = {}
+play, timers, entities, wisp, modifs, sleeptick = false, {}, {}, {}, {}, 0
 
-local font = drawMgr:CreateFont("timersfont","Arial",config.Fontsize,500)
-local wispTime = drawMgr:CreateText(0,0,-1,"",font) wispTime.visible = false
-local wispTexture = drawMgr:CreateRect(0,0,config.Imagesize,config.Imagesize,0x000000FF,drawMgr:GetTextureId("NyanUI/modifiers/wisp_relocate_return")) wispTexture.visible = false
+font = drawMgr:CreateFont("timersfont","Arial",config.Fontsize,500)
+wispTime = drawMgr:CreateText(0,0,-1,"",font) wispTime.visible = false
+wispTexture = drawMgr:CreateRect(0,0,config.Imagesize,config.Imagesize,0x000000FF,drawMgr:GetTextureId("NyanUI/modifiers/wisp_relocate_return")) wispTexture.visible = false
 
 -- Code
 modifnames = {
@@ -379,11 +379,7 @@ function Load()
 end
 
 function Close()
-	timers = {}
-	entities = {}
-	wisp = {}
-	sleeptick = 0
-	modifs = {}
+	timers, entities, wisp, modifs = {}, {}, {}, {}
 	collectgarbage("collect")
 	if play then
 		script:UnregisterEvent(Tick)
