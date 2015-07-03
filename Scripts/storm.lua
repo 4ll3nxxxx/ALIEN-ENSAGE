@@ -21,7 +21,7 @@ dodgeList = {
 	npc_dota_hero_sven = {spell = "sven_storm_bolt"},
 	npc_dota_hero_vengefulspirit = {spell = "vengefulspirit_magic_missile"},
 	npc_dota_hero_skeleton_king = {spell = "skeleton_king_hellfire_blast"},
-	npc_dota_hero_lion = {spell = "lion_finger_of_death"},
+	npc_dota_hero_lion = {spell = "lion_finger_of_death"}
 } 
 
 function Main(tick)
@@ -41,7 +41,6 @@ function Main(tick)
 				me:CastAbility(ability,v[3],false)
 			end
 			castsleep = tick + v[1] + client.latency
-			dodge = tick + v[1] + client.latency
 			return
 		end
 	end
@@ -90,7 +89,7 @@ function Main(tick)
 					if Q and Q:CanBeCasted() and distance <= 260 then
 						table.insert(castQueue,{100,Q})
 					end
-					if W and W:CanBeCasted() and not disable and distance <= W.castRange then
+					if W and W:CanBeCasted() and not disable and distance <= W.castRange + 200 then
 						table.insert(castQueue,{math.ceil(W:FindCastPoint()*1000),W,victim,true})
 					end
 					if Orchid and Orchid:CanBeCasted() and not disable and (Sheep and Sheep.cd ~= 0 and not victim:IsHexed() or not Sheep) then
