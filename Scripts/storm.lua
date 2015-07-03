@@ -80,8 +80,8 @@ function Main(tick)
 					local Overload, balling = me:DoesHaveModifier("modifier_storm_spirit_overload"), me:DoesHaveModifier("modifier_storm_spirit_ball_lightning")
 					local Sheep, Orchid, Shivas, Sphere = me:FindItem("item_sheepstick"), me:FindItem("item_orchid"), me:FindItem("item_shivas_guard"), me:FindItem("item_sphere")
 					local distance, disabled = GetDistance2D(victim,me),victim:IsSilenced() or victim:IsHexed() or victim:IsStunned()
-					if R and R:CanBeCasted() and me:CanCast() and distance > me.attackRange+200 and not balling and not R.abilityPhase then
-						local xyz = SkillShot.SkillShotXYZ(me,victim,((150-Animations.getDuration(W)*1000)+R:FindCastPoint()*1000+client.latency+me:GetTurnTime(victim)*1000),R:GetSpecialData("ball_lightning_move_speed", R.level))
+					if R and R:CanBeCasted() and me:CanCast() and distance > me.attackRange and not balling and not R.abilityPhase then
+						local xyz = SkillShot.SkillShotXYZ(me,victim,((50-Animations.getDuration(W)*1000)+R:FindCastPoint()*1000+client.latency+me:GetTurnTime(victim)*1000),R:GetSpecialData("ball_lightning_move_speed", R.level))
 						if xyz then 
 							table.insert(castQueue,{math.ceil(R:FindCastPoint()*1000),R,xyz})
 						end
