@@ -148,7 +148,8 @@ modifnames = {
 "modifier_dark_troll_warlord_ensnare",
 "modifier_stunned",
 "modifier_winter_wyvern_winters_curse",
-"modifier_winter_wyvern_winters_curse_aura"
+"modifier_winter_wyvern_winters_curse_aura",
+"modifier_sniper_assassinate"
 },
 {
 "modifier_lycan_shapeshift",
@@ -274,16 +275,20 @@ function Tick(tick)
 									if t[4].name ~= "modifier_lina_light_strike_array" then
 										if t[4].name ~= "modifier_nevermore_requiem_invis_break" then
 											if t[4].name ~= "modifier_storm_spirit_static_remnant_thinker" then
-												timers[t[2]][t[5]].time.text = tostring(math.floor(t[4].remainingTime*10)/10)
-												t[6] = t[4].remainingTime
-												if t[4].texture == "wisp_relocate" then
-													if math.floor(t[4].remainingTime*10) == 1 then
-														wisp.pos = t[1].position
-													elseif t[4].remainingTime == 0 then
-														count = 121
-														pretime,delay = math.modf(client.totalGameTime*10)
-														pretime = pretime+1
+												if t[4].name ~= "modifier_sniper_assassinate" then
+													timers[t[2]][t[5]].time.text = tostring(math.floor(t[4].remainingTime*10)/10)
+													t[6] = t[4].remainingTime
+													if t[4].texture == "wisp_relocate" then
+														if math.floor(t[4].remainingTime*10) == 1 then
+															wisp.pos = t[1].position
+														elseif t[4].remainingTime == 0 then
+															count = 121
+															pretime,delay = math.modf(client.totalGameTime*10)
+															pretime = pretime+1
+														end
 													end
+												else
+													timers[t[2]][t[5]].time.text = tostring(math.floor((2.20-t[4].elapsedTime)*10)/10)
 												end
 											else
 												timers[t[2]][t[5]].time.text = tostring(math.floor((12.05-t[4].elapsedTime)*10)/10)
