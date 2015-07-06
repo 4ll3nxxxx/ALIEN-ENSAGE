@@ -59,20 +59,20 @@ function Main(tick)
 					local Q, W, D, R = me:GetAbility(1), me:GetAbility(2), me:GetAbility(4), me:GetAbility(5)
 					local sheep, dagon, blink, shivas, ethereal = me:FindItem("item_sheepstick"), me:FindDagon(), me:FindItem("item_blink"), me:FindItem("item_shivas_guard"), me:FindItem("item_ethereal_blade")
 					local disabled, distance = victim:IsSilenced() or victim:IsHexed() or victim:IsStunned(), GetDistance2D(victim,me)
-					if not victim:DoesHaveModifier("modifier_item_blade_mail_reflect") and not victim:DoesHaveModifier("modifier_item_lotus_orb_active") and not victim:IsMagicImmune() and victim:CanDie() then
-						if ScriptConfig.blink and blink and blink:CanBeCasted() and me:CanCast() and distance >= me.attackRange then
+					if victim.alive and not victim:DoesHaveModifier("modifier_item_blade_mail_reflect") and not victim:DoesHaveModifier("modifier_item_lotus_orb_active") and not victim:IsMagicImmune() and victim:CanDie() then
+						if ScriptConfig.blink and blink and blink:CanBeCasted() and me:CanCast() and distance <= 1199 and distance >= me.attackRange then
 							local xyz = SkillShot.SkillShotXYZ(me,victim,blink:FindCastPoint()*1000+client.latency+me:GetTurnTime(victim)*1000,blink:GetSpecialData("blink_range"))
 							if xyz then
 								table.insert(castQueue,{math.ceil(blink:FindCastPoint()*1000),blink,xyz})
 							end
 						end
-						if Q and Q:CanBeCasted() and me:CanCast() and (blink and blink.cd ~= 0 or not blink or not ScriptConfig.blink) and distance <= 1200 and distance >= me.attackRange then
-							local xyz = SkillShot.SkillShotXYZ(me,victim,((270-Animations.getDuration(Q)*1000)+Q:FindCastPoint()*1000+client.latency+me:GetTurnTime(victim)*1000),1233)
+						if Q and Q:CanBeCasted() and me:CanCast() and (blink and blink.cd ~= 0 or not blink or not ScriptConfig.blink) and distance >= me.attackRange then
+							local xyz = SkillShot.SkillShotXYZ(me,victim,(Q:FindCastPoint()*1000+client.latency+me:GetTurnTime(victim)*1000),1233)
 							if xyz then 
 								table.insert(castQueue,{math.ceil(Q:FindCastPoint()*1000),Q,xyz})
 							end
 						end
-						if W and W:CanBeCasted() and me:CanCast() and (sheep and sheep.cd ~= 0 and not disabled or not sheep) and distance <= 360 then
+						if W and W:CanBeCasted() and me:CanCast() and distance <= 360 and (sheep and sheep.cd ~= 0 and not disabled or not sheep) then
 							table.insert(castQueue,{100,W})
 						end
 						if D and D:CanBeCasted() and me:CanCast() then
