@@ -53,79 +53,81 @@ function Main(tick)
 				end
 			end
 		end
-		if not Animations.CanMove(me) and victim and GetDistance2D(me,victim) <= 2000 then
-			if tick > castsleep then
-				if not Animations.isAttacking(me) and victim.alive and victim.visible then
-					local Q, W, D, R = me:GetAbility(1), me:GetAbility(2), me:GetAbility(4), me:GetAbility(5)
-					local sheep, dagon, blink, shivas, ethereal = me:FindItem("item_sheepstick"), me:FindDagon(), me:FindItem("item_blink"), me:FindItem("item_shivas_guard"), me:FindItem("item_ethereal_blade")
-					local disabled, distance = victim:IsSilenced() or victim:IsHexed() or victim:IsStunned(), GetDistance2D(victim,me)
-					if victim.alive and not victim:DoesHaveModifier("modifier_item_blade_mail_reflect") and not victim:DoesHaveModifier("modifier_item_lotus_orb_active") and not victim:IsMagicImmune() and victim:CanDie() then
-						if ScriptConfig.blink and blink and blink:CanBeCasted() and me:CanCast() and distance <= 1199 and distance >= me.attackRange then
-							local xyz = SkillShot.SkillShotXYZ(me,victim,blink:FindCastPoint()*1000+client.latency+me:GetTurnTime(victim)*1000,blink:GetSpecialData("blink_range"))
-							if xyz then
-								table.insert(castQueue,{math.ceil(blink:FindCastPoint()*1000),blink,xyz})
-							end
-						end
-						if Q and Q:CanBeCasted() and me:CanCast() and (blink and blink.cd ~= 0 or not blink or not ScriptConfig.blink) and distance >= me.attackRange then
-							local xyz = SkillShot.SkillShotXYZ(me,victim,(Q:FindCastPoint()*1000+client.latency+me:GetTurnTime(victim)*1000),1233)
-							if xyz then 
-								table.insert(castQueue,{math.ceil(Q:FindCastPoint()*1000),Q,xyz})
-							end
-						end
-						if W and W:CanBeCasted() and me:CanCast() and distance <= 360 and (sheep and sheep.cd ~= 0 and not disabled or not sheep) then
-							table.insert(castQueue,{100,W})
-						end
-						if D and D:CanBeCasted() and me:CanCast() then
-							local orb = entityList:GetEntities({type = LuaEntity.TYPE_NPC, alive = true, team = me.team})
-							for i = 1, #orb do
-								local v = orb[i] 
-								if GetDistance2D(v,victim) < 100 then
-									table.insert(castQueue,{100,D})
+		if not me:DoesHaveModifier("modifier_puck_phase_shift") then
+			if not Animations.CanMove(me) and victim and GetDistance2D(me,victim) <= 2000 then
+				if tick > castsleep then
+					if not Animations.isAttacking(me) and victim.alive and victim.visible then
+						local Q, W, D, R = me:GetAbility(1), me:GetAbility(2), me:GetAbility(4), me:GetAbility(5)
+						local sheep, dagon, blink, shivas, ethereal = me:FindItem("item_sheepstick"), me:FindDagon(), me:FindItem("item_blink"), me:FindItem("item_shivas_guard"), me:FindItem("item_ethereal_blade")
+						local disabled, distance = victim:IsSilenced() or victim:IsHexed() or victim:IsStunned(), GetDistance2D(victim,me)
+						if victim.alive and not victim:DoesHaveModifier("modifier_item_blade_mail_reflect") and not victim:DoesHaveModifier("modifier_item_lotus_orb_active") and not victim:IsMagicImmune() and victim:CanDie() then
+							if ScriptConfig.blink and blink and blink:CanBeCasted() and me:CanCast() and distance <= 1199 and distance >= me.attackRange then
+								local xyz = SkillShot.SkillShotXYZ(me,victim,blink:FindCastPoint()*1000+client.latency+me:GetTurnTime(victim)*1000,blink:GetSpecialData("blink_range"))
+								if xyz then
+									table.insert(castQueue,{math.ceil(blink:FindCastPoint()*1000),blink,xyz})
 								end
 							end
-						end
-						if R and R:CanBeCasted() and me:CanCast() and distance <= 750 and ScriptConfig.ult then
-							table.insert(castQueue,{math.ceil(R:FindCastPoint()*1000),R,victim.position})
-						end
-						if dagon and dagon:CanBeCasted() and me:CanCast() and (ethereal and ethereal.cd ~= 0 and victim:DoesHaveModifier("modifier_item_ethereal_blade_slow") or not ethereal) then 
-							table.insert(castQueue,{math.ceil(dagon:FindCastPoint()*1000),dagon,victim})
-						end
-						if sheep and sheep:CanBeCasted() and not disabled then
-							table.insert(castQueue,{math.ceil(sheep:FindCastPoint()*1000),sheep,victim})
-						end
-						if shivas and shivas:CanBeCasted() and distance <= 600 then
-							table.insert(castQueue,{100,shivas})
-						end
-						if ethereal and ethereal:CanBeCasted() and me:CanCast() then
-							table.insert(castQueue,{math.ceil(ethereal:FindCastPoint()*1000),ethereal,victim})
+							if Q and Q:CanBeCasted() and me:CanCast() and (blink and blink.cd ~= 0 or not blink or not ScriptConfig.blink) and distance >= me.attackRange then
+								local xyz = SkillShot.SkillShotXYZ(me,victim,(Q:FindCastPoint()*1000+client.latency+me:GetTurnTime(victim)*1000),1233)
+								if xyz then 
+									table.insert(castQueue,{math.ceil(Q:FindCastPoint()*1000),Q,xyz})
+								end
+							end
+							if W and W:CanBeCasted() and me:CanCast() and distance <= 360 and (sheep and sheep.cd ~= 0 and not disabled or not sheep) then
+								table.insert(castQueue,{100,W})
+							end
+							if D and D:CanBeCasted() and me:CanCast() then
+								local orb = entityList:GetEntities({type = LuaEntity.TYPE_NPC, alive = true, team = me.team})
+								for i = 1, #orb do
+									local v = orb[i] 
+									if GetDistance2D(v,victim) < 250 then
+										table.insert(castQueue,{100,D})
+									end
+								end
+							end
+							if R and R:CanBeCasted() and me:CanCast() and distance <= 750 and ScriptConfig.ult then
+								table.insert(castQueue,{math.ceil(R:FindCastPoint()*1000),R,victim.position})
+							end
+							if dagon and dagon:CanBeCasted() and me:CanCast() and (ethereal and ethereal.cd ~= 0 and victim:DoesHaveModifier("modifier_item_ethereal_blade_slow") or not ethereal) then 
+								table.insert(castQueue,{math.ceil(dagon:FindCastPoint()*1000),dagon,victim})
+							end
+							if sheep and sheep:CanBeCasted() and not disabled then
+								table.insert(castQueue,{math.ceil(sheep:FindCastPoint()*1000),sheep,victim})
+							end
+							if shivas and shivas:CanBeCasted() and distance <= 600 then
+								table.insert(castQueue,{100,shivas})
+							end
+							if ethereal and ethereal:CanBeCasted() and me:CanCast() then
+								table.insert(castQueue,{math.ceil(ethereal:FindCastPoint()*1000),ethereal,victim})
+							end
 						end
 					end
+					me:Attack(victim)
+					castsleep = tick + 160
 				end
-				me:Attack(victim)
-				castsleep = tick + 160
-			end
-		elseif tick > move then
-			if victim then
-				if victim.visible then
-					local xyz = SkillShot.PredictedXYZ(victim,me:GetTurnTime(victim)*1000+client.latency+500)
-					me:Move(xyz)
+			elseif tick > move then
+				if victim then
+					if victim.visible then
+						local xyz = SkillShot.PredictedXYZ(victim,me:GetTurnTime(victim)*1000+client.latency+500)
+						me:Move(xyz)
+					else
+						me:Follow(victim)
+					end
 				else
-					me:Follow(victim)
+					me:Move(client.mousePosition)
 				end
-			else
-				me:Move(client.mousePosition)
+				move = tick + 160
+				start = false
 			end
-			move = tick + 160
+		elseif victim then
+			if not resettime then
+				resettime = client.gameTime
+			elseif (client.gameTime - resettime) >= 6 then
+				victim = nil		
+			end
 			start = false
-		end
-	elseif victim then
-		if not resettime then
-			resettime = client.gameTime
-		elseif (client.gameTime - resettime) >= 6 then
-			victim = nil		
-		end
-		start = false
-	end 
+		end 
+	end
 end
 
 function Load()
