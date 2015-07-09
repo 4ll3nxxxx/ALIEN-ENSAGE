@@ -10,9 +10,9 @@ config:SetParameter("Xcord", 1550)
 config:SetParameter("Ycord", 50)
 config:Load()
 
-local play = false local activated = false local giveitem = false local safety = false local delay = 0
-local font = drawMgr:CreateFont("chicken","Arial",14,500)
-local text = drawMgr:CreateText(config.Xcord,config.Ycord,0xFFFF00FF,"Hello, I'm Waiting for lick your bottle!",font) text.visible = false
+play, activated = false, false
+font = drawMgr:CreateFont("chicken","Arial",14,500)
+text = drawMgr:CreateText(config.Xcord,config.Ycord,0xFFFF00FF,"Hello, I'm Waiting for lick your bottle!",font) text.visible = false
 
 function Key(msg,code)
 	if msg ~= KEY_UP and code == config.Hotkey and not client.chat then
@@ -27,51 +27,43 @@ function Key(msg,code)
 end
 
 function Tick(tick)
-	if not PlayingGame() then return end
-	local me = entityList:GetMyHero() local mp = entityList:GetMyPlayer()
+	if not PlayingGame() or not SleepCheck() then return end Sleep(1000+client.latency)
+	local me, mp, safety, giveitem = entityList:GetMyHero(), entityList:GetMyPlayer(), false, false
 	local chicken = entityList:FindEntities({classId=CDOTA_Unit_Courier,team=me.team,alive=true})[1]
 	if chicken then
-		if tick > delay and SleepCheck("chicken") then
-			local bottle = me:FindItem("item_bottle")
-			local enemy = entityList:GetEntities(function (v) return (v.type==LuaEntity.TYPE_HERO or v.classId==CDOTA_BaseNPC_Tower or v.classId==CDOTA_Unit_SpiritBear) and v.team ~= me.team and v.alive and v.visible end)
-			for i,v in ipairs(enemy) do
-				if GetDistance2D(chicken,v) <= config.distance and chicken:GetAbility(1):CanBeCasted() then
-					chicken:CastAbility(chicken:GetAbility(1))
-					boost(chicken)
-					Sleep(client.latency,"chicken")
-					safety = false
-				else
-					safety = true
-				end
+		local bottle = me:FindItem("item_bottle")
+		local npc = entityList:GetEntities(function (v) return v.npc and v.team == me:GetEnemyTeam() and v.alive end)
+		for i,v in ipairs(npc) do
+			if GetDistance2D(chicken,v) <= config.distance and chicken:GetAbility(1):CanBeCasted() then
+				chicken:CastAbility(chicken:GetAbility(1))
+				boost(chicken)
+				safety = false
+			else
+				safety = true
 			end
-			if activated and safety then
-				if bottle and bottle.charges == 0 then
-					giveitem = true
-					chicken:Follow(me)
-					checkbase(chicken)
-					boost(chicken)
-					Sleep(1000+client.latency,"chicken")
-				end
-				if GetDistance2D(chicken,me) <= 250 and bottle and bottle.charges == 0  then
-					giveitem = false
-					checkchicken(chicken)
-					mp:GiveItem(chicken,bottle)
-					Sleep(1000+client.latency,"chicken")
-				end
-				local chickenbottle = chicken:FindItem("item_bottle")
-				if chickenbottle and chickenbottle.charges == 0 and chicken:GetAbility(1):CanBeCasted() then
-					chicken:CastAbility(chicken:GetAbility(1))
-					boost(chicken)
-					Sleep(1000+client.latency,"chicken")
-				end
-				if chickenbottle and chickenbottle.charges == 3 then
-					checkchicken(chicken)
-					checkbase(chicken)
-					boost(chicken)
-					Sleep(1000+client.latency,"chicken")
-				end
+		end
+		if activated and safety then
+			if bottle and bottle.charges == 0 then
+				giveitem = true
+				chicken:Follow(me)
+				checkbase(chicken)
+				boost(chicken)
 			end
-			delay = tick + 100
+			if GetDistance2D(chicken,me) <= 250 and bottle and bottle.charges == 0  then
+				giveitem = false
+				checkchicken(chicken)
+				mp:GiveItem(chicken,bottle)
+			end
+			local chickenbottle = chicken:FindItem("item_bottle")
+			if chickenbottle and chickenbottle.charges == 0 and chicken:GetAbility(1):CanBeCasted() and chickenbottle.purchaser == me then
+				chicken:CastAbility(chicken:GetAbility(1))
+				boost(chicken)
+			end
+			if chickenbottle and chickenbottle.charges == 3 and chickenbottle.purchaser == me then
+				checkchicken(chicken)
+				checkbase(chicken)
+				boost(chicken)
+			end
 		end
 	end
 end
@@ -86,8 +78,11 @@ function checkbase(chicken)
 end
 
 function checkchicken(chicken)
-	if chicken and chicken:GetAbility(5):CanBeCasted() then
-		chicken:CastAbility(chicken:GetAbility(5))
+	for i = 1, 6 do
+		local item = chicken:HasItem(i)
+		if item and chicken and chicken:GetAbility(5):CanBeCasted() then
+			chicken:CastAbility(chicken:GetAbility(5))
+		end
 	end
 end
 
@@ -101,10 +96,7 @@ end
 
 function Load()
 	if PlayingGame() then
-		play = true
-		safety = true
-		activated = true
-		text.visible = true
+		play, activated, text.visible = true, true, true
 		script:RegisterEvent(EVENT_KEY,Key)
 		script:RegisterEvent(EVENT_TICK,Tick)
 		script:UnregisterEvent(Load)
@@ -113,9 +105,6 @@ end
 
 function Close()
 	activated = false
-	giveitem = false
-	safety = false
-	text.visible = false
 	collectgarbage("collect")
 	if play then
 		script:UnregisterEvent(Tick)
