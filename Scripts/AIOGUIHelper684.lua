@@ -25,8 +25,7 @@ ScriptConfig:AddParam("glMon","Enemy Glyph Monitor",SGC_TYPE_TOGGLE,false,true,n
 ScriptConfig:AddParam("items","Enemy Items Purchased",SGC_TYPE_TOGGLE,false,true,nil)
 ScriptConfig:AddParam("creeps","Last Hit Monitor",SGC_TYPE_TOGGLE,false,true,nil)
 ScriptConfig:AddParam("creepsNear","Only Show Nearby Creeps",SGC_TYPE_TOGGLE,false,true,nil)
-ScriptConfig:AddParam("selfVis","Self Visibility",SGC_TYPE_TOGGLE,false,false,nil)
-ScriptConfig:AddParam("allyVis","Allied Visibility",SGC_TYPE_TOGGLE,false,false,nil)
+ScriptConfig:AddParam("teamVis","Enhanced Visibility",SGC_TYPE_TOGGLE,false,false,nil)
 ScriptConfig:AddParam("shIllu","Show Illusion",SGC_TYPE_TOGGLE,false,false,nil)
 ScriptConfig:AddParam("shEffs","Show Effects",SGC_TYPE_TOGGLE,false,false,nil)
 ScriptConfig:AddParam("allyTow","Ally Tower Range",SGC_TYPE_TOGGLE,false,false,nil)
@@ -230,7 +229,7 @@ function Tick()
 
 		RoshanRespawnTick(playing)
 		TickCounter.CalculateAvg()
-		if IsKeyDown(32) then
+		if IsKeyDown(45) then
 			TickCounter.Print()
 		end
 	end
@@ -242,7 +241,7 @@ roshAlive = nil
 
 function RoshanRespawnTick(playing)
 	if playing and ScriptConfig.roshRe then
-		local alive = #entityList:FindEntities({classId=CDOTA_Unit_Roshan}) == 1
+		local alive = #entityList:GetEntities({classId=CDOTA_Unit_Roshan}) == 1
 		if roshAlive == false and alive == true then
 			RoshRespawnMessage()
 		end
@@ -339,7 +338,7 @@ items = {}
 
 function ItemTick(playing)
 	if playing and ScriptConfig.items then
-		enemyItems = entityList:FindEntities(function (ent) return ent.item and declarePurchase[ent.name] == true and ent.purchaser ~= nil and not ent.owner.illusion and ent.owner.name ~= "npc_dota_roshan" and ent.purchaser.team ~= entityList:GetMyHero().team and not items[ent.handle] end)
+		enemyItems = entityList:GetEntities(function (ent) return ent.item and declarePurchase[ent.name] == true and ent.purchaser ~= nil and not ent.owner.illusion and ent.owner.name ~= "npc_dota_roshan" and ent.purchaser.team ~= entityList:GetMyHero().team and not items[ent.handle] end)
 		for i,v in ipairs(enemyItems) do
 			items[v.handle] = true
 			if items.init then
@@ -402,7 +401,7 @@ function ScoreBoardTick(playing)
 		if not scoreboard.init then
 			scoreboard.init = true
 		end
-		local enemyPlayers = entityList:FindEntities(function (ent) return ent.type == LuaEntity.TYPE_PLAYER end)
+		local enemyPlayers = entityList:GetEntities(function (ent) return ent.type == LuaEntity.TYPE_PLAYER end)
 		for i,v in ipairs(enemyPlayers) do
 			if not scoreboard[v.playerId] then
 				CreateSB(v.playerId)
@@ -522,7 +521,7 @@ function GetScoreBoardPos(playerId)
 	local hero = GetHero(playerId)
 	local player = GetHero(playerId)
 	if hero then
-		local delta = #entityList:FindEntities(function (ent) return ent.type == LuaEntity.TYPE_PLAYER and ent.team == player.team and ent.playerId < playerId end)
+		local delta = #entityList:GetEntities(function (ent) return ent.type == LuaEntity.TYPE_PLAYER and ent.team == player.team and ent.playerId < playerId end)
 		if hero.team == 2 then
 			delta = 5-delta
 		end
@@ -538,14 +537,14 @@ function GetScoreBoardPos(playerId)
 end
 
 function GetHero(playerId)
-	local player = entityList:FindEntities(function (ent) return ent.type == LuaEntity.TYPE_PLAYER and ent.playerId == playerId end)
+	local player = entityList:GetEntities(function (ent) return ent.type == LuaEntity.TYPE_PLAYER and ent.playerId == playerId end)
 	if player[1] then
 		return player[1].assignedHero
 	end
 end
 
 function GetPlayer(playerId)
-	local player = entityList:FindEntities(function (ent) return ent.type == LuaEntity.TYPE_PLAYER and ent.playerId == playerId end)
+	local player = entityList:GetEntities(function (ent) return ent.type == LuaEntity.TYPE_PLAYER and ent.playerId == playerId end)
 	if player[1] then
 		return player[1]
 	end
@@ -673,7 +672,7 @@ function AdvancedTick(playing)
 			advancedM.count = 0
 			advancedM.start = Vector2D(5,200 )
 		end
-		local enemies = entityList:FindEntities(function (ent) return ent.hero and ent.team ~= entityList:GetMyHero().team and not ent.illusion end)
+		local enemies = entityList:GetEntities(function (ent) return ent.hero and ent.team ~= entityList:GetMyHero().team and not ent.illusion end)
 		for i,v in ipairs(enemies) do
 			if not advancedM[v.handle] then
 				CreateAdv(v)
@@ -1351,7 +1350,7 @@ function CollectData(playing)
 		if not enemyData.init then
 			enemyData.init = true
 		end
-		local enemies = entityList:FindEntities(function (ent) return ent.hero and ent.team ~= entityList:GetMyHero().team and not ent:IsIllusion() end)
+		local enemies = entityList:GetEntities(function (ent) return ent.hero and ent.team ~= entityList:GetMyHero().team and not ent:IsIllusion() end)
 		for i,v in ipairs(enemies) do
 			if not enemyData[v.handle] or v.visible then
 				CollectEnemyData(v)
@@ -1399,7 +1398,7 @@ function ManaBarTick(playing)
 		if not manaBar.init then
 			manaBar.init = true
 		end
-		local enemies = entityList:FindEntities(function (ent) return ent.hero and ent.team ~= entityList:GetMyHero().team and not ent:IsIllusion() and ent.visible and ent.alive and not ent:IsUnitState(LuaEntityNPC.STATE_NO_HEALTHBAR) end)
+		local enemies = entityList:GetEntities(function (ent) return ent.hero and ent.team ~= entityList:GetMyHero().team and not ent:IsIllusion() and ent.visible and ent.alive and not ent:IsUnitState(LuaEntityNPC.STATE_NO_HEALTHBAR) end)
 		for i,v in ipairs(enemies) do
 			if not manaBar[v.handle] then
 				CreateManabar(v)
@@ -1471,7 +1470,7 @@ function HpTick(playing)
 		if not hpMon.init then
 			hpMon.init = true
 		end
-		local enemies = entityList:FindEntities(function (ent) return ent.hero and ent.team ~= entityList:GetMyHero().team and not ent:IsIllusion() and ent.visible and ent.alive and not ent:IsUnitState(LuaEntityNPC.STATE_NO_HEALTHBAR) end)
+		local enemies = entityList:GetEntities(function (ent) return ent.hero and ent.team ~= entityList:GetMyHero().team and not ent:IsIllusion() and ent.visible and ent.alive and not ent:IsUnitState(LuaEntityNPC.STATE_NO_HEALTHBAR) end)
 		for i,v in ipairs(enemies) do
 			if not hpMon[v.handle] then
 				CreateHpVisuals(v)
@@ -1532,7 +1531,7 @@ function MissingTick(playing)
             missingObjs.inBorder = drawMgr:CreateRect(location.ssMonitor.x-1,location.ssMonitor.y-1,location.ssMonitor.w+2,5*location.ssMonitor.h+2,0x000000A0,true)
             missingObjs.outBorder = drawMgr:CreateRect(location.ssMonitor.x-2,location.ssMonitor.y-2,location.ssMonitor.w+4,5*location.ssMonitor.h+4,0x00000050,true)
 		else
-			for i,v in ipairs(entityList:FindEntities(function (ent) return ent.hero and ent.team ~= entityList:GetMyHero().team end)) do
+			for i,v in ipairs(entityList:GetEntities(function (ent) return ent.hero and ent.team ~= entityList:GetMyHero().team end)) do
 				if not v.illusion then
 					UpdateHeroData(v)
 				end
@@ -1554,7 +1553,7 @@ end
 
 function UpdateHeroData(hero,pos,override)
 	if not pos then
-		pos = hero.health > 0 and hero.position or entityList:FindEntities({classId = CDOTA_Unit_Fountain, team = hero.team})[1].position
+		pos = hero.health > 0 and hero.position or entityList:GetEntities({classId = CDOTA_Unit_Fountain, team = hero.team})[1].position
 	end
 	local handle = nil
 	if type(hero) == "number" then
@@ -1849,7 +1848,7 @@ function RoshanTick(playing)
 end
 
 function RoshAlive()
-    local entities = entityList:FindEntities({classId=CDOTA_Unit_Roshan})
+    local entities = entityList:GetEntities({classId=CDOTA_Unit_Roshan})
     tickDelta = client.gameTime-roshObjs.deathTick
     if #entities > 0 and tickDelta > 60 then
             local rosh = entities[1]
@@ -1887,7 +1886,7 @@ function RuneTick(playing)
 	        runeObjs.bmp = drawMgr:CreateRect(location.rune.x+1,location.rune.y,16,16,0x000000FF,drawMgr:GetTextureId("NyanUI/modifier_textures/item_bottle_empty"))
 	        runeObjs.text = drawMgr:CreateText(location.rune.x+20,location.rune.y+3,0xFFFFFFFF,"No Rune",defaultFont)
 		else
-		    local runes = entityList:FindEntities({classId=CDOTA_Item_Rune})
+		    local runes = entityList:GetEntities({classId=CDOTA_Item_Rune})
 		    if #runes == 0 then
 		            if runeObjs.minimap then
 		                runeObjs.minimap.visible = false
@@ -1960,7 +1959,7 @@ cours = {}
 function CourierTick()
     if ScriptConfig.cours and PlayingGame() then
         cours.init = true
-        local enemyCours = entityList:FindEntities({classId = CDOTA_Unit_Courier})
+        local enemyCours = entityList:GetEntities({classId = CDOTA_Unit_Courier})
         for i,v in ipairs(enemyCours) do
             if v.team ~= entityList:GetMyHero().team and v.team ~= 0 and v.team ~= 1 and v.team ~= 5 then
                 if v.visible and v.alive then
@@ -2006,7 +2005,7 @@ script:RegisterEvent(EVENT_FRAME,CourierTick)
 --== EFFECT PLACEMENT ==--
 
 function AlliedInfest(unit)
-	local ents = entityList:FindEntities(function (ent) return ent.hero and ent.team == unit.team and ent:GetDistance2D(unit) < 20 and ent.visible and ent:FindModifier("modifier_life_stealer_infest") ~= nil	end)
+	local ents = entityList:GetEntities(function (ent) return ent.hero and ent.team == unit.team and ent:GetDistance2D(unit) < 20 and ent.visible and ent:FindModifier("modifier_life_stealer_infest") ~= nil	end)
 	return #ents > 0
 end
 
@@ -2029,7 +2028,7 @@ function EffectTick(playing)
 			effects.init = true
 		end
 	    local dirty = false
-	    local npcs = entityList:FindEntities(function (ent) return ent.npc or ent.hero end)
+	    local npcs = entityList:GetEntities(function (ent) return ent.npc or ent.hero end)
 	    for i,v in ipairs(npcs) do
             if effects[v.handle.."infest"] == nil and v:FindModifier("modifier_life_stealer_infest_effect") and v.alive and not AlliedInfest(v) then
                 if ScriptConfig.shEffs then
@@ -2040,22 +2039,7 @@ function EffectTick(playing)
                 effects[v.handle.."infest"] = nil
                 dirty = true
             end
-	    end
-	    local towers = entityList:FindEntities({classId = CDOTA_BaseNPC_Tower})
-	    for i,v in ipairs(towers) do 
-	        if not effects[v.handle.."twRange"] and v.alive then
-	            if (v.team == entityList:GetMyHero().team and ScriptConfig.allyTow) or (v.team ~= entityList:GetMyHero().team and ScriptConfig.enemyTow) then
-	                effects[v.handle.."twRange"] = Effect(v,"range_display")
-	                effects[v.handle.."twRange"]:SetVector(1,Vector(850,0,0))
-	            end
-	        elseif effects[v.handle.."twRange"] and (not v.alive or not (v.team == entityList:GetMyHero().team and ScriptConfig.allyTow) and not (v.team ~= entityList:GetMyHero().team and ScriptConfig.enemyTow)) then
-	            effects[v.handle.."twRange"] = nil
-	            dirty = true
-	        end
-	    end
-	    local heroes = entityList:FindEntities(function (ent) return ent.hero end)
-	    for i,v in ipairs(heroes) do 
-	        if v.team == entityList:GetMyHero().team then
+	        if v.team ~= entityList:GetMyHero():GetEnemyTeam() then
 	            if effects[v.handle.."track"] == nil and v:FindModifier("modifier_bounty_hunter_track") and v.alive then
 	                if ScriptConfig.shEffs then
 	                	effects[v.handle.."track"] = Effect(v, "bounty_hunter_track_trail_circle")
@@ -2069,20 +2053,14 @@ function EffectTick(playing)
 	                	effects[v.handle.."charge"] = Effect(Vector(), "spirit_breaker_charge_target_mark")
 	                	effects[v.handle.."charge"]:SetVector(0,v.position + Vector(0,0,255))
 	                end
-	            elseif effects[v.handle.."charge"] ~= nil  and (not v:FindModifier("modifier_spirit_breaker_charge_of_darkness_vision")  or not v.alive or not ScriptConfig.shEffs) then
+	            elseif effects[v.handle.."charge"] ~= nil  and (not v:FindModifier("modifier_spirit_breaker_charge_of_darkness_vision") or not v.alive or not ScriptConfig.shEffs) then
 	                effects[v.handle.."charge"] = nil
 	                dirty = true
 	            end
-	            if effects[v.handle.."visible"] == nil and v.visibleToEnemy and v.alive then
-	                if (v.playerId == entityList:GetMyHero().playerId and not v:IsIllusion() and ScriptConfig.selfVis) or ((v.playerId ~= entityList:GetMyHero().playerId or v:IsIllusion()) and ScriptConfig.allyVis) then
-	                   	if v.playerId == entityList:GetMyHero().playerId and not v:IsIllusion() then
-	                   		effects[v.handle.."visible"] = Effect(v,"aura_shivas")
-	                   	else
-							effects[v.handle.."visible"] = Effect(v,"ambient_gizmo_model")
-	                   	end
-	                   	effects[v.handle.."visible"]:SetVector(1,Vector(0,0,0))
-	                end
-	            elseif effects[v.handle.."visible"] ~= nil  and (not v.visibleToEnemy or not v.alive or not (v.handle == entityList:GetMyHero().handle and ScriptConfig.selfVis) and not (v.handle ~= entityList:GetMyHero().handle and ScriptConfig.allyVis)) then
+	            if effects[v.handle.."visible"] == nil and v.visibleToEnemy and v.alive and ScriptConfig.teamVis and v.classId ~= CDOTA_BaseNPC_Creep_Lane and v.classId ~= CDOTA_BaseNPC_Creep_Siege then
+					effects[v.handle.."visible"] = Effect(v,"aura_shivas")
+					effects[v.handle.."visible"]:SetVector(1,Vector(0,0,0))
+	            elseif effects[v.handle.."visible"] ~= nil and (not v.visibleToEnemy or not v.alive or not ScriptConfig.teamVis) then
 	                effects[v.handle.."visible"] = nil
 	                dirty = true
 	            end
@@ -2100,6 +2078,18 @@ function EffectTick(playing)
 	                effects[v.handle.."illu"] = nil
 	                dirty = true
 	            end
+	        end
+	    end
+	    local towers = entityList:GetEntities({classId = CDOTA_BaseNPC_Tower})
+	    for i,v in ipairs(towers) do 
+	        if not effects[v.handle.."twRange"] and v.alive then
+	            if (v.team == entityList:GetMyHero().team and ScriptConfig.allyTow) or (v.team ~= entityList:GetMyHero().team and ScriptConfig.enemyTow) then
+	                effects[v.handle.."twRange"] = Effect(v,"range_display")
+	                effects[v.handle.."twRange"]:SetVector(1,Vector(850,0,0))
+	            end
+	        elseif effects[v.handle.."twRange"] and (not v.alive or not (v.team == entityList:GetMyHero().team and ScriptConfig.allyTow) and not (v.team ~= entityList:GetMyHero().team and ScriptConfig.enemyTow)) then
+	            effects[v.handle.."twRange"] = nil
+	            dirty = true
 	        end
 	    end
 	    if dirty then
@@ -2203,7 +2193,7 @@ end
 
 function CreepTick()
 	for _,id in ipairs({CDOTA_BaseNPC_Creep,CDOTA_BaseNPC_Creep_Lane,CDOTA_BaseNPC_Creep_Neutral,CDOTA_BaseNPC_Creep_Siege}) do
-		local t = entityList:FindEntities({visible = true, alive = true, classId = id})
+		local t = entityList:GetEntities({visible = true, alive = true, classId = id})
 		for i,v in ipairs(t) do
 			if creeps[v.handle] == nil then
 				if DoesCreepRequireVisuals(v) then
