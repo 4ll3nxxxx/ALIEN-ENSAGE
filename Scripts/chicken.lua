@@ -28,7 +28,7 @@ end
 
 function Tick(tick)
 	if not PlayingGame() or not SleepCheck() then return end Sleep(1000+client.latency)
-	local me, mp, safety, giveitem = entityList:GetMyHero(), entityList:GetMyPlayer(), false, false
+	local me, mp = entityList:GetMyHero(), entityList:GetMyPlayer()
 	local chicken = entityList:FindEntities({classId=CDOTA_Unit_Courier,team=me.team,alive=true})[1]
 	if chicken then
 		local bottle = me:FindItem("item_bottle")
@@ -37,20 +37,15 @@ function Tick(tick)
 			if GetDistance2D(chicken,v) <= config.distance and chicken:GetAbility(1):CanBeCasted() then
 				chicken:CastAbility(chicken:GetAbility(1))
 				boost(chicken)
-				safety = false
-			else
-				safety = true
 			end
 		end
-		if activated and safety then
+		if activated then
 			if bottle and bottle.charges == 0 then
-				giveitem = true
 				chicken:Follow(me)
 				checkbase(chicken)
 				boost(chicken)
 			end
 			if GetDistance2D(chicken,me) <= 250 and bottle and bottle.charges == 0  then
-				giveitem = false
 				checkchicken(chicken)
 				mp:GiveItem(chicken,bottle)
 			end
