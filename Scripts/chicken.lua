@@ -104,7 +104,7 @@ function Load()
 end
 
 function Close()
-	activated = false
+	activated, text.visible = false, false
 	collectgarbage("collect")
 	if play then
 		script:UnregisterEvent(Tick)
