@@ -27,7 +27,7 @@ function Key(msg,code)
 end
 
 function Tick(tick)
-	if not PlayingGame() or not SleepCheck() then return end Sleep(1000+client.latency)
+	if not PlayingGame() or not SleepCheck() then return end Sleep(250)
 	local me, mp = entityList:GetMyHero(), entityList:GetMyPlayer()
 	local chicken = entityList:FindEntities({classId=CDOTA_Unit_Courier,team=me.team,alive=true})[1]
 	if chicken then
