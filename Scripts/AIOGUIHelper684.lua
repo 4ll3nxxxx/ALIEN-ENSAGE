@@ -1959,35 +1959,33 @@ cours = {}
 function CourierTick()
     if ScriptConfig.cours and PlayingGame() then
         cours.init = true
-        local enemyCours = entityList:GetEntities({classId = CDOTA_Unit_Courier})
+        local enemyCours = entityList:GetEntities(function (ent) return ent.courier and ent.team == entityList:GetMyHero():GetEnemyTeam() end)
         for i,v in ipairs(enemyCours) do
-            if v.team ~= entityList:GetMyHero().team and v.team ~= 0 and v.team ~= 1 and v.team ~= 5 then
-                if v.visible and v.alive then
-                    local courMinimap = MapToMinimap(v)
-                    local flying = v:GetProperty("CDOTA_Unit_Courier","m_bFlyingCourier")
-                    if flying then
-                        if not cours[v.handle] or not cours[v.handle].flying then
-                            cours[v.handle] = {}
-                            cours[v.handle].icon = drawMgr:CreateRect(courMinimap.x-10,courMinimap.y-6,24,12,0x000000FF,drawMgr:GetTextureId("NyanUI/other/courier_flying"))
-                            cours[v.handle].vec = courMinimap
-                            cours[v.handle].flying = flying
-                        elseif GetDistance2D(courMinimap,cours[v.handle].vec) > 0 then
-                            cours[v.handle].icon.x,cours[v.handle].icon.y = courMinimap.x-10,courMinimap.y-6
-                        end
-                    else
-                        if not cours[v.handle] or not cours[v.handle].flying then
-                            cours[v.handle] = {}
-                            cours[v.handle].icon = drawMgr:CreateRect(courMinimap.x-6,courMinimap.y-6,12,12,0x000000FF,drawMgr:GetTextureId("NyanUI/other/courier"))
-                            cours[v.handle].vec = courMinimap
-                            cours[v.handle].flying = flying
-                        elseif GetDistance2D(courMinimap,cours[v.handle].vec) > 0 then
-                            cours[v.handle].icon.x,cours[v.handle].icon.y = courMinimap.x-6,courMinimap.y-6
-                        end
+            if v.visible and v.alive then
+                local courMinimap = MapToMinimap(v)
+                local flying = v:GetProperty("CDOTA_Unit_Courier","m_bFlyingCourier")
+                if flying then
+                    if not cours[v.handle] or not cours[v.handle].flying then
+                        cours[v.handle] = {}
+                        cours[v.handle].icon = drawMgr:CreateRect(courMinimap.x-10,courMinimap.y-6,24,12,0x000000FF,drawMgr:GetTextureId("NyanUI/other/courier_flying"))
+                        cours[v.handle].vec = courMinimap
+                        cours[v.handle].flying = flying
+                    elseif GetDistance2D(courMinimap,cours[v.handle].vec) > 0 then
+                        cours[v.handle].icon.x,cours[v.handle].icon.y = courMinimap.x-10,courMinimap.y-6
                     end
-                elseif cours[v.handle] then
-                    cours[v.handle].icon.visible = false
-                    cours[v.handle] = nil
+                else
+                    if not cours[v.handle] or not cours[v.handle].flying then
+                        cours[v.handle] = {}
+                        cours[v.handle].icon = drawMgr:CreateRect(courMinimap.x-6,courMinimap.y-6,12,12,0x000000FF,drawMgr:GetTextureId("NyanUI/other/courier"))
+                        cours[v.handle].vec = courMinimap
+                        cours[v.handle].flying = flying
+                    elseif GetDistance2D(courMinimap,cours[v.handle].vec) > 0 then
+                        cours[v.handle].icon.x,cours[v.handle].icon.y = courMinimap.x-6,courMinimap.y-6
+                    end
                 end
+            elseif cours[v.handle] then
+                cours[v.handle].icon.visible = false
+                cours[v.handle] = nil
             end
         end
     elseif cours.init then
@@ -2257,22 +2255,21 @@ end
 --== SETTING UP CONSTANTS ==--
 
 do
-    screenSize = client.screenSize
-    if screenSize.x == 0 and screenSize.y == 0 then
-            print("AiO GUI Helper cannot detect your screen resolutions.\nPlease switch to the Borderless Window mode.")
-            script:Unload()
-    end
-    for i,v in ipairs(ResTable) do
-            if v[1] == screenSize.x and v[2] == screenSize.y then
-                    location = v[3]
-                    break
-            elseif i == #ResTable then
-                    print(screenSize.x.."x"..screenSize.y.." resolution is unsupported by AiO GUI Helper.")
-                    script:Unload()
-            end
-    end
-
-    mmFont = drawMgr:CreateFont("mmFont","Arial",location.ssMonitor.size,500)
+	screenSize = client.screenSize
+	if screenSize.x == 0 and screenSize.y == 0 then
+		print("AiO GUI Helper cannot detect your screen resolutions.\nPlease switch to the Borderless Window mode.")
+		script:Unload()
+	end
+	for i,v in ipairs(ResTable) do
+		if v[1] == screenSize.x and v[2] == screenSize.y then
+			location = v[3]
+			break
+		elseif i == #ResTable then
+			print(screenSize.x.."x"..screenSize.y.." resolution is unsupported by AiO GUI Helper.")
+			script:Unload()
+		end
+	end
+	mmFont = drawMgr:CreateFont("mmFont","Arial",location.ssMonitor.size,500)
 end
 
 mb = {}
