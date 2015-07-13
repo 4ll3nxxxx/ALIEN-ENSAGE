@@ -12,7 +12,7 @@ ScriptConfig:SetName("AIOGUI")
 ScriptConfig:SetExtention(-.3)
 ScriptConfig:SetVisible(false)
 
-ScriptConfig:AddParam("slowDown","Performance",SGC_TYPE_NUMCYCLE,false,15,nil,1,15,1)
+ScriptConfig:AddParam("slowDown","Performance",SGC_TYPE_NUMCYCLE,false,5,nil,1,15,1)
 ScriptConfig:AddParam("roshBox","Roshan Monitor",SGC_TYPE_TOGGLE,false,true,nil)
 ScriptConfig:AddParam("roshTime","Roshan Time to Chat",SGC_TYPE_TOGGLE,false,true,nil)
 ScriptConfig:AddParam("roshRe","Roshan Respawn Message",SGC_TYPE_TOGGLE,false,true,nil)
