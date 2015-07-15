@@ -46,7 +46,6 @@ function Main(tick)
 				local slow = target:DoesHaveModifier("modifier_item_ethereal_blade_slow")
 				if dagon and dagon:CanBeCasted() and me:CanCast() and (veil and veil.cd ~= 0 and target:DoesHaveModifier("modifier_item_veil_of_discord_debuff") or not veil) then
 					table.insert(castQueue,{1000+math.ceil(dagon:FindCastPoint()*1000),dagon,target})
-					Sleep(me:GetTurnTime(target)*1000, "casting")
 				end
 				if ethereal and ethereal:CanBeCasted() and me:CanCast() then
 					table.insert(castQueue,{math.ceil(ethereal:FindCastPoint()*1000),ethereal,target})
@@ -61,7 +60,7 @@ function Main(tick)
 					end
 				end
 				if veil and veil:CanBeCasted() and me:CanCast() then
-					table.insert(castQueue,{1000+math.ceil(veil:FindCastPoint()*1000),veil,target.position})        
+					table.insert(castQueue,{100,veil,target.position}})      
 				end
 				if distance <= 850 and me.health >= me.maxHealth * 0.4 and soulring and soulring:CanBeCasted() then
 					table.insert(castQueue,{100,soulring})
