@@ -31,7 +31,7 @@ function Main(tick)
 			if v[4] and ability:CanBeCasted() then
 				me:CastAbility(ability,v[3],false)
 			end
-			castsleep = tick + v[1]
+			castsleep = tick + v[1] + client.latency
 			return
 		end
 	end
@@ -51,30 +51,35 @@ function Main(tick)
 				if ethereal and ethereal:CanBeCasted() and me:CanCast() then
 					table.insert(castQueue,{math.ceil(ethereal:FindCastPoint()*1000),ethereal,target})
 				end
-				if distance <= 850 and Q and Q:CanBeCasted() and me:CanCast() then
+				if Q and Q:CanBeCasted() and me:CanCast() then
 					table.insert(castQueue,{1000+math.ceil(Q:FindCastPoint()*1000),Q,target})
 				end
 				if W and W:CanBeCasted() and me:CanCast() then
-					local CP = W:FindCastPoint()
-					local delay = CP*1000+client.latency+me:GetTurnTime(target)*1000
-					local speed = W:GetSpecialData("true_sight_radius")
-					local xyz = SkillShot.SkillShotXYZ(me,target,delay,speed)
+					local xyz = SkillShot.SkillShotXYZ(me,target,W:FindCastPoint()*1000+me:GetTurnTime(target)*1000,W:GetSpecialData("true_sight_radius"))
 					if xyz and distance <= 700 then 
-						table.insert(castQueue,{math.ceil(CP*1000+client.latency),W,xyz})
+						table.insert(castQueue,{math.ceil(W:FindCastPoint()*1000),W,xyz})
 					end
 				end
 				if veil and veil:CanBeCasted() and me:CanCast() then
 					table.insert(castQueue,{1000+math.ceil(veil:FindCastPoint()*1000),veil,target.position})        
 				end
-				if me.mana < me.maxMana*0.5 and soulring and soulring:CanBeCasted() then
+				if distance <= 850 and me.health >= me.maxHealth * 0.4 and soulring and soulring:CanBeCasted() then
 					table.insert(castQueue,{100,soulring})
 				end
 				if ScriptConfig.ult and target and R and R:CanBeCasted() then
-					Dmg = R:GetSpecialData("damage",R.level)
-					if me:AghanimState() then		
-						Dmg = R:GetSpecialData("damage_scepter",R.level)
+					local dmg = 0
+					if not me:AghanimState() then
+						dmg = R:GetSpecialData("damage",R.level)
+					elseif me:AghanimState() then		
+						dmg = R:GetSpecialData("damage_scepter",R.level)
 					end
-					if target.health < target:DamageTaken(Dmg, DAMAGE_MAGC, me) then
+					if target:DoesHaveModifier("modifier_item_veil_of_discord_debuff") then
+						dmg = dmg + dmg * 0.25
+					end
+					if slow then
+						dmg = dmg + dmg * 0.4
+					end
+					if target.health <= target:DamageTaken(dmg, DAMAGE_MAGC, me) then
 						table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R})
 					end
 				end
@@ -84,7 +89,7 @@ function Main(tick)
 					me:Follow(target)
 				end
 			end
-			castsleep = tick + 150
+			castsleep = tick + 100
 		end
 	end
 end
