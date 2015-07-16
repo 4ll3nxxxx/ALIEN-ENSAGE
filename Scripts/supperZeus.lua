@@ -60,7 +60,7 @@ function Main(tick)
 					end
 				end
 				if veil and veil:CanBeCasted() and me:CanCast() then
-					table.insert(castQueue,{100,veil,target.position}})      
+					table.insert(castQueue,{100,veil,target.position})      
 				end
 				if distance <= 850 and me.health >= me.maxHealth * 0.4 and soulring and soulring:CanBeCasted() then
 					table.insert(castQueue,{100,soulring})
