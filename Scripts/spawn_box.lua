@@ -61,7 +61,7 @@ function Load()
 end
 
 function Close()
-	spots, eff, eff1, eff2, eff3, eff4 = {}, {}, {}, {}, {}, {}
+	eff, eff1, eff2, eff3, eff4 = {}, {}, {}, {}, {}
 	collectgarbage("collect")
 	if play then
 		script:UnregisterEvent(FRAME)
