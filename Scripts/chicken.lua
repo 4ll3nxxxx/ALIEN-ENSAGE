@@ -27,7 +27,7 @@ function Key(msg,code)
 end
 
 function Tick(tick)
-	if not PlayingGame() or not SleepCheck() then return end Sleep(250)
+	if not PlayingGame() or not SleepCheck() then return end Sleep(900)
 	local me, mp = entityList:GetMyHero(), entityList:GetMyPlayer()
 	local chicken = entityList:FindEntities({classId=CDOTA_Unit_Courier,team=me.team,alive=true})[1]
 	if chicken then
@@ -73,11 +73,8 @@ function checkbase(chicken)
 end
 
 function checkchicken(chicken)
-	for i = 1, 6 do
-		local item = chicken:HasItem(i)
-		if item and chicken and chicken:GetAbility(5):CanBeCasted() then
-			chicken:CastAbility(chicken:GetAbility(5))
-		end
+	if chicken and chicken:GetAbility(5):CanBeCasted() then
+		chicken:CastAbility(chicken:GetAbility(5))
 	end
 end
 
