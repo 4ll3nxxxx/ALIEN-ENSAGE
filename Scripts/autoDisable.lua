@@ -413,8 +413,7 @@ end
 function EmberSpirit()
 	if activated == 0 then
 		local remnant = entityList:GetEntities(function (v) return v.npc and v.name == "npc_dota_ember_spirit_remnant" and v.alive end)
-		local disable = me:FindSpell("ember_spirit_searing_chains")
-		local activate = me:FindSpell("ember_spirit_activate_fire_remnant")
+		local disable, activate = me:FindSpell("ember_spirit_searing_chains"), me:FindSpell("ember_spirit_activate_fire_remnant")
 		if #remnant == 1 and activate and activate:CanBeCasted() and me:CanCast() then
 			me:SafeCastAbility(activate,me.position)
 			activated = 1
