@@ -18,7 +18,7 @@ function Tick(tick)
 	local midas = me:FindItem("item_hand_of_midas")
 	if not me:IsInvisible() and not me:IsChanneling() and me.alive then
 		if bloodstone and bloodstone:CanBeCasted() then
-			for i,v in ipairs(entityList:GetEntities({type=LuaEntity.TYPE_HERO,team=me:GetEnemyTeam()})) do						
+			for i,v in ipairs(entityList:GetEntities({type = LuaEntity.TYPE_HERO, alive = true, visible = true, team = me:GetEnemyTeam()})) do						
 				for i,z in ipairs(v.abilities) do
 					if GetDistance2D(v,me) <= z.castRange+100 and (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0)) < 0.15 then
 						local dmg, dmg2 = me:DamageTaken(AbilityDamage.GetDamage(z, me.healthRegen), AbilityDamage.GetDmgType(z), v), me:DamageTaken(v.dmgMin + v.dmgBonus, DAMAGE_PHYS, v)
