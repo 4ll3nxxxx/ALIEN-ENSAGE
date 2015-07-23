@@ -102,17 +102,9 @@ function Tick( tick )
 	local enemies = entityList:GetEntities({type = LuaEntity.TYPE_HERO, alive = true, team = me:GetEnemyTeam(), illusion = false})
 	for i,v in ipairs(enemies) do
 		target = v
-		local IV  = v:IsInvul()
-		local MI  = v:IsMagicImmune()
-		local ST  = v:IsStunned()
-		local HEX = v:IsHexed()
-		local SI  = v:IsSilenced()
-		local DA  = v:IsDisarmed()
-		local invis = me:IsInvisible()
-		local chanel = me:IsChanneling()
-		local items = me:CanUseItems()
-		local blink = v:FindItem("item_blink")
-		local forcestaff = v:FindItem("item_force_staff")
+		local IV, MI, ST, HEX, SI, DA  = v:IsInvul(), v:IsMagicImmune(), v:IsStunned(), v:IsHexed(), v:IsSilenced(), v:IsDisarmed()
+		local invis, chanel, items = me:IsInvisible(), me:IsChanneling(), me:CanUseItems()
+		local blink, forcestaff = v:FindItem("item_blink"), v:FindItem("item_force_staff")
 		local dark_pact = v:FindModifier("modifier_slark_dark_pact") or v:FindModifier("modifier_slark_dark_pact_pulses")
 	
 		if me.alive and v.alive and v.visible then
