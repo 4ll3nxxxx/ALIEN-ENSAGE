@@ -120,17 +120,14 @@ function Tick( tick )
 				if (blink and blink.cd > 11) or (forcestaff and forcestaff.cd > 18.6) then
 					UseMedalliontarget()
 					UseRodtarget()
-					LinkensSelf()
 				elseif active then
 					UseMedalliontarget()
 					UseRodtarget()
-					LinkensSelf()
 				elseif Initiation[v.name] then
 					local Spell = v:FindSpell(Initiation[v.name].Spell)
 					if Spell and Spell.level ~= 0 and Spell.cd > Spell:GetCooldown(Spell.level) - 1.6 then
 						UseMedalliontarget()
 						UseRodtarget()
-						LinkensSelf()
 					end
 				end
 			end
@@ -356,15 +353,6 @@ function UseAstral()
 				return
 			end
 		end
-	end
-end
-
-function LinkensSelf()
-	local disable = me:FindItem("item_sphere")
-	if disable and disable:CanBeCasted() then	
-		me:SafeCastAbility(disable,me)
-		sleepTick = GetTick() + 100
-		return
 	end
 end
 
