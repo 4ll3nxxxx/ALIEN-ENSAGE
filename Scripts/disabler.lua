@@ -142,7 +142,7 @@ function Tick( tick )
 					UseAstral()
 					UseHalberdtarget()
 					UseEtherealtarget()
-					UseSearingChains()
+					EmberSpirit()
 				elseif active then
 					UseHex()
 					UseSheepStickTarget()
@@ -156,7 +156,7 @@ function Tick( tick )
 					UseEulScepterTarget()
 					UseAstral()
 					UseHalberdtarget()
-					UseSearingChains()
+					EmberSpirit()
 				elseif Initiation[v.name] then
 					local Spell = v:FindSpell(Initiation[v.name].Spell)
 					if Spell and Spell.level ~= 0 and Spell.cd > Spell:GetCooldown(Spell.level) - 1.6 then
@@ -173,7 +173,7 @@ function Tick( tick )
 						UseAstral()
 						UseHalberdtarget()
 						UseEtherealtarget()
-						UseSearingChains()
+						EmberSpirit()
 					end
 				end
 			end
@@ -206,7 +206,6 @@ function UseEulScepterTarget()
 				me:SafeCastAbility(disable,target)
 				activated = 1
 				sleepTick = GetTick() + 100
-				return
 			end
 		end
 	end
@@ -220,7 +219,6 @@ function UseSheepStickTarget()
 				me:SafeCastAbility(disable,target)
 				activated = 1
 				sleepTick = GetTick() + 100
-				return
 			end
 		end
 	end
@@ -234,7 +232,6 @@ function UseOrchidtarget()
 				me:SafeCastAbility(disable,target)
 				activated = 1
 				sleepTick = GetTick() + 100
-				return
 			end
 		end
 	end
@@ -248,7 +245,6 @@ function UseAbyssaltarget()
 				me:SafeCastAbility(disable,target)
 				activated = 1 
 				sleepTick = GetTick() + 100
-				return
 			end
 		end
 	end
@@ -262,7 +258,6 @@ function UseHalberdtarget()
 				me:SafeCastAbility(disable,target)
 				activated = 1
 				sleepTick = GetTick() + 100
-				return
 			end
 		end
 	end
@@ -276,7 +271,6 @@ function UseEtherealtarget()
 				me:SafeCastAbility(disable,target)
 				activated = 1
 				sleepTick = GetTick() + 100
-				return
 			end
 		end
 	end
@@ -288,7 +282,6 @@ function UseRodtarget()
 		if target and GetDistance2D(me,target) < disable.castRange then
 			me:SafeCastAbility(disable,target)
 			sleepTick = GetTick() + 100
-			return
 		end
 	end
 end
@@ -300,7 +293,6 @@ function UseMedalliontarget()
 			if target and GetDistance2D(me,target) < disable.castRange then
 				me:SafeCastAbility(disable,target)
 				sleepTick = GetTick() + 100
-				return
 			end
 		end
 	end
@@ -321,7 +313,6 @@ function UseHex()
 				me:SafeCastAbility(disable,target)
 				activated = 1
 				sleepTick = GetTick() + 100
-				return
 			end
 		end
 	end
@@ -342,7 +333,6 @@ function UseAstral()
 				me:SafeCastAbility(disable,target)
 				activated = 1
 				sleepTick = GetTick() + 100
-				return
 			end
 		end
 	end
@@ -363,7 +353,6 @@ function UseImmediateStun()
 				me:SafeCastAbility(disable,target)
 				activated = 1
 				sleepTick = GetTick() + 100
-				return
 			end
 		end
 	end
@@ -377,7 +366,6 @@ function UseBatriderLasso()
 				me:SafeCastAbility(disable,target)
 				activated = 1
 				sleepTick = GetTick() + 100
-				return
 			end
 		end
 	end
@@ -391,7 +379,6 @@ function UseLegionDuel()
 				me:SafeCastAbility(disable,target)
 				activated = 1
 				sleepTick = GetTick() + 100
-				return
 			end
 		end
 	end
@@ -405,7 +392,6 @@ function UseSkysSeal()
 				me:SafeCastAbility(disable,target)
 				activated = 1
 				sleepTick = GetTick() + 100
-				return
 			end
 		end
 	end
@@ -419,21 +405,25 @@ function UsePucksRift()
 				me:SafeCastAbility(disable)
 				activated = 1
 				sleepTick = GetTick() + 100
-				return
 			end
 		end
 	end
 end
 
-function UseSearingChains()
+function EmberSpirit()
 	if activated == 0 then
+		local remnant = entityList:GetEntities(function (v) return v.npc and v.name == "npc_dota_ember_spirit_remnant" and v.alive end)
 		local disable = me:FindSpell("ember_spirit_searing_chains")
-		if disable and disable:CanBeCasted() and me:CanCast() then
+		local activate = me:FindSpell("ember_spirit_activate_fire_remnant")
+		if #remnant == 1 and activate and activate:CanBeCasted() and me:CanCast() then
+			me:SafeCastAbility(activate,me.position)
+			activated = 1
+			sleepTick = GetTick() + 1000
+		elseif #remnant == 0 and disable and disable:CanBeCasted() and me:CanCast() then
 			if target and GetDistance2D(me,target) < 400 then
 				me:SafeCastAbility(disable)
 				activated = 1
 				sleepTick = GetTick() + 100
-				return
 			end
 		end
 	end
@@ -448,7 +438,6 @@ function UseHeroSpell()
 					me:SafeCastAbility(disable,target)
 					activated = 1
 					sleepTick = GetTick() + 100
-					return
 				end
 			end
 		end
