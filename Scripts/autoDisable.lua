@@ -7,7 +7,7 @@ config:SetParameter("indent", 255)
 config:Load()
 
 monitor = client.screenSize.x/1600
-statusText = drawMgr:CreateText(290*monitor,42*monitor,0xFF3399FF,"Disabler: Blink",drawMgr:CreateFont("text","Tahoma",11*monitor,550*monitor)) statusText.visible = false
+statusText = drawMgr:CreateText(290*monitor,42*monitor,0xFFFF00FF,"Disabler: Blink",drawMgr:CreateFont("text","Arial",11*monitor,550*monitor)) statusText.visible = false
 
 active, play, activated, hero, icon, sleepTick = false, false, 0, {}, {}, nil
 
@@ -72,7 +72,7 @@ function Key(msg,code)
 	if IsKeyDown(config.Active) and not client.chat then
 		active = not active
 		if active then
-			statusText.text = "Disabler: All"
+			statusText.text = "Disabler: Blink or attack order"
 		else
 			statusText.text = "Disabler: Blink"
 		end
@@ -110,16 +110,13 @@ function Tick( tick )
 		if me.alive and v.alive and v.visible then
 			if items and not (IV or MI or invis or chanel or dark_pact) then
 				if (blink and blink.cd > 11) or (forcestaff and forcestaff.cd > 18.6) then
-					UseMedalliontarget()
-					UseRodtarget()
-				elseif active then
-					UseMedalliontarget()
-					UseRodtarget()
+					UseMedalliontarget() UseRodtarget()
+				elseif active and entityList:GetMyPlayer().orderId == Player.ORDER_ATTACKENTITY and entityList:GetMyPlayer().target then
+					UseMedalliontarget() UseRodtarget()
 				elseif Initiation[v.name] then
 					local Spell = v:FindSpell(Initiation[v.name].Spell)
 					if Spell and Spell.level ~= 0 and Spell.cd > Spell:GetCooldown(Spell.level) - 1.6 then
-						UseMedalliontarget()
-						UseRodtarget()
+						UseMedalliontarget() UseRodtarget()
 					end
 				end
 			end
@@ -128,52 +125,16 @@ function Tick( tick )
 		if me.alive and v.alive and v.visible and not hero[i] then
 			if items and not (IV or MI or ST or HEX or SI or DA or invis or chanel or dark_pact) then
 				if (blink and blink.cd > 11) or (forcestaff and forcestaff.cd > 18.6) then
-					UseHex()
-					UseSheepStickTarget()
-					UseImmediateStun()
-					UseAbyssaltarget()
-					UseBatriderLasso()
-					UseLegionDuel()
-					UseOrchidtarget()
-					UseSkysSeal()
-					UsePucksRift()
-					UseHeroSpell()
-					UseEulScepterTarget()
-					UseAstral()
-					UseHalberdtarget()
-					UseEtherealtarget()
-					EmberSpirit()
-				elseif active then
-					UseHex()
-					UseSheepStickTarget()
-					UseImmediateStun()
-					UseAbyssaltarget()
-					UseBatriderLasso()
-					UseLegionDuel()
-					UseOrchidtarget()
-					UseSkysSeal()
-					UsePucksRift()
-					UseEulScepterTarget()
-					UseAstral()
-					UseHalberdtarget()
-					EmberSpirit()
+					UseHex() UseSheepStickTarget() UseImmediateStun() UseAbyssaltarget() UseBatriderLasso() UseLegionDuel() UseOrchidtarget() UseSkysSeal()
+					UsePucksRift() UseHeroSpell() UseEulScepterTarget() UseAstral() UseHalberdtarget() UseEtherealtarget() EmberSpirit()
+				elseif active and entityList:GetMyPlayer().orderId == Player.ORDER_ATTACKENTITY and entityList:GetMyPlayer().target or (blink and blink.cd > 11) or (forcestaff and forcestaff.cd > 18.6) then
+					UseHex() UseSheepStickTarget() UseImmediateStun() UseAbyssaltarget() UseBatriderLasso() UseLegionDuel() UseOrchidtarget() UseSkysSeal()
+					UsePucksRift() UseEulScepterTarget() UseAstral() UseHalberdtarget() EmberSpirit()
 				elseif Initiation[v.name] then
 					local Spell = v:FindSpell(Initiation[v.name].Spell)
 					if Spell and Spell.level ~= 0 and Spell.cd > Spell:GetCooldown(Spell.level) - 1.6 then
-						UseHex()
-						UseSheepStickTarget()
-						UseImmediateStun()
-						UseAbyssaltarget()
-						UseBatriderLasso()
-						UseOrchidtarget()
-						UseSkysSeal()
-						UsePucksRift()
-						UseHeroSpell()
-						UseEulScepterTarget()
-						UseAstral()
-						UseHalberdtarget()
-						UseEtherealtarget()
-						EmberSpirit()
+						UseHex() UseSheepStickTarget() UseImmediateStun() UseAbyssaltarget() UseBatriderLasso() UseOrchidtarget() UseSkysSeal() UsePucksRift()
+						UseHeroSpell() UseEulScepterTarget() UseAstral() UseHalberdtarget() UseEtherealtarget() EmberSpirit()
 					end
 				end
 			end
