@@ -248,13 +248,11 @@ function UseRodtarget()
 end
 
 function UseMedalliontarget()
-	if me.health/me.maxHealth > 0.1 then
-		local disable = me:FindItem("item_medallion_of_courage")
-		if disable and disable:CanBeCasted() then
-			if target and GetDistance2D(me,target) < disable.castRange then
-				me:SafeCastAbility(disable,target)
-				sleepTick = GetTick() + 100
-			end
+	local disable = me:FindItem("item_medallion_of_courage")
+	if disable and disable:CanBeCasted() then
+		if target and GetDistance2D(me,target) < disable.castRange then
+			me:SafeCastAbility(disable,target)
+			sleepTick = GetTick() + 100
 		end
 	end
 end
