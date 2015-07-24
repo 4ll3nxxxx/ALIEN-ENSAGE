@@ -248,7 +248,7 @@ function UseRodtarget()
 end
 
 function UseMedalliontarget()
-	local disable = me:FindItem("item_medallion_of_courage")
+	local disable = me:FindItem("item_medallion_of_courage") or me:FindItem("item_solar_crest")
 	if disable and disable:CanBeCasted() then
 		if target and GetDistance2D(me,target) < disable.castRange then
 			me:SafeCastAbility(disable,target)
