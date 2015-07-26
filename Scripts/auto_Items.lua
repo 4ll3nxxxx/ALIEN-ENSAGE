@@ -12,14 +12,13 @@ play, spellList = false, {
 function Tick(tick)
     if not PlayingGame() or not SleepCheck() then return end Sleep(150+client.latency)
 	local me = entityList:GetMyHero()
-	local hero = entityList:GetEntities(function (v) return v.hero and v.alive and v.visible and v.team == me:GetEnemyTeam() end)
 	local bloodstone, glimmercape = me:FindItem("item_bloodstone"), me:FindItem("item_glimmer_cape")
 	local bottle, stick = me:FindItem("item_bottle"), me:FindItem("item_magic_stick") or me:FindItem("item_magic_wand")
 	local phaseboots, forcestaff = me:FindItem("item_phase_boots"), me:FindItem("item_force_staff")
 	local midas = me:FindItem("item_hand_of_midas")
 	if not me:IsInvisible() and not me:IsChanneling() and me.alive then
 		if bloodstone and bloodstone:CanBeCasted() then
-			for i,v in ipairs(hero) do						
+			for i,v in ipairs(entityList:GetEntities(function (v) return v.hero and v.alive and v.visible and v.team == me:GetEnemyTeam() end)) do						
 				for i,z in ipairs(v.abilities) do
 					if GetDistance2D(v,me) <= z.castRange+100 and (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0)) < 0.15 then
 						local dmg, dmg2 = me:DamageTaken(AbilityDamage.GetDamage(z, me.healthRegen), AbilityDamage.GetDmgType(z), v), me:DamageTaken(v.dmgMin + v.dmgBonus, DAMAGE_PHYS, v)
@@ -30,13 +29,13 @@ function Tick(tick)
 				end
 			end
 		elseif forcestaff and forcestaff:CanBeCasted() then
-			for i,v in ipairs(hero) do
+			for i,v in ipairs(entityList:GetEntities(function (v) return v.hero and v.alive and v.visible and v.team == me:GetEnemyTeam() end)) do
 				for i,z in ipairs(v.abilities) do
 					for i,t in ipairs(entityList:GetEntities({classId = CDOTA_BaseNPC_Building,team = me.team})) do
 						if entityList:GetMyPlayer().orderId == Player.ORDER_ATTACKENTITY and entityList:GetMyPlayer().target and (math.max(math.abs(FindAngleR(me) - math.rad(FindAngleBetween(me, v))) - 0.30, 0)) == 0 and GetDistance2D(v,me) >= forcestaff.castRange then
 							me:CastAbility(forcestaff,me)
-						elseif (entityList:GetMyPlayer().orderId == Player.ORDER_MOVETOPOSITION and (math.max(math.abs(FindAngleR(me) - math.rad(FindAngleBetween(me, t))) - 0.40, 0)) == 0 and (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0)) == 0) then
-							if Animations.isAttacking(v) or z.abilityPhase and GetDistance2D(v,me) <= z.castRange+100 then
+						elseif entityList:GetMyPlayer().orderId == Player.ORDER_MOVETOPOSITION and (math.max(math.abs(FindAngleR(me) - math.rad(FindAngleBetween(me, t))) - 0.40, 0)) == 0 and (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0)) == 0 then
+							if (Animations.isAttacking(v) or z.abilityPhase and GetDistance2D(v,me) <= z.castRange+100) then
 								me:CastAbility(forcestaff,me)
 							end
 						end
