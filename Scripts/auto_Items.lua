@@ -30,12 +30,12 @@ function Tick(tick)
 				end
 			end
 		elseif forcestaff and forcestaff:CanBeCasted() then
-			for i,v in ipairs(entityList:GetEntities(function (v) return v.hero and v.alive and v.visible and v.team == me:GetEnemyTeam() end)) do
+			for i,v in ipairs(entityList:GetEntities(function (v) return v.hero and v.alive and v.visible and not v:IsIllusion() and v.team == me:GetEnemyTeam() end)) do
 				for i,z in ipairs(v.abilities) do
-					for i,t in ipairs(entityList:GetEntities(function (k) return (k.classId == CDOTA_BaseNPC_Tower or k.classId == CDOTA_BaseNPC_Building) and k.alive and k.team == me.team end)) do
+					for i,k in ipairs(entityList:GetEntities(function (k) return (k.classId == CDOTA_BaseNPC_Tower or k.classId == CDOTA_BaseNPC_Building) and k.alive and k.team == me.team end)) do
 						if entityList:GetMyPlayer().orderId == Player.ORDER_ATTACKENTITY and entityList:GetMyPlayer().target and (math.max(math.abs(FindAngleR(me) - math.rad(FindAngleBetween(me, v))) - 0.30, 0)) == 0 and GetDistance2D(v,me) >= forcestaff.castRange-200 then
 							me:CastAbility(forcestaff,me) break
-						elseif entityList:GetMyPlayer().orderId == Player.ORDER_MOVETOPOSITION and not Animations.isAttacking(me) and (math.max(math.abs(FindAngleR(me) - math.rad(FindAngleBetween(me, t))) - 0.10, 0)) == 0 and (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0)) < 0.15 then
+						elseif entityList:GetMyPlayer().orderId == Player.ORDER_MOVETOPOSITION and Animations.CanMove(me) and (math.max(math.abs(FindAngleR(me) - math.rad(FindAngleBetween(me, k))) - 0.10, 0)) == 0 and (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0)) < 0.15 then
 							if (Animations.isAttacking(v) or z.abilityPhase and GetDistance2D(v,me) <= z.castRange+300) then
 								me:CastAbility(forcestaff,me) break
 							end
