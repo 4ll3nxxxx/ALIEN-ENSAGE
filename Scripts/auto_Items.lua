@@ -32,7 +32,7 @@ function Tick(tick)
 		elseif forcestaff and forcestaff:CanBeCasted() then
 			for i,v in ipairs(hero) do
 				for i,z in ipairs(v.abilities) do
-					local fountain = entityList:GetEntities({classId = CDOTA_Unit_Fountain,team = me.team})[1]
+					local fountain = entityList:GetEntities({classId = CDOTA_BaseNPC_Building,team = me.team})[1]
 					if entityList:GetMyPlayer().orderId == Player.ORDER_ATTACKENTITY and entityList:GetMyPlayer().target and (math.max(math.abs(FindAngleR(me) - math.rad(FindAngleBetween(me, v))) - 0.30, 0)) == 0 and GetDistance2D(v,me) >= forcestaff.castRange then
 						me:CastAbility(forcestaff,me)
 					elseif (entityList:GetMyPlayer().orderId == Player.ORDER_MOVETOPOSITION and (math.max(math.abs(FindAngleR(me) - math.rad(FindAngleBetween(me, fountain))) - 0.40, 0)) == 0 and (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0)) == 0) then
