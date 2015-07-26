@@ -11,7 +11,7 @@ play, spellList = false, {
 }
 
 function Tick(tick)
-    if not PlayingGame() or not SleepCheck() then return end Sleep(150+client.latency)
+    if not PlayingGame() or not SleepCheck() then return end Sleep(250)
 	local me = entityList:GetMyHero()
 	local bloodstone, glimmercape = me:FindItem("item_bloodstone"), me:FindItem("item_glimmer_cape")
 	local bottle, stick = me:FindItem("item_bottle"), me:FindItem("item_magic_stick") or me:FindItem("item_magic_wand")
@@ -33,11 +33,11 @@ function Tick(tick)
 			for i,v in ipairs(entityList:GetEntities(function (v) return v.hero and v.alive and v.visible and v.team == me:GetEnemyTeam() end)) do
 				for i,z in ipairs(v.abilities) do
 					for i,t in ipairs(entityList:GetEntities(function (k) return (k.classId == CDOTA_BaseNPC_Tower or k.classId == CDOTA_BaseNPC_Building) and k.alive and k.team == me.team end)) do
-						if entityList:GetMyPlayer().orderId == Player.ORDER_ATTACKENTITY and entityList:GetMyPlayer().target and (math.max(math.abs(FindAngleR(me) - math.rad(FindAngleBetween(me, v))) - 0.30, 0)) == 0 and GetDistance2D(v,me) >= forcestaff.castRange then
-							me:CastAbility(forcestaff,me)
-						elseif entityList:GetMyPlayer().orderId == Player.ORDER_MOVETOPOSITION and (math.max(math.abs(FindAngleR(me) - math.rad(FindAngleBetween(me, t))) - 0.40, 0)) == 0 and (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0)) < 0.15 then
+						if entityList:GetMyPlayer().orderId == Player.ORDER_ATTACKENTITY and entityList:GetMyPlayer().target and (math.max(math.abs(FindAngleR(me) - math.rad(FindAngleBetween(me, v))) - 0.30, 0)) == 0 and GetDistance2D(v,me) >= forcestaff.castRange-200 then
+							me:CastAbility(forcestaff,me) break
+						elseif entityList:GetMyPlayer().orderId == Player.ORDER_MOVETOPOSITION and (math.max(math.abs(FindAngleR(me) - math.rad(FindAngleBetween(me, t))) - 0.10, 0)) == 0 and (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0)) < 0.15 then
 							if (Animations.isAttacking(v) or z.abilityPhase and GetDistance2D(v,me) <= z.castRange+300) then
-								me:CastAbility(forcestaff,me)
+								me:CastAbility(forcestaff,me) break
 							end
 						end
 					end
