@@ -1,4 +1,5 @@
 require("libs.Utils")
+require("libs.Animations")
 require("libs.AbilityDamage")
 
 play, spellList = false, {
