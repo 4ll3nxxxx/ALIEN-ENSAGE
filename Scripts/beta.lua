@@ -31,8 +31,9 @@ function Tick(tick)
 					me:CastAbility(j) Sleep(j:FindCastPoint()*1000+me:GetTurnTime(target)*1000)
 				end
 				if j:IsBehaviourType(LuaEntityAbility.BEHAVIOR_POINT) then
-					me:CastAbility(j,target.position) Sleep(j:FindCastPoint()*1000+me:GetTurnTime(target)*1000)
-					if j.name == "item_blink" and GetDistance2D(target,me) <= 1199 and GetDistance2D(target,me) >= me.attackRange+450 then
+					if j.name ~= "item_blink" and GetDistance2D(target,me) <= j.castRange-50  then
+						me:CastAbility(j,target.position) Sleep(j:FindCastPoint()*1000+me:GetTurnTime(target)*1000)
+					elseif j.name == "item_blink" and GetDistance2D(target,me) <= 1199 and GetDistance2D(target,me) >= me.attackRange+450 then
 						me:CastAbility(j,target.position) Sleep(j:FindCastPoint()*1000+me:GetTurnTime(target)*1000)
 					end
 				end
