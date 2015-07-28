@@ -5,7 +5,7 @@ require("libs.Skillshot")
 function Tick(tick)
     if not PlayingGame() then return end
     local me, target = entityList:GetMyHero(), targetFind:GetClosestToMouse(100)
-    if IsKeyDown(32) and target and target.alive then		
+    if IsKeyDown(32) and target and GetDistance2D(target,me) <= 2000 and not target:DoesHaveModifier("modifier_item_blade_mail_reflect") and not target:DoesHaveModifier("modifier_item_lotus_orb_active") and not target:IsMagicImmune() and target:CanDie() then		
 		for i,k in ipairs(me.abilities) do
 			if k:CanBeCasted() and k:CanBeCasted() and me:CanCast() and SleepCheck("abilities") then
 				if k:IsBehaviourType(LuaEntityAbility.BEHAVIOR_UNIT_TARGET) and GetDistance2D(target,me) <= k.castRange-50 then
