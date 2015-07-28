@@ -2,6 +2,8 @@ require("libs.Utils")
 require("libs.TargetFind")
 require("libs.Skillshot")
 
+play = false
+
 function Tick(tick)
     if not PlayingGame() or not SleepCheck() then return end
     local me, target = entityList:GetMyHero(), targetFind:GetClosestToMouse(100)
