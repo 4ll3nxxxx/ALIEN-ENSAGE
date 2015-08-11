@@ -373,7 +373,7 @@ function GlyphTick(playing)
 		end		
 	elseif enemyGlyph.init then
 		enemyGlyph.visible = false
-        enemyGlyph = nil
+        enemyGlyph = {}
 	end
 end
 
@@ -1829,11 +1829,7 @@ function RoshanTick(playing)
 		    end
 		end
 	elseif roshObjs.init then
-        for k,v in pairs(roshObjs) do
-            if k ~= "init" then
-                v.visible = false
-            end
-        end
+		roshObjs.visible = false
         roshObjs = {}
 	end
 end
@@ -2331,11 +2327,7 @@ function Close()
         missingObjs = {}
 	end
 	if roshObjs.init then
-        for k,v in pairs(roshObjs) do
-            if k ~= "init" then
-                v.visible = false
-            end
-        end
+		roshObjs.visible = false
         roshObjs = {}
 	end
 	if runeObjs.init then
