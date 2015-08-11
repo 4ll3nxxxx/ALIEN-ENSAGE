@@ -44,9 +44,8 @@ function Main(tick)
 			if #enemyNpc ~= 0 then
 				table.sort(enemyNpc, function (a,b) return a.health < b.health end)
 				v:Attack(enemyNpc[1])
-			end
 			local creep = entityList:GetEntities(function (k) return k.classId == CDOTA_BaseNPC_Creep_Lane and k.alive and k.visible and k.team == me.team and v:GetDistance2D(k) <= 2000 end)
-			if #enemyNpc == 0 and #creep > 0 then
+			elseif #enemyNpc == 0 and #creep > 0 then
 				v:Follow(creep[1])
 			end
 		end
