@@ -200,10 +200,10 @@ playinggame, slowDown = {}, 0
 function Tick()
 	local playing = PlayingGame()
 	if not playinggame.init and playing then
-		playinggame.init = true
 		script:RegisterEvent(EVENT_DOTA,RoshEvent)
 		script:RegisterEvent(EVENT_FRAME,CourierTick)
 		script:RegisterEvent(EVENT_FRAME,EffectFrame)
+		playinggame.init = true
 	end
 	ScriptConfig:SetVisible(playing)
 	slowDown = 1 + slowDown%ScriptConfig.slowDown
@@ -424,7 +424,6 @@ function IsHeroDead(hero)
 end
 
 function UpdateSB(playerId)
-
 	if SleepCheck("scoreboard"..playerId) then
 		scoreboard[playerId].pos = GetScoreBoardPos(playerId)
 		Sleep(ScriptConfig.slowDown*1000,"scoreboard"..playerId)
@@ -1023,10 +1022,8 @@ function UpdateAdv(hero)
 				advancedM[hero.handle]["bear"..i.."CD"].visible = false
 				advancedM[hero.handle]["bear"..i.."CD"] = nil
 			end
-
 		end
 	end
-
 	UpdateSpells(hero)
 end 
 
@@ -1166,9 +1163,7 @@ function CreateAdv(hero)
 			advancedM[hero.handle]["bear"..i.."CD"] = drawMgr:CreateText(itemTopLeft.x + itemSize/2 - itemcdSize.x/2,itemTopLeft.y + itemSize/2 + 2 - itemcdSize.y/2,0xFFFFFFFF,itemcdText,itemCdFont)
 		end
 	end
-
 	StructureSpells(hero)
-
 	advancedM.count = advancedM.count + 1
 end
 
@@ -1847,12 +1842,12 @@ function RoshAlive()
     local entities = entityList:GetEntities({classId=CDOTA_Unit_Roshan})
     tickDelta = client.gameTime-roshObjs.deathTick
     if #entities > 0 and tickDelta > 60 then
-            local rosh = entities[1]
-            if rosh and rosh.alive then
-                    return true
-            end
-    end
-    return false
+		local rosh = entities[1]
+		if rosh and rosh.alive then
+			return true
+		end
+	end
+	return false
 end
 
 
@@ -2361,7 +2356,6 @@ function Close()
     end
 	if effects.init then
 		effects = {}
-	    collectgarbage("collect")
 	end
 	if creeps and creeps.init then
 		CreepDeInit()
