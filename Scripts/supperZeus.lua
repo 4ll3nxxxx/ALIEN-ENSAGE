@@ -44,42 +44,44 @@ function Main(tick)
 				local distance = GetDistance2D(target,me)
 				local dagon, ethereal, veil, soulring = me:FindDagon(), me:FindItem("item_ethereal_blade"), me:FindItem("item_veil_of_discord"), me:FindItem("item_soul_ring")
 				local slow = target:DoesHaveModifier("modifier_item_ethereal_blade_slow")
-				if dagon and dagon:CanBeCasted() and me:CanCast() and (veil and veil.cd ~= 0 and target:DoesHaveModifier("modifier_item_veil_of_discord_debuff") or not veil) then
-					table.insert(castQueue,{1000+math.ceil(dagon:FindCastPoint()*1000),dagon,target})
-				end
-				if ethereal and ethereal:CanBeCasted() and me:CanCast() then
-					table.insert(castQueue,{math.ceil(ethereal:FindCastPoint()*1000),ethereal,target})
-				end
-				if Q and Q:CanBeCasted() and me:CanCast() then
-					table.insert(castQueue,{1000+math.ceil(Q:FindCastPoint()*1000),Q,target})
-				end
-				if W and W:CanBeCasted() and me:CanCast() then
-					local xyz = SkillShot.SkillShotXYZ(me,target,W:FindCastPoint()*1000+me:GetTurnTime(target)*1000,W:GetSpecialData("true_sight_radius"))
-					if xyz and distance <= 700 then 
-						table.insert(castQueue,{math.ceil(W:FindCastPoint()*1000),W,xyz})
-					end
-				end
 				if veil and veil:CanBeCasted() and me:CanCast() then
 					table.insert(castQueue,{100,veil,target.position})      
 				end
-				if distance <= 850 and me.health >= me.maxHealth * 0.4 and soulring and soulring:CanBeCasted() then
-					table.insert(castQueue,{100,soulring})
-				end
-				if ScriptConfig.ult and target and R and R:CanBeCasted() then
-					local dmg = 0
-					if not me:AghanimState() then
-						dmg = R:GetSpecialData("damage",R.level)
-					elseif me:AghanimState() then		
-						dmg = R:GetSpecialData("damage_scepter",R.level)
+				if veil and veil.cd ~= 0 or not veil then
+					if dagon and dagon:CanBeCasted() and me:CanCast() and (veil and veil.cd ~= 0 and target:DoesHaveModifier("modifier_item_veil_of_discord_debuff") or not veil) then
+						table.insert(castQueue,{1000+math.ceil(dagon:FindCastPoint()*1000),dagon,target})
 					end
-					if target:DoesHaveModifier("modifier_item_veil_of_discord_debuff") then
-						dmg = dmg + dmg * 0.25
+					if ethereal and ethereal:CanBeCasted() and me:CanCast() then
+						table.insert(castQueue,{math.ceil(ethereal:FindCastPoint()*1000),ethereal,target})
 					end
-					if slow then
-						dmg = dmg + dmg * 0.4
+					if Q and Q:CanBeCasted() and me:CanCast() then
+						table.insert(castQueue,{1000+math.ceil(Q:FindCastPoint()*1000),Q,target})
 					end
-					if target.health <= target:DamageTaken(dmg, DAMAGE_MAGC, me) then
-						table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R})
+					if W and W:CanBeCasted() and me:CanCast() then
+						local xyz = SkillShot.SkillShotXYZ(me,target,W:FindCastPoint()*1000+me:GetTurnTime(target)*1000,W:GetSpecialData("true_sight_radius"))
+						if xyz and distance <= 700 then 
+							table.insert(castQueue,{math.ceil(W:FindCastPoint()*1000),W,xyz})
+						end
+					end
+					if distance <= 850 and me.health >= me.maxHealth * 0.4 and soulring and soulring:CanBeCasted() then
+						table.insert(castQueue,{100,soulring})
+					end
+					if ScriptConfig.ult and target and R and R:CanBeCasted() then
+						local dmg = 0
+						if not me:AghanimState() then
+							dmg = R:GetSpecialData("damage",R.level)
+						elseif me:AghanimState() then		
+							dmg = R:GetSpecialData("damage_scepter",R.level)
+						end
+						if target:DoesHaveModifier("modifier_item_veil_of_discord_debuff") then
+							dmg = dmg + dmg * 0.25
+						end
+						if slow then
+							dmg = dmg + dmg * 0.4
+						end
+						if target.health <= target:DamageTaken(dmg, DAMAGE_MAGC, me) then
+							table.insert(castQueue,{1000+math.ceil(R:FindCastPoint()*1000),R})
+						end
 					end
 				end
 				if not slow then
@@ -108,7 +110,7 @@ function Load()
 end
 
 function Close()
-	target, myhero = nil, nil
+	target, myhero, castQueue = nil, nil, {}
 	ScriptConfig:SetVisible(false)
 	collectgarbage("collect")
 	if play then
