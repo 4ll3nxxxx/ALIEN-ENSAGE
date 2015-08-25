@@ -49,8 +49,7 @@ end
 
 function Close()
 	collectgarbage("collect")
-	rec1.visible = false
-	rec2.visible = false
+	activated, rec1.visible, rec2.visible = false, false, false
 	if play then
 		script:UnregisterEvent(Tick)
 		script:UnregisterEvent(Key)
