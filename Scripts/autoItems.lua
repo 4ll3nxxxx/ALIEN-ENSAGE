@@ -44,22 +44,27 @@ function Tick(tick)
 					end
 				end
 			end
-		elseif glimmercape and glimmercape:CanBeCasted() then
+		end
+		if glimmercape and glimmercape:CanBeCasted() then
 			if spellList[me.name] then
 				local spell = me:FindSpell(spellList[me.name].spell)
 				if spell and spell.level > 0 and spell.abilityPhase then
 					me:CastAbility(glimmercape,me)
 				end
 			end
-		elseif midas and midas:CanBeCasted() then
+		end
+		if midas and midas:CanBeCasted() then
 			for i,v in ipairs(entityList:GetEntities(function (v) return v.type == LuaEntity.TYPE_CREEP and v.team ~= me.team and v.alive and v.visible and v.spawned and v.level >= 5 and not v.ancient and v.health > 0 and v.attackRange < 650 and v:GetDistance2D(me) < midas.castRange + 25 end)) do
 				me:CastAbility(midas,v)
 			end
-		elseif bottle and bottle:CanBeCasted() and me:DoesHaveModifier("modifier_fountain_aura_buff") and not me:DoesHaveModifier("modifier_bottle_regeneration") and (me.health < me.maxHealth or me.mana < me.maxMana) then
+		end
+		if bottle and bottle:CanBeCasted() and me:DoesHaveModifier("modifier_fountain_aura_buff") and not me:DoesHaveModifier("modifier_bottle_regeneration") and (me.health < me.maxHealth or me.mana < me.maxMana) then
 			me:CastAbility(bottle)
-		elseif phaseboots and phaseboots:CanBeCasted() then
+		end
+		if phaseboots and phaseboots:CanBeCasted() then
 			me:CastAbility(phaseboots)
-		elseif stick and stick:CanBeCasted() and stick.charges > 0 and me.health/me.maxHealth < 0.3 then
+		end
+		if stick and stick:CanBeCasted() and stick.charges > 0 and me.health/me.maxHealth < 0.3 then
 			me:CastAbility(stick)
 		end
 	end
