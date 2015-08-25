@@ -135,7 +135,7 @@ function Load()
 end
 
 function Close()
-	myhero, victim, start, resettime = nil, nil, false, nil
+	myhero, victim, start, resettime, castQueue = nil, nil, false, nil, {}
 	ScriptConfig:SetVisible(false)
 	collectgarbage("collect")
 	if play then
