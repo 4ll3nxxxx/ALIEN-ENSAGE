@@ -414,7 +414,7 @@ end
 
 function Close()
 	if play then
-		statusText.visible, hero, icon = false, {}, {}
+		active, statusText.visible, hero, icon, activated, sleepTick = false, false, {}, {}, 0, nil
 		collectgarbage("collect")
 		script:UnregisterEvent(Tick)
 		script:UnregisterEvent(Key)
