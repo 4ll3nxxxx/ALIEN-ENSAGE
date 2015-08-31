@@ -2357,7 +2357,7 @@ function Close()
 		script:UnregisterEvent(RoshEvent)
 		script:UnregisterEvent(CourierTick)
 		script:UnregisterEvent(EffectFrame)
-		playinggame.init = {}
+		playinggame = {}
 	end
 end
 
