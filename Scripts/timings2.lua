@@ -149,7 +149,11 @@ modifnames = {
 "modifier_stunned",
 "modifier_winter_wyvern_winters_curse",
 "modifier_winter_wyvern_winters_curse_aura",
-"modifier_sniper_assassinate"
+"modifier_sniper_assassinate",
+"modifier_rune_haste",
+"modifier_rune_doubledamage",
+"modifier_rune_invis",
+"modifier_rune_regen"
 },
 {
 "modifier_lycan_shapeshift",
