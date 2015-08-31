@@ -9,7 +9,7 @@ config:Load()
 monitor = client.screenSize.x/1600
 statusText = drawMgr:CreateText(290*monitor,42*monitor,0xFFFF00FF,"Disabler: Blink",drawMgr:CreateFont("text","Arial",11*monitor,550*monitor)) statusText.visible = false
 
-active, play, activated, hero, icon, sleepTick = false, false, 0, {}, {}, nil
+active, play, activated, hero, icon, sleepTick, target = false, false, 0, {}, {}, nil, nil
 
 DisableSpell = {
 	npc_dota_hero_crystal_maiden = {Spell = "crystal_maiden_frostbite"},
@@ -99,22 +99,25 @@ function Tick( tick )
 	if not PlayingGame() or sleepTick and sleepTick > tick then return end
 	me = entityList:GetMyHero()
 	
-	local enemies = entityList:GetEntities({type = LuaEntity.TYPE_HERO, alive = true, team = me:GetEnemyTeam(), illusion = false})
-	for i,v in ipairs(enemies) do
-		target = v
-		local IV, MI, ST, HEX, SI, DA  = v:IsInvul(), v:IsMagicImmune(), v:IsStunned(), v:IsHexed(), v:IsSilenced(), v:IsDisarmed()
+	local enemies = entityList:GetEntities({type = LuaEntity.TYPE_HERO, team = me:GetEnemyTeam(), illusion = false})
+
+	for i = 1, #enemies do
+
+		target = enemies[i]
+
+		local IV, MI, ST, HEX, SI, DA  = target:IsInvul(), target:IsMagicImmune(), target:IsStunned(), target:IsHexed(), target:IsSilenced(), target:IsDisarmed()
 		local invis, chanel, items = me:IsInvisible(), me:IsChanneling(), me:CanUseItems()
-		local blink, forcestaff = v:FindItem("item_blink"), v:FindItem("item_force_staff")
-		local dark_pact = v:FindModifier("modifier_slark_dark_pact") or v:FindModifier("modifier_slark_dark_pact_pulses")
+		local blink, forcestaff = target:FindItem("item_blink"), target:FindItem("item_force_staff")
+		local dark_pact = target:FindModifier("modifier_slark_dark_pact") or target:FindModifier("modifier_slark_dark_pact_pulses")
 	
-		if me.alive and v.alive and v.visible then
+		if me.alive and target.alive and target.visible then
 			if items and not (IV or MI or invis or chanel or dark_pact) then
 				if (blink and blink.cd > 11) or (forcestaff and forcestaff.cd > 18.6) then
 					UseMedalliontarget() UseRodtarget()
 				elseif active and entityList:GetMyPlayer().orderId == Player.ORDER_ATTACKENTITY and entityList:GetMyPlayer().target then
 					UseMedalliontarget() UseRodtarget()
-				elseif Initiation[v.name] then
-					local Spell = v:FindSpell(Initiation[v.name].Spell)
+				elseif Initiation[target.name] then
+					local Spell = target:FindSpell(Initiation[target.name].Spell)
 					if Spell and Spell.level ~= 0 and Spell.cd > Spell:GetCooldown(Spell.level) - 1.6 then
 						UseMedalliontarget() UseRodtarget()
 					end
@@ -122,7 +125,7 @@ function Tick( tick )
 			end
 		end
 
-		if me.alive and v.alive and v.visible and not hero[i] then
+		if me.alive and target.alive and target.visible and not hero[i] then
 			if items and not (IV or MI or ST or HEX or SI or DA or invis or chanel or dark_pact) then
 				if (blink and blink.cd > 11) or (forcestaff and forcestaff.cd > 18.6) then
 					UseHex() UseSheepStickTarget() UseImmediateStun() UseAbyssaltarget() UseBatriderLasso() UseLegionDuel() UseOrchidtarget() UseSkysSeal()
@@ -130,8 +133,8 @@ function Tick( tick )
 				elseif active and entityList:GetMyPlayer().orderId == Player.ORDER_ATTACKENTITY and entityList:GetMyPlayer().target or (blink and blink.cd > 11) or (forcestaff and forcestaff.cd > 18.6) then
 					UseHex() UseSheepStickTarget() UseImmediateStun() UseAbyssaltarget() UseBatriderLasso() UseLegionDuel() UseOrchidtarget() UseSkysSeal()
 					UsePucksRift() UseEulScepterTarget() UseAstral() UseHalberdtarget() EmberSpirit()
-				elseif Initiation[v.name] then
-					local Spell = v:FindSpell(Initiation[v.name].Spell)
+				elseif Initiation[target.name] then
+					local Spell = target:FindSpell(Initiation[target.name].Spell)
 					if Spell and Spell.level ~= 0 and Spell.cd > Spell:GetCooldown(Spell.level) - 1.6 then
 						UseHex() UseSheepStickTarget() UseImmediateStun() UseAbyssaltarget() UseBatriderLasso() UseOrchidtarget() UseSkysSeal() UsePucksRift()
 						UseHeroSpell() UseEulScepterTarget() UseAstral() UseHalberdtarget() UseEtherealtarget() EmberSpirit()
@@ -150,7 +153,7 @@ function Tick( tick )
 		
 		if not hero[i] then
 			icon[i].back.textureId = drawMgr:GetTextureId("NyanUI/spellicons/doom_bringer_empty1")
-			icon[i].mini.textureId = drawMgr:GetTextureId("NyanUI/miniheroes/"..v.name:gsub("npc_dota_hero_",""))
+			icon[i].mini.textureId = drawMgr:GetTextureId("NyanUI/miniheroes/"..target.name:gsub("npc_dota_hero_",""))
 		else
 			icon[i].mini.textureId = drawMgr:GetTextureId("NyanUI/spellicons/doom_bringer_empty1")
 		end	
@@ -371,7 +374,7 @@ end
 
 function EmberSpirit()
 	if activated == 0 then
-		local remnant = entityList:GetEntities(function (v) return v.npc and v.name == "npc_dota_ember_spirit_remnant" and v.alive end)
+		local remnant = entityList:GetEntities(function (target) return target.npc and target.name == "npc_dota_ember_spirit_remnant" and target.alive end)
 		local disable, activate = me:FindSpell("ember_spirit_searing_chains"), me:FindSpell("ember_spirit_activate_fire_remnant")
 		if #remnant == 1 and activate and activate:CanBeCasted() and me:CanCast() then
 			me:SafeCastAbility(activate,me.position)
@@ -414,7 +417,7 @@ end
 
 function Close()
 	if play then
-		active, statusText.visible, hero, icon, activated, sleepTick = false, false, {}, {}, 0, nil
+		active, statusText.visible, hero, icon, activated, sleepTick, target = false, false, {}, {}, 0, nil, nil
 		collectgarbage("collect")
 		script:UnregisterEvent(Tick)
 		script:UnregisterEvent(Key)
